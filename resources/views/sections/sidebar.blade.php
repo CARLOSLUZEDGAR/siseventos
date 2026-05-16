@@ -27,12 +27,12 @@
                 <!-- <li class="nav-header" style="padding-left: 1px;">DATOS</li> -->
                   {{-- PERMISO SIDEBAR 2 --}}
                 @can('side-carnetizacion', Model::class)
-                  <li class="nav-header" style="padding-left: 1px;">PERSONAL</li>
+                  <li class="nav-header" style="padding-left: 1px;">EVENTOS</li>
                   <li class="nav-item">{{-- CARNETIZACION --}}
                     <a href="#" class="nav-link">
                       <i class="nav-icon fas fa-id-card"></i>
                       <p>
-                        PERSONAL
+                        EVENTOS
                         <i class="fas fa-angle-left right"></i>
                       </p>
                     </a>
@@ -41,7 +41,7 @@
                       <li class="nav-item">
                         <router-link class="nav-link" to='/DatosPersonal'>
                           <i class="fas fa-user nav-icon"></i>
-                          <p>Registro</p>
+                          <p>Calendario</p>
                         </router-link>
                       </li>
                       @endcan
