@@ -77,6 +77,24 @@ Route::get('/verificarPersonal/{id_per_lic}','PersonalController@VerificarPerson
 Route::post('/datosPersonal','PersonalController@DatosPersonal');
 
 
+
+/****************************** INICIO FUNCIONES *******************************************/
+Route::post('/registrarEvento','EventosController@CrearEvento');
+
+
+
+
+
+
+
+
+
+
+/****************************** FIN FUNCIONES *******************************************/
+
+
+
+
 /****************************** FUNCIONES DE EXPORTACION DE EXCEL *******************************************/
 
 Route::get('/indGenDest','Excel\IndiceGenDestController@export');

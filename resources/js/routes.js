@@ -24,12 +24,12 @@ export default new Router ({
         },
 
         {
-            path: '/DatosPersonal',
-            name: 'DatosPersonal',
-            component: require('./components/DatosPersonal.vue').default,
+            path: '/DatosEvento',
+            name: 'Datosevento',
+            component: require('./components/DatosEvento.vue').default,
             beforeEnter: (to, from, next) => {
                 let per = window.user.permissions.map(permission=>permission.name);
-                if (per.includes('view-dat-carnet')) {
+                if (per.includes('view-calendario')) {
                     next();
                 } else {
                     next(from.path);

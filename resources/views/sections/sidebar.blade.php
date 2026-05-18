@@ -26,7 +26,7 @@
               {{-- PERMISO SIDEBAR 1 --}}
                 <!-- <li class="nav-header" style="padding-left: 1px;">DATOS</li> -->
                   {{-- PERMISO SIDEBAR 2 --}}
-                @can('side-carnetizacion', Model::class)
+                @can('side-evento', Model::class)
                   <li class="nav-header" style="padding-left: 1px;">EVENTOS</li>
                   <li class="nav-item">{{-- CARNETIZACION --}}
                     <a href="#" class="nav-link">
@@ -37,9 +37,9 @@
                       </p>
                     </a>
                     <ul class="nav nav-treeview" style="display: none;">
-                      @can('view-dat-carnet', Model::class)
+                      @can('view-calendario', Model::class)
                       <li class="nav-item">
-                        <router-link class="nav-link" to='/DatosPersonal'>
+                        <router-link class="nav-link" to='/DatosEvento'>
                           <i class="fas fa-user nav-icon"></i>
                           <p>Calendario</p>
                         </router-link>
