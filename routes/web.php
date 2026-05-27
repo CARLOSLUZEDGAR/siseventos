@@ -80,6 +80,19 @@ Route::post('/datosPersonal','PersonalController@DatosPersonal');
 
 /****************************** INICIO FUNCIONES *******************************************/
 Route::post('/registrarEvento','EventosController@CrearEvento');
+Route::post('/listarPredio','PrediosController@ListarPredio');
+Route::post('/listarTipoEvento','TipoEventosController@ListarTipoEvento');
+Route::post('/listarTarifa','TarifasController@ListarTarifa');
+Route::post('/listarSituacion','SituacionesController@ListarSituacion');
+Route::post('/listarEvento','EventosController@ListarEvento');
+Route::post('/mostrarEvento','EventosController@MostrarEvento');
+
+
+
+
+
+
+
 
 
 

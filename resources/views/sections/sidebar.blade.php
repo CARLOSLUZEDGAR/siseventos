@@ -30,7 +30,7 @@
                   <li class="nav-header" style="padding-left: 1px;">EVENTOS</li>
                   <li class="nav-item">{{-- CARNETIZACION --}}
                     <a href="#" class="nav-link">
-                      <i class="nav-icon fas fa-id-card"></i>
+                      <i class="nav-icon fas fa-building"></i>
                       <p>
                         EVENTOS
                         <i class="fas fa-angle-left right"></i>
@@ -40,7 +40,7 @@
                       @can('view-calendario', Model::class)
                       <li class="nav-item">
                         <router-link class="nav-link" to='/DatosEvento'>
-                          <i class="fas fa-user nav-icon"></i>
+                          <i class="nav-icon fas fa-calendar"></i>
                           <p>Calendario</p>
                         </router-link>
                       </li>

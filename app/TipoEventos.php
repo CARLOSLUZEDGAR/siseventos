@@ -4,17 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Eventos extends Model
+class TipoEventos extends Model
 {
-    protected $table = 'eventos';
+    protected $table = 'tipo_eventos';
     protected $primaryKey = 'id';
     protected $fillable = [
         'id', 
-        'contratante', 
-        'predio_id', 
-        'tipo_evento_id', 
-        'tarifa_id', 
-        'fecha_evento',
+        'evento',
         'observacion', 
         'estado', 
         'sysuser'
