@@ -44,34 +44,65 @@ class EventosController extends Controller
 
     public function EditarEvento(Request $request)
     {
-        // VALIDAR SI YA EXISTE EVENTO
-        $existe = DB::table('eventos')
-                    ->where('fecha_evento', $request->fecha_evento)
-                    ->where('predio_id', $request->predio_id)
-                    ->where('id', '!=', $request->id) // EXCLUIR EL MISMO EVENTO
-                    ->where('estado', 1)
-                    ->exists();
+        try {
 
-        if($existe){
+            // VALIDACIONES
+            $request->validate([
+                'id'             => 'required',
+                'fecha_evento'   => 'required',
+                'predio_id'      => 'required',
+                'responsable'    => 'required',
+            ]);
+
+            // VERIFICAR SI EL SALÓN YA ESTÁ OCUPADO
+            $existe = DB::table('eventos')
+                        ->whereDate('fecha_evento', $request->fecha_evento)
+                        ->where('predio_id', $request->predio_id)
+                        ->where('id', '!=', $request->id) // IGNORA EL MISMO EVENTO
+                        ->where('estado', 1)
+                        ->exists();
+
+            // SI EXISTE OTRO EVENTO
+            if($existe){
+
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'El salón ya se encuentra ocupado en la fecha seleccionada'
+                ], 200);
+
+            }
+
+            // INICIAR TRANSACCIÓN
+            DB::beginTransaction();
+
+            // EDITAR EVENTO
+            DB::table('eventos')
+                ->where('id', $request->id)
+                ->update([
+                    'fecha_evento' => $request->fecha_evento,
+                    'predio_id'    => $request->predio_id,
+                    'contratante'  => $request->responsable,
+                    'updated_at'   => now()
+                ]);
+
+            // CONFIRMAR
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Evento editado correctamente'
+            ], 200);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
             return response()->json([
                 'success' => false,
-                'mensaje' => 'El salón ya está ocupado en esa fecha'
-            ]);
+                'mensaje' => 'Ocurrió un error al editar el evento',
+                'error'   => $e->getMessage()
+            ], 500);
         }
-
-        // EDITAR EVENTO
-        DB::table('eventos')
-            ->where('id', $request->id)
-            ->update([
-                'fecha_evento' => $request->fecha_evento,
-                'predio_id' => $request->predio_id,
-                'contratante' => $request->responsable,
-            ]);
-
-        return response()->json([
-            'success' => true,
-            'mensaje' => 'Evento editado correctamente'
-        ]);
     }
 
     public function ListarEvento(Request $request)
@@ -108,12 +139,16 @@ class EventosController extends Controller
                     ->join('tarifas as t', 'e.tarifa_id', 't.id')
                     ->select('e.id',
                             'e.predio_id',
+                            'p.nombre',
                             'e.contratante',
                             'p.nombre',
                             'p.color',
+                            'e.tipo_evento_id',
                             'te.evento',
+                            'e.tarifa_id',
                             't.tarifa',
-                            'e.fecha_evento')
+                            'e.fecha_evento',
+                            'e.observacion')
                     ->where('e.estado', 1)
                     ->where('p.estado', 1)
                     ->where('te.estado', 1)

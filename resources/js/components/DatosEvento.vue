@@ -353,7 +353,7 @@
                     <div class="modal-header">
                         <!-- <template v-if="modal == 0"> -->
                             <h4 class="modal-title">
-                                FECHA: {{ fecha_eventoE }}
+                                EDITAR EVENTO
                             </h4>
                         <!-- </template>
                         <template v-else>
@@ -371,9 +371,9 @@
                     <div class="modal-body">
                         <!-- FORMULARIO -->
                             <hr>
-                            <h5 class="mb-3">
+                            <!-- <h5 class="mb-3">
                                 EDITAR EVENTO
-                            </h5>
+                            </h5> -->
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <div class="row mt-2">
@@ -390,25 +390,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label>PREDIO:</label>
-                                            <v-select
-                                                label="nombre"
-                                                :options="prediosDisponiblesEditar"
-                                                v-model="predioE"
-                                                :class="{
-                                                    'is-invalid': $v.predioE.$error,
-                                                    'is-valid': !$v.predioE.$invalid
-                                                }"
-                                            >
-                                                <template v-slot:no-options="{ search, searching }">
-                                                    <template v-if="searching">
-                                                        Lo sentimos, no hay opciones de coincidencia para
-                                                        <em>{{ search }}</em>
-                                                    </template>
-                                                    <em v-else>
-                                                        Lo sentimos, no hay opciones disponibles.
-                                                    </em>
-                                                </template>
-                                            </v-select>
+                                            <input type="text" class="form-control" v-model="predioE" style="text-transform:uppercase;" :class="{'is-invalid' : $v.predioE.$error, 'is-valid': !$v.predioE.$invalid}" disabled>
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.predioE.required">
                                                     Este campo es requerido
@@ -421,7 +403,7 @@
                                             <label class="form-control-label">
                                                 RESPONSABLE:
                                             </label>
-                                            <input type="text" class="form-control" v-model="responsableE" style="text-transform:uppercase;" :class="{'is-invalid' : $v.responsableE.$error, 'is-valid': !$v.responsableE.$invalid}">
+                                            <input type="text" class="form-control" v-model="responsableE" style="text-transform:uppercase;" :class="{'is-invalid' : $v.responsableE.$error, 'is-valid': !$v.responsableE.$invalid}" disabled>
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.responsableE.required">
                                                     Este campo es requerido
@@ -432,61 +414,24 @@
                                     <div class="row mt-2">
                                         <div class="col-md-6">
                                             <label>TIPO EVENTO:</label>
-                                            <v-select
-                                                label="evento"
-                                                :options="arrayTipoEvento"
-                                                v-model="tipo_evento"
-                                                :class="{
-                                                    'is-invalid': $v.tipo_evento.$error,
-                                                    'is-valid': !$v.tipo_evento.$invalid
-                                                }"
-                                            >
-                                                <template v-slot:no-options="{ search, searching }">
-                                                    <template v-if="searching">
-                                                        Lo sentimos, no hay opciones de coincidencia para
-                                                        <em>{{ search }}</em>
-                                                    </template>
-                                                    <em v-else>
-                                                        Lo sentimos, no hay opciones disponibles.
-                                                    </em>
-                                                </template>
-                                            </v-select>
+                                            <input type="text" class="form-control" v-model="tipo_eventoE" style="text-transform:uppercase;" :class="{'is-invalid' : $v.tipo_eventoE.$error, 'is-valid': !$v.tipo_eventoE.$invalid}" disabled>
                                             <div class="invalid-feedback">
-                                                <span v-if="!$v.tipo_evento.required">
+                                                <span v-if="!$v.tipo_eventoE.required">
                                                     Este campo es requerido
                                                 </span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <label>TARIFA:</label>
-                                            <v-select
-                                                label="tarifa"
-                                                :options="arrayTarifa"
-                                                v-model="tarifa"
-                                                :class="{
-                                                    'is-invalid': $v.tarifa.$error,
-                                                    'is-valid': !$v.tarifa.$invalid
-                                                }"
-                                            >
-                                                <template v-slot:no-options="{ search, searching }">
-                                                    <template v-if="searching">
-                                                        Lo sentimos, no hay opciones de coincidencia para
-                                                        <em>{{ search }}</em>
-                                                    </template>
-                                                    <em v-else>
-                                                        Lo sentimos, no hay opciones disponibles.
-
-                                                    </em>
-                                                </template>
-                                            </v-select>
+                                            <input type="text" class="form-control" v-model="tarifaE" style="text-transform:uppercase;" :class="{'is-invalid' : $v.tarifaE.$error, 'is-valid': !$v.tarifaE.$invalid}" disabled>
                                             <div class="invalid-feedback">
-                                                <span v-if="!$v.tarifa.required">
+                                                <span v-if="!$v.tarifaE.required">
                                                     Este campo es requerido
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row mt-2">
+                                    <!-- <div class="row mt-2">
                                         <div class="col-md-6">
                                             <label>SITUACIÓN:</label>
                                             <v-select
@@ -540,11 +485,11 @@
                                                 </span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="row mt-2">
                                         <div class="col-sm-12">
                                             <label>OBSERVACIÓN:</label>
-                                            <textarea class="form-control" v-model="observacion" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
+                                            <textarea class="form-control" v-model="observacionE" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
                                         </div>
                                     </div>
 
@@ -633,10 +578,15 @@ export default {
 
             fecha_eventoE: '',
             responsableE: '',
+            predio_idE: '',
             predioE: '',
+            tipo_evento_idE: '',
+            tipo_eventoE: '',
+            tarifa_idE: '',
+            tarifaE: '',
+            observacionE: '',
             prediosDisponiblesEditar: [],
         }
-
     },
 
     validations: { 
@@ -650,7 +600,10 @@ export default {
 
         fecha_eventoE: { required },
         responsableE: { required },
+        // predio_idE: { required },
         predioE: { required },
+        tipo_eventoE: { required },
+        tarifaE: { required },
 
 
         validationsGroupReg: [
@@ -666,7 +619,10 @@ export default {
         validationsGroupMod: [
             'fecha_eventoE',
             'responsableE',
+            // 'predio_idE',
             'predioE',
+            'tipo_eventoE',
+            'tarifaE'
         ],
     },
 
@@ -761,68 +717,61 @@ export default {
         },
 
         editarEventoDia(evento_id) {
-             axios.post('/mostrarEvento', {
+            axios.post('/mostrarEvento', {
                 evento_id: evento_id,
             })
             .then((response) => {
-
+                // =========================================
+                // DATOS DEL EVENTO
+                // =========================================
                 this.arrayMostrarEvento = response.data.eventos;
-
                 this.$v.validationsGroupMod.$reset();
-
+                this.idEventoE = this.arrayMostrarEvento.id;
                 this.fecha_eventoE = this.arrayMostrarEvento.fecha_evento;
                 this.responsableE = this.arrayMostrarEvento.contratante;
-                this.predioE = this.arrayMostrarEvento.predio_id;
-
+                this.predio_idE = this.arrayMostrarEvento.predio_id;
+                this.predioE = this.arrayMostrarEvento.nombre;
+                this.tipo_evento_idE = this.arrayMostrarEvento.tipo_evento_id;
+                this.tipo_eventoE = this.arrayMostrarEvento.evento;
+                this.tarifa_idE = this.arrayMostrarEvento.tarifa_id;
+                this.tarifaE = this.arrayMostrarEvento.tarifa;
+                this.observacionE = this.arrayMostrarEvento.observacion;
                 // =========================================
-                // OBTENER DIA DEL EVENTO
+                // FECHA DEL EVENTO
                 // =========================================
-
                 let fecha = this.arrayMostrarEvento.fecha_evento;
-
-                let partes = fecha.split('-');
-
-                let dia = parseInt(partes[2]);
-
                 // =========================================
-                // EVENTOS DEL MISMO DIA
+                // OBTENER EVENTOS DE ESA FECHA
                 // =========================================
-
-                let eventosDia = this.obtenerEventosDia(dia);
-
+                let eventosDia = this.arrayEvento.filter(
+                    evento => evento.fecha_evento == fecha
+                );
                 // =========================================
                 // EXCLUIR EL EVENTO ACTUAL
                 // =========================================
-
                 eventosDia = eventosDia.filter(
                     evento => evento.id != evento_id
                 );
-
                 // =========================================
-                // PREDIOS OCUPADOS
+                // OBTENER PREDIOS OCUPADOS
                 // =========================================
-
                 let prediosOcupados = eventosDia.map(
                     evento => evento.predio_id
                 );
-
                 // =========================================
-                // PREDIOS DISPONIBLES
+                // FILTRAR PREDIOS DISPONIBLES
                 // =========================================
-
                 this.prediosDisponiblesEditar = this.arrayPredios.filter(
-                    predio => !prediosOcupados.includes(predio.id)
+                    predio =>
+                        !prediosOcupados.includes(predio.id)
+                        || predio.id == this.predioE
                 );
-
                 // =========================================
                 // MOSTRAR MODAL
                 // =========================================
-
                 $('#ModalEditar').modal('show');
-
                 $(".modal-header").css("background-color", "#007bff");
                 $(".modal-header").css("color", "white");
-
             })
             .catch((error) => {
                 console.log(error);
@@ -852,16 +801,6 @@ export default {
 
             
         },
-
-        // MostrarEvento(evento_id) {
-        //     let me = this;
-        //     axios.post('/mostrarEvento', {
-        //         evento_id: evento_id,
-        //     })
-        //     .then(function(response) {
-        //         me.arrayMostrarEvento = response.data.eventos;
-        //     });
-        // },
 
         ListarPredio() {
             let me = this;
@@ -1004,47 +943,50 @@ export default {
           }
         },
 
-        Editar() {
-
-            axios.post('/editarEvento', {
-
+        EditarEvento(){
+            axios.post('/EditarEvento', {
                 id: this.idEventoE,
                 fecha_evento: this.fecha_eventoE,
                 predio_id: this.predioE,
-                responsable: this.responsableE,
-
+                responsable: this.responsableE
             })
             .then((response) => {
 
-                if(response.data.success == false){
+                if(response.data.success){
 
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'SALÓN OCUPADO',
+                        icon: 'success',
+                        title: 'CORRECTO',
                         text: response.data.mensaje
                     });
 
-                    return;
+                    $('#ModalEditar').modal('hide');
+
+                    this.ListarEventos();
+
+                }else{
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'ADVERTENCIA',
+                        text: response.data.mensaje
+                    });
+
                 }
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'CORRECTO',
-                    text: response.data.mensaje
-                });
-
-                $('#ModalEditar').modal('hide');
-
-                this.ListarEvento();
 
             })
             .catch((error) => {
+
                 console.log(error);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ERROR',
+                    text: 'Ocurrió un error inesperado'
+                });
             });
         },
-
     }
-
 }
 </script>
 
