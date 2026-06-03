@@ -86,6 +86,8 @@ Route::post('/listarTarifa','TarifasController@ListarTarifa');
 Route::post('/listarSituacion','SituacionesController@ListarSituacion');
 Route::post('/listarEvento','EventosController@ListarEvento');
 Route::post('/mostrarEvento','EventosController@MostrarEvento');
+Route::post('/editarEvento','EventosController@EditarEvento');
+
 
 
 

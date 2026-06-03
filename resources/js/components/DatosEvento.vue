@@ -497,7 +497,7 @@
                                 <div class="card-footer">
                                     <div class="row mt-2 d-flex justify-content-end">
                                         <button type="button" class="btn btn-danger mr-2" data-dismiss="modal" @click="Cerrar(2)">CANCELAR</button>
-                                        <button type="button" class="btn btn-primary" @click="Guardar()">GUARDAR</button>
+                                        <button type="button" class="btn btn-primary" @click="Editar()">EDITAR</button>
                                     </div>  
                                 </div>
                             </div>
@@ -576,6 +576,7 @@ export default {
             prediosDisponibles: [],
             arrayMostrarEvento: [],
 
+            id_eventoE: '',
             fecha_eventoE: '',
             responsableE: '',
             predio_idE: '',
@@ -629,7 +630,6 @@ export default {
     mounted() {
 
         let actual = new Date().getFullYear();
-
         for (let i = actual - 5; i <= actual + 5; i++) {
             this.anios.push(i);
         }
@@ -726,7 +726,7 @@ export default {
                 // =========================================
                 this.arrayMostrarEvento = response.data.eventos;
                 this.$v.validationsGroupMod.$reset();
-                this.idEventoE = this.arrayMostrarEvento.id;
+                this.id_eventoE = this.arrayMostrarEvento.id;
                 this.fecha_eventoE = this.arrayMostrarEvento.fecha_evento;
                 this.responsableE = this.arrayMostrarEvento.contratante;
                 this.predio_idE = this.arrayMostrarEvento.predio_id;
@@ -881,110 +881,139 @@ export default {
         },
 
         Guardar() {
-          if(!this.$v.validationsGroupReg.$invalid){
-              swal.fire({
-                  title: '¿Desea registrar este evento?', // TITULO 
-                  icon: 'question', //ICONO (success, warnning, error, info, question)
-                  showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
-                  confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
-                  cancelButtonColor: '#868077', // CLOR DEL BOTON CANCELAR
-                  confirmButtonText: 'Confirmar', //TITULO DEL BOTON CONFIRMAR
-                  cancelButtonText: 'Cancelar', //TIUTLO DEL BOTON CANCELAR
-                  buttonsStyling: true,
-                  reverseButtons: true
-                  }).then((result) => {
-                  if (result.value) {
-                      let me = this;
-                      axios
-                      .post("/registrarEvento", {
-                            fecha_evento: me.fecha_evento,
-                            predio: me.predio.id,
-                            responsable: me.responsable.toUpperCase(),
-                            tipo_evento: me.tipo_evento.id,
-                            tarifa: me.tarifa.id,
-                            situacion: me.situacion.id,
-                            forma_pago: me.forma_pago,
-                            observacion: me.observacion.toUpperCase()
-                      })
-                      .then(function (response) {
-                          swal.fire(
-                              "REGISTRADO", //TITULO
-                              "Se registro correctamente el evento.", //TEXTO DE MENSAJE
-                              "success" // TIPO DE MODAL (success, warnning, error, info)
-                          );
-                          $('#ModalEvento').modal('hide');
-                          me.Cerrar();
-                          me.ListarEvento();
-                          
-                      })
-                      .catch(function (error) {
-                          // handle error
-                          console.log(error);
-                      })
-                  }else{
-                      let me = this;
-                      swal.fire(
-                          "Informacion", //TITULO
-                          "Solicitud cancelada.", //TEXTO DE MENSAJE
-                          "info" // TIPO DE MODAL (success, warnning, error, info)
-                      );
-                      $('#ModalEvento').modal('hide');
-                      me.Cerrar();
-                  }
-              })
-          }else{
-              this.$v.validationsGroupReg.$touch();
-              Swal.fire({
-                  icon: 'warning',
-                  title: 'Ingrese todos los datos requeridos',
-                  showConfirmButton: false,
-                  timer: 2000
-              }) 
-          }
+            if(!this.$v.validationsGroupReg.$invalid){
+                swal.fire({
+                    title: '¿Desea registrar este evento?', // TITULO 
+                    icon: 'question', //ICONO (success, warnning, error, info, question)
+                    showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
+                    confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
+                    cancelButtonColor: '#868077', // CLOR DEL BOTON CANCELAR
+                    confirmButtonText: 'Confirmar', //TITULO DEL BOTON CONFIRMAR
+                    cancelButtonText: 'Cancelar', //TIUTLO DEL BOTON CANCELAR
+                    buttonsStyling: true,
+                    reverseButtons: true
+                    }).then((result) => {
+                    if (result.value) {
+                        let me = this;
+                        axios
+                        .post("/registrarEvento", {
+                                fecha_evento: me.fecha_evento,
+                                predio: me.predio.id,
+                                responsable: me.responsable.toUpperCase(),
+                                tipo_evento: me.tipo_evento.id,
+                                tarifa: me.tarifa.id,
+                                situacion: me.situacion.id,
+                                forma_pago: me.forma_pago,
+                                observacion: me.observacion.toUpperCase()
+                        })
+                        .then(function (response) {
+                            swal.fire(
+                                "REGISTRADO", //TITULO
+                                "Se registro correctamente el evento.", //TEXTO DE MENSAJE
+                                "success" // TIPO DE MODAL (success, warnning, error, info)
+                            );
+                            $('#ModalEvento').modal('hide');
+                            me.Cerrar(1);
+                            me.ListarEvento();
+                            
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log(error);
+                        })
+                    }else{
+                        let me = this;
+                        swal.fire(
+                            "Informacion", //TITULO
+                            "Solicitud cancelada.", //TEXTO DE MENSAJE
+                            "info" // TIPO DE MODAL (success, warnning, error, info)
+                        );
+                        $('#ModalEvento').modal('hide');
+                        me.Cerrar();
+                    }
+                })
+            }else{
+                this.$v.validationsGroupReg.$touch();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ingrese todos los datos requeridos',
+                    showConfirmButton: false,
+                    timer: 2000
+                }) 
+            }
         },
 
-        EditarEvento(){
-            axios.post('/EditarEvento', {
-                id: this.idEventoE,
-                fecha_evento: this.fecha_eventoE,
-                predio_id: this.predioE,
-                responsable: this.responsableE
-            })
-            .then((response) => {
+        Editar(){
+            if(!this.$v.validationsGroupMod.$invalid){
+                swal.fire({
+                    title: '¿Desea editar este evento?', // TITULO 
+                    icon: 'question', //ICONO (success, warnning, error, info, question)
+                    showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
+                    confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
+                    cancelButtonColor: '#868077', // CLOR DEL BOTON CANCELAR
+                    confirmButtonText: 'Confirmar', //TITULO DEL BOTON CONFIRMAR
+                    cancelButtonText: 'Cancelar', //TIUTLO DEL BOTON CANCELAR
+                    buttonsStyling: true,
+                    reverseButtons: true
+                    }).then((result) => {
+                    if (result.value) {
+                        let me = this;
+                        axios.post('/editarEvento', {
+                            id_evento: this.id_eventoE,
+                            fecha_evento: this.fecha_eventoE,
+                            predio_id: this.predio_idE,
+                            observacion: this.observacionE.toUpperCase()
+                            // responsable: this.responsableE
+                        })
+                        .then((response) => {
+                            if(response.data.success){
 
-                if(response.data.success){
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'CORRECTO',
+                                    text: response.data.mensaje
+                                });
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'CORRECTO',
-                        text: response.data.mensaje
-                    });
-
-                    $('#ModalEditar').modal('hide');
-
-                    this.ListarEventos();
-
-                }else{
-
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'ADVERTENCIA',
-                        text: response.data.mensaje
-                    });
-
-                }
-
-            })
-            .catch((error) => {
-
-                console.log(error);
-
+                                $('#ModalEditar').modal('hide');
+                                $('#ModalEvento').modal('hide');
+                                me.Cerrar(2);
+                                me.ListarEvento();
+                            }else{
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'ADVERTENCIA',
+                                    text: response.data.mensaje
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ERROR',
+                                text: 'Ocurrió un error inesperado'
+                            });
+                        });
+                    }else{
+                        let me = this;
+                        swal.fire(
+                            "Informacion", //TITULO
+                            "Solicitud cancelada.", //TEXTO DE MENSAJE
+                            "info" // TIPO DE MODAL (success, warnning, error, info)
+                        );
+                        $('#ModalEditar').modal('hide');
+                        me.Cerrar(2);
+                    }
+                })
+            }else{
+                this.$v.validationsGroupMod.$touch();
                 Swal.fire({
-                    icon: 'error',
-                    title: 'ERROR',
-                    text: 'Ocurrió un error inesperado'
-                });
-            });
+                    icon: 'warning',
+                    title: 'Ingrese todos los datos requeridos',
+                    showConfirmButton: false,
+                    timer: 2000
+                }) 
+            }
         },
     }
 }

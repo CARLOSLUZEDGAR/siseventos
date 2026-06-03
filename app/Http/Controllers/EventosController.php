@@ -45,46 +45,41 @@ class EventosController extends Controller
     public function EditarEvento(Request $request)
     {
         try {
-
             // VALIDACIONES
             $request->validate([
-                'id'             => 'required',
+                'id_evento'      => 'required',
                 'fecha_evento'   => 'required',
                 'predio_id'      => 'required',
-                'responsable'    => 'required',
+                // 'responsable'    => 'required',
             ]);
-
             // VERIFICAR SI EL SALÓN YA ESTÁ OCUPADO
             $existe = DB::table('eventos')
                         ->whereDate('fecha_evento', $request->fecha_evento)
                         ->where('predio_id', $request->predio_id)
-                        ->where('id', '!=', $request->id) // IGNORA EL MISMO EVENTO
+                        ->where('id', '!=', $request->id_evento) // IGNORA EL MISMO EVENTO
                         ->where('estado', 1)
                         ->exists();
 
             // SI EXISTE OTRO EVENTO
             if($existe){
-
                 return response()->json([
                     'success' => false,
                     'mensaje' => 'El salón ya se encuentra ocupado en la fecha seleccionada'
                 ], 200);
-
             }
-
             // INICIAR TRANSACCIÓN
             DB::beginTransaction();
-
             // EDITAR EVENTO
             DB::table('eventos')
-                ->where('id', $request->id)
+                ->where('id', $request->id_evento)
                 ->update([
                     'fecha_evento' => $request->fecha_evento,
                     'predio_id'    => $request->predio_id,
-                    'contratante'  => $request->responsable,
+                    // 'contratante'  => $request->responsable,
+                    'observacion'  => $request->observacion,
+                    'sysuser' => Auth::user()->id,
                     'updated_at'   => now()
                 ]);
-
             // CONFIRMAR
             DB::commit();
 
@@ -92,11 +87,8 @@ class EventosController extends Controller
                 'success' => true,
                 'mensaje' => 'Evento editado correctamente'
             ], 200);
-
         } catch (\Exception $e) {
-
             DB::rollBack();
-
             return response()->json([
                 'success' => false,
                 'mensaje' => 'Ocurrió un error al editar el evento',
@@ -154,9 +146,6 @@ class EventosController extends Controller
                     ->where('te.estado', 1)
                     ->where('t.estado', 1)
                     ->where('e.id', $request->evento_id)
-                    // ->whereYear('e.fecha_evento', $request->anio)
-                    // ->whereMonth('e.fecha_evento', $request->mes)
-                    // ->orderBy('e.fecha_evento', 'asc')
                     ->first();
 
         return ['eventos' => $evento];

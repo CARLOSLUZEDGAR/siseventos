@@ -4254,6 +4254,7 @@ __webpack_require__.r(__webpack_exports__);
       eventosDiaSeleccionado: [],
       prediosDisponibles: [],
       arrayMostrarEvento: [],
+      id_eventoE: '',
       fecha_eventoE: '',
       responsableE: '',
       predio_idE: '',
@@ -4386,7 +4387,7 @@ __webpack_require__.r(__webpack_exports__);
 
         _this.$v.validationsGroupMod.$reset();
 
-        _this.idEventoE = _this.arrayMostrarEvento.id;
+        _this.id_eventoE = _this.arrayMostrarEvento.id;
         _this.fecha_eventoE = _this.arrayMostrarEvento.fecha_evento;
         _this.responsableE = _this.arrayMostrarEvento.contratante;
         _this.predio_idE = _this.arrayMostrarEvento.predio_id;
@@ -4539,7 +4540,7 @@ __webpack_require__.r(__webpack_exports__);
               "success" // TIPO DE MODAL (success, warnning, error, info)
               );
               $('#ModalEvento').modal('hide');
-              me.Cerrar();
+              me.Cerrar(1);
               me.ListarEvento();
             })["catch"](function (error) {
               // handle error
@@ -4566,39 +4567,82 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    EditarEvento: function EditarEvento() {
+    Editar: function Editar() {
       var _this3 = this;
 
-      axios.post('/EditarEvento', {
-        id: this.idEventoE,
-        fecha_evento: this.fecha_eventoE,
-        predio_id: this.predioE,
-        responsable: this.responsableE
-      }).then(function (response) {
-        if (response.data.success) {
-          Swal.fire({
-            icon: 'success',
-            title: 'CORRECTO',
-            text: response.data.mensaje
-          });
-          $('#ModalEditar').modal('hide');
+      if (!this.$v.validationsGroupMod.$invalid) {
+        swal.fire({
+          title: '¿Desea editar este evento?',
+          // TITULO 
+          icon: 'question',
+          //ICONO (success, warnning, error, info, question)
+          showCancelButton: true,
+          //HABILITACION DEL BOTON CANCELAR
+          confirmButtonColor: 'info',
+          // COLOR DEL BOTON PARA CONFIRMAR
+          cancelButtonColor: '#868077',
+          // CLOR DEL BOTON CANCELAR
+          confirmButtonText: 'Confirmar',
+          //TITULO DEL BOTON CONFIRMAR
+          cancelButtonText: 'Cancelar',
+          //TIUTLO DEL BOTON CANCELAR
+          buttonsStyling: true,
+          reverseButtons: true
+        }).then(function (result) {
+          if (result.value) {
+            var me = _this3;
+            axios.post('/editarEvento', {
+              id_evento: _this3.id_eventoE,
+              fecha_evento: _this3.fecha_eventoE,
+              predio_id: _this3.predio_idE,
+              observacion: _this3.observacionE.toUpperCase() // responsable: this.responsableE
 
-          _this3.ListarEventos();
-        } else {
-          Swal.fire({
-            icon: 'warning',
-            title: 'ADVERTENCIA',
-            text: response.data.mensaje
-          });
-        }
-      })["catch"](function (error) {
-        console.log(error);
-        Swal.fire({
-          icon: 'error',
-          title: 'ERROR',
-          text: 'Ocurrió un error inesperado'
+            }).then(function (response) {
+              if (response.data.success) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'CORRECTO',
+                  text: response.data.mensaje
+                });
+                $('#ModalEditar').modal('hide');
+                $('#ModalEvento').modal('hide');
+                me.Cerrar(2);
+                me.ListarEvento();
+              } else {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'ADVERTENCIA',
+                  text: response.data.mensaje
+                });
+              }
+            })["catch"](function (error) {
+              console.log(error);
+              Swal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: 'Ocurrió un error inesperado'
+              });
+            });
+          } else {
+            var _me2 = _this3;
+            swal.fire("Informacion", //TITULO
+            "Solicitud cancelada.", //TEXTO DE MENSAJE
+            "info" // TIPO DE MODAL (success, warnning, error, info)
+            );
+            $('#ModalEditar').modal('hide');
+
+            _me2.Cerrar(2);
+          }
         });
-      });
+      } else {
+        this.$v.validationsGroupMod.$touch();
+        Swal.fire({
+          icon: 'warning',
+          title: 'Ingrese todos los datos requeridos',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
     }
   }
 });
@@ -111789,11 +111833,11 @@ var render = function() {
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
-                              return _vm.Guardar()
+                              return _vm.Editar()
                             }
                           }
                         },
-                        [_vm._v("GUARDAR")]
+                        [_vm._v("EDITAR")]
                       )
                     ]
                   )
