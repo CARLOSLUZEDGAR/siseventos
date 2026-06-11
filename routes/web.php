@@ -87,6 +87,10 @@ Route::post('/listarSituacion','SituacionesController@ListarSituacion');
 Route::post('/listarEvento','EventosController@ListarEvento');
 Route::post('/mostrarEvento','EventosController@MostrarEvento');
 Route::post('/editarEvento','EventosController@EditarEvento');
+Route::post('/pagarSaldoEvento','EventosController@PagarSaldoEvento');
+
+
+Route::get('/contrato','ReporteController@GenerarContrato');
 
 
 

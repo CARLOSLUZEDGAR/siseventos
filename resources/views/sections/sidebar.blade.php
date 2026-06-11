@@ -2,8 +2,8 @@
  <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="" class="brand-link">
-        <img src="/img/fabprueba.png" class="brand-image">
-        <span class="brand-text font-weight-light">SISCAR - DGAE</span>
+        <img src="/img/circulo_logo.png" class="brand-image">
+        <span class="brand-text font-weight-light">SISCOE</span>
     </a>
 
     <!-- Sidebar -->

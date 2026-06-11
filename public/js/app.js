@@ -4226,6 +4226,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
+
+var decimalDos = function decimalDos(value) {
+  if (!value) return true;
+  return /^\d+(\.\d{1,2})?$/.test(value);
+};
+
+var montoMaximo = function montoMaximo(value) {
+  if (!value) return true;
+
+  if (!this.situacion || this.situacion.id != 1) {
+    return true;
+  }
+
+  return Number(value) <= Number(this.tarifa.precio);
+};
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -4249,6 +4267,7 @@ __webpack_require__.r(__webpack_exports__);
       situacion: '',
       arrayFormaPago: ['TRANSFERENCIA', 'EFECTIVO'],
       forma_pago: '',
+      monto: '',
       observacion: '',
       arrayEvento: [],
       eventosDiaSeleccionado: [],
@@ -4263,7 +4282,12 @@ __webpack_require__.r(__webpack_exports__);
       tipo_eventoE: '',
       tarifa_idE: '',
       tarifaE: '',
+      precio: '',
+      situacion_idE: '',
+      situacionE: '',
+      montoE: '',
       observacionE: '',
+      arraySituacionEvento: [],
       prediosDisponiblesEditar: []
     };
   },
@@ -4289,6 +4313,13 @@ __webpack_require__.r(__webpack_exports__);
     forma_pago: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
+    monto: {
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function () {
+        return this.situacion && this.situacion.id == 1;
+      }),
+      decimalDos: decimalDos,
+      montoMaximo: montoMaximo
+    },
     fecha_eventoE: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
@@ -4305,9 +4336,23 @@ __webpack_require__.r(__webpack_exports__);
     tarifaE: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
-    validationsGroupReg: ['responsable', 'fecha_evento', 'predio', 'tipo_evento', 'tarifa', 'situacion', 'forma_pago'],
+    situacionE: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    montoE: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    validationsGroupReg: ['responsable', 'fecha_evento', 'predio', 'tipo_evento', 'tarifa', 'situacion', 'forma_pago', 'monto'],
     validationsGroupMod: ['fecha_eventoE', 'responsableE', // 'predio_idE',
-    'predioE', 'tipo_eventoE', 'tarifaE']
+    'predioE', 'tipo_eventoE', 'tarifaE', 'situacionE', 'montoE']
+  },
+  watch: {
+    situacion: function situacion(valor) {
+      if (!valor || valor.id != 1) {
+        this.monto = null;
+        this.$v.monto.$reset();
+      }
+    }
   },
   mounted: function mounted() {
     var actual = new Date().getFullYear();
@@ -4384,6 +4429,7 @@ __webpack_require__.r(__webpack_exports__);
         // DATOS DEL EVENTO
         // =========================================
         _this.arrayMostrarEvento = response.data.eventos;
+        _this.arraySituacionEvento = response.data.situacion_evento;
 
         _this.$v.validationsGroupMod.$reset();
 
@@ -4396,7 +4442,11 @@ __webpack_require__.r(__webpack_exports__);
         _this.tipo_eventoE = _this.arrayMostrarEvento.evento;
         _this.tarifa_idE = _this.arrayMostrarEvento.tarifa_id;
         _this.tarifaE = _this.arrayMostrarEvento.tarifa;
-        _this.observacionE = _this.arrayMostrarEvento.observacion; // =========================================
+        _this.situacion_idE = _this.arrayMostrarEvento.situacion_id;
+        _this.situacionE = _this.arrayMostrarEvento.situacion;
+        _this.montoE = _this.arrayMostrarEvento.monto;
+        _this.observacionE = _this.arrayMostrarEvento.observacion;
+        _this.precio = _this.arrayMostrarEvento.precio; // =========================================
         // FECHA DEL EVENTO
         // =========================================
 
@@ -4439,11 +4489,11 @@ __webpack_require__.r(__webpack_exports__);
     Cerrar: function Cerrar(valor) {
       switch (valor) {
         case 1:
-          this.fecha_evento = '', this.predio = '', this.responsable = '', this.tipo_evento = '', this.tarifa = '', this.situacion = '', this.forma_pago = '', this.observacion = '';
+          this.fecha_evento = '', this.predio = '', this.responsable = '', this.tipo_evento = '', this.tarifa = '', this.situacion = '', this.forma_pago = '', this.observacion = '', this.monto = '';
           break;
 
         case 2:
-          this.fecha_eventoE = '', this.responsableE = '';
+          this.fecha_eventoE = '', this.responsableE = '', this.predioE = '', this.tipo_eventoE = '', this.tarifaE = '', this.situacionE = '', this.observacionE = '', this.montoE = '';
           break;
 
         default:
@@ -4507,54 +4557,60 @@ __webpack_require__.r(__webpack_exports__);
       if (!this.$v.validationsGroupReg.$invalid) {
         swal.fire({
           title: '¿Desea registrar este evento?',
-          // TITULO 
           icon: 'question',
-          //ICONO (success, warnning, error, info, question)
           showCancelButton: true,
-          //HABILITACION DEL BOTON CANCELAR
           confirmButtonColor: 'info',
-          // COLOR DEL BOTON PARA CONFIRMAR
           cancelButtonColor: '#868077',
-          // CLOR DEL BOTON CANCELAR
-          confirmButtonText: 'Confirmar',
-          //TITULO DEL BOTON CONFIRMAR
+          confirmButtonText: 'Confirmar / Generar Contrato',
           cancelButtonText: 'Cancelar',
-          //TIUTLO DEL BOTON CANCELAR
           buttonsStyling: true,
           reverseButtons: true
         }).then(function (result) {
           if (result.value) {
-            var me = _this2;
-            axios.post("/registrarEvento", {
-              fecha_evento: me.fecha_evento,
-              predio: me.predio.id,
-              responsable: me.responsable.toUpperCase(),
-              tipo_evento: me.tipo_evento.id,
-              tarifa: me.tarifa.id,
-              situacion: me.situacion.id,
-              forma_pago: me.forma_pago,
-              observacion: me.observacion.toUpperCase()
+            axios.post('/registrarEvento', {
+              fecha_evento: _this2.fecha_evento,
+              predio_id: _this2.predio.id,
+              responsable: _this2.responsable.toUpperCase(),
+              tipo_evento_id: _this2.tipo_evento.id,
+              tarifa_id: _this2.tarifa.id,
+              situacion_id: _this2.situacion.id,
+              forma_pago: _this2.forma_pago,
+              monto: _this2.situacion.id == 1 ? _this2.monto : _this2.tarifa.precio,
+              observacion: _this2.observacion ? _this2.observacion.toUpperCase() : ''
             }).then(function (response) {
-              swal.fire("REGISTRADO", //TITULO
-              "Se registro correctamente el evento.", //TEXTO DE MENSAJE
-              "success" // TIPO DE MODAL (success, warnning, error, info)
-              );
-              $('#ModalEvento').modal('hide');
-              me.Cerrar(1);
-              me.ListarEvento();
+              if (response.data.success) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'CORRECTO',
+                  text: response.data.mensaje
+                });
+                $('#ModalEvento').modal('hide');
+
+                _this2.Cerrar(1);
+
+                _this2.GenerarContrato(response.data.evento.id);
+
+                _this2.ListarEvento();
+              } else {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'ADVERTENCIA',
+                  text: response.data.mensaje
+                });
+              }
             })["catch"](function (error) {
-              // handle error
               console.log(error);
+              Swal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: 'Ocurrió un error inesperado'
+              });
             });
           } else {
-            var _me = _this2;
-            swal.fire("Informacion", //TITULO
-            "Solicitud cancelada.", //TEXTO DE MENSAJE
-            "info" // TIPO DE MODAL (success, warnning, error, info)
-            );
+            swal.fire('Información', 'Solicitud cancelada.', 'info');
             $('#ModalEvento').modal('hide');
 
-            _me.Cerrar();
+            _this2.Cerrar(1);
           }
         });
       } else {
@@ -4624,14 +4680,14 @@ __webpack_require__.r(__webpack_exports__);
               });
             });
           } else {
-            var _me2 = _this3;
+            var _me = _this3;
             swal.fire("Informacion", //TITULO
             "Solicitud cancelada.", //TEXTO DE MENSAJE
             "info" // TIPO DE MODAL (success, warnning, error, info)
             );
             $('#ModalEditar').modal('hide');
 
-            _me2.Cerrar(2);
+            _me.Cerrar(2);
           }
         });
       } else {
@@ -4643,6 +4699,87 @@ __webpack_require__.r(__webpack_exports__);
           timer: 2000
         });
       }
+    },
+    PagarSaldo: function PagarSaldo(idEvento) {
+      var _this4 = this;
+
+      //    if(!this.$v.validationsGroupSaldo.$invalid){
+      swal.fire({
+        title: '¿Desea pagar el saldo de este evento?',
+        // TITULO 
+        icon: 'question',
+        //ICONO (success, warnning, error, info, question)
+        showCancelButton: true,
+        //HABILITACION DEL BOTON CANCELAR
+        confirmButtonColor: 'info',
+        // COLOR DEL BOTON PARA CONFIRMAR
+        cancelButtonColor: '#868077',
+        // CLOR DEL BOTON CANCELAR
+        confirmButtonText: 'Confirmar',
+        //TITULO DEL BOTON CONFIRMAR
+        cancelButtonText: 'Cancelar',
+        //TIUTLO DEL BOTON CANCELAR
+        buttonsStyling: true,
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          var me = _this4;
+          axios.post('/pagarSaldoEvento', {
+            id_evento: idEvento,
+            precio: _this4.precio,
+            adelanto: _this4.montoE // fecha_evento: this.fecha_eventoE,
+            // predio_id: this.predio_idE,
+            // observacion: this.observacionE.toUpperCase()
+            // responsable: this.responsableE
+
+          }).then(function (response) {
+            if (response.data.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'CORRECTO',
+                text: response.data.mensaje
+              });
+              $('#ModalEditar').modal('hide'); // $('#ModalEvento').modal('hide');
+
+              me.Cerrar(2);
+              me.ListarEvento();
+            } else {
+              Swal.fire({
+                icon: 'warning',
+                title: 'ADVERTENCIA',
+                text: response.data.mensaje
+              });
+            }
+          })["catch"](function (error) {
+            console.log(error);
+            Swal.fire({
+              icon: 'error',
+              title: 'ERROR',
+              text: 'Ocurrió un error inesperado'
+            });
+          });
+        } else {
+          var _me2 = _this4;
+          swal.fire("Informacion", //TITULO
+          "Solicitud cancelada.", //TEXTO DE MENSAJE
+          "info" // TIPO DE MODAL (success, warnning, error, info)
+          );
+          $('#ModalEditar').modal('hide');
+
+          _me2.Cerrar(2);
+        }
+      }); // }else{
+      //     this.$v.validationsGroupMod.$touch();
+      //     Swal.fire({
+      //         icon: 'warning',
+      //         title: 'Ingrese todos los datos requeridos',
+      //         showConfirmButton: false,
+      //         timer: 2000
+      //     }) 
+      // } 
+    },
+    GenerarContrato: function GenerarContrato(idEvento) {
+      window.open('/contrato?idE=' + idEvento);
     }
   }
 });
@@ -110599,7 +110736,11 @@ var render = function() {
           _c("h2", [
             _c(
               "b",
-              [_c("center", [_vm._v(" SISTEMA DE CARNETIZACIÓN - SISCAR ")])],
+              [
+                _c("center", [
+                  _vm._v(" SISTEMA DE CONTROL DE EVENTOS - SISCOE ")
+                ])
+              ],
               1
             )
           ])
@@ -110611,13 +110752,21 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
-              { staticClass: "col-md-6" },
+              { staticClass: "col-md-9" },
               [
                 _c("font", { attrs: { size: "4" } }, [
                   _c("br"),
                   _c("br"),
                   _vm._v(
-                    "    \n                      Bienvenido(s) al Sistema de Carnetización, desarrollado por la Sección Archivos e Informatica de la Dirección General de Aeronaves de Estado de la FAB, \n                      con la finalidad de contribuir al engrandecimiento de nuestra Institución \n                      y este a la par del avance tecnológico actual para el servicio de nuestro personal. "
+                    "    \n                          Bienvenido(a) al Sistema de Control de Eventos (SISCOE), una plataforma desarrollada para la gestión integral de reservas y administración de salones de eventos."
+                  ),
+                  _c("br"),
+                  _vm._v(
+                    "\n\nSISCOE permite planificar, organizar y controlar de manera eficiente las actividades relacionadas con la programación de eventos, reservas de ambientes, seguimiento de contratos y administración de servicios, optimizando los procesos operativos y mejorando la atención a nuestros clientes."
+                  ),
+                  _c("br"),
+                  _vm._v(
+                    "\n\nNuestro compromiso es brindar una herramienta moderna, segura y confiable, acorde a los avances tecnológicos actuales, que facilite la gestión y contribuya al éxito de cada evento. "
                   ),
                   _c("br"),
                   _vm._v(" "),
@@ -110632,21 +110781,13 @@ var render = function() {
                 _c("h5", [
                   _c(
                     "strong",
-                    [
-                      _c("center", [
-                        _vm._v(
-                          "Dirección General de Aeronaves de Estado - DGAE"
-                        )
-                      ])
-                    ],
+                    [_c("center", [_vm._v("EL EQUIPO DE DESARROLLO")])],
                     1
                   )
                 ])
               ],
               1
-            ),
-            _vm._v(" "),
-            _vm._m(2)
+            )
           ])
         ])
       ])
@@ -110672,22 +110813,7 @@ var staticRenderFns = [
       _c("img", {
         staticClass: "img-fluid",
         attrs: {
-          src: "img\\fab_logo.png",
-          width: "300px",
-          alt: "Responsive image"
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-3 text-center" }, [
-      _c("img", {
-        staticClass: "img-fluid",
-        attrs: {
-          src: "img\\dgae_logo.png",
+          src: "img\\circulo_logo.png",
           width: "300px",
           alt: "Responsive image"
         }
@@ -110718,51 +110844,6 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row mb-4" }, [
-      _c("div", { staticClass: "col-md-3" }, [
-        _c("label", [_vm._v("GESTIÓN")]),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.anio,
-                expression: "anio"
-              }
-            ],
-            staticClass: "form-control",
-            on: {
-              change: [
-                function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.anio = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                },
-                _vm.actualizarCalendario
-              ]
-            }
-          },
-          _vm._l(_vm.anios, function(a) {
-            return _c("option", { key: a, domProps: { value: a } }, [
-              _vm._v(
-                "\n\n                    " + _vm._s(a) + "\n\n                "
-              )
-            ])
-          }),
-          0
-        )
-      ]),
-      _vm._v(" "),
       _c("div", { staticClass: "col-md-3" }, [
         _c("label", [_vm._v("MES")]),
         _vm._v(" "),
@@ -110801,6 +110882,51 @@ var render = function() {
             return _c("option", { key: index, domProps: { value: index } }, [
               _vm._v(
                 "\n\n                    " + _vm._s(m) + "\n\n                "
+              )
+            ])
+          }),
+          0
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-3" }, [
+        _c("label", [_vm._v("GESTIÓN")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.anio,
+                expression: "anio"
+              }
+            ],
+            staticClass: "form-control",
+            on: {
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.anio = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                },
+                _vm.actualizarCalendario
+              ]
+            }
+          },
+          _vm._l(_vm.anios, function(a) {
+            return _c("option", { key: a, domProps: { value: a } }, [
+              _vm._v(
+                "\n\n                    " + _vm._s(a) + "\n\n                "
               )
             ])
           }),
@@ -110984,9 +111110,10 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-6" }, [
                                   _c("strong", [_vm._v("FECHA:")]),
+                                  _vm._v(" "),
                                   _vm._v(
                                     "\n                                        " +
-                                      _vm._s(evento.fecha_evento) +
+                                      _vm._s(_vm.formatearFecha) +
                                       "\n                                    "
                                   )
                                 ])
@@ -111301,7 +111428,7 @@ var render = function() {
                         _c("div", { staticClass: "row mt-2" }, [
                           _c(
                             "div",
-                            { staticClass: "col-md-6" },
+                            { staticClass: "col-md-4" },
                             [
                               _c("label", [_vm._v("SITUACIÓN:")]),
                               _vm._v(" "),
@@ -111368,7 +111495,7 @@ var render = function() {
                           _vm._v(" "),
                           _c(
                             "div",
-                            { staticClass: "col-md-6" },
+                            { staticClass: "col-md-4" },
                             [
                               _c("label", [_vm._v("FORMA DE PAGO:")]),
                               _vm._v(" "),
@@ -111428,7 +111555,83 @@ var render = function() {
                               ])
                             ],
                             1
-                          )
+                          ),
+                          _vm._v(" "),
+                          _vm.situacion && _vm.situacion.id == 1
+                            ? _c("div", { staticClass: "col-md-4" }, [
+                                _c(
+                                  "label",
+                                  { staticClass: "form-control-label" },
+                                  [
+                                    _vm._v(
+                                      "\n                                            MONTO (Bs.):\n                                        "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model.number",
+                                      value: _vm.monto,
+                                      expression: "monto",
+                                      modifiers: { number: true }
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.$v.monto.$error,
+                                    "is-valid": !_vm.$v.monto.$invalid
+                                  },
+                                  attrs: {
+                                    type: "number",
+                                    step: "0.01",
+                                    min: "0",
+                                    max: _vm.tarifa ? _vm.tarifa.precio : null
+                                  },
+                                  domProps: { value: _vm.monto },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.monto = _vm._n($event.target.value)
+                                    },
+                                    blur: function($event) {
+                                      return _vm.$forceUpdate()
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "invalid-feedback" }, [
+                                  !_vm.$v.monto.required
+                                    ? _c("span", [
+                                        _vm._v(
+                                          "\n                                                Este campo es requerido\n                                            "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.$v.monto.required &&
+                                  !_vm.$v.monto.decimalDos
+                                    ? _c("span", [
+                                        _vm._v(
+                                          "\n                                                Debe ingresar un monto válido con máximo 2 decimales\n                                            "
+                                        )
+                                      ])
+                                    : !_vm.$v.monto.montoMaximo
+                                    ? _c("span", [
+                                        _vm._v(
+                                          "\n                                                El monto no puede ser mayor a " +
+                                            _vm._s(_vm.tarifa.precio) +
+                                            " Bs.\n                                            "
+                                        )
+                                      ])
+                                    : _vm._e()
+                                ])
+                              ])
+                            : _vm._e()
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "row mt-2" }, [
@@ -111778,6 +111981,98 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "row mt-2" }, [
+                    _c("div", { staticClass: "col-md-12" }, [
+                      _c("table", { staticClass: "table table-bordered" }, [
+                        _vm._m(0),
+                        _vm._v(" "),
+                        _vm.situacion_idE == 1
+                          ? _c("tbody", [
+                              _c("tr", [
+                                _c("td", [_vm._v(_vm._s(_vm.situacionE))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(_vm.montoE))])
+                              ]),
+                              _vm._v(" "),
+                              _c("tr", [
+                                _c("td", [_vm._v("SALDO")]),
+                                _vm._v(" "),
+                                _c(
+                                  "td",
+                                  { staticStyle: { "text-align": "right" } },
+                                  [
+                                    _vm._v(
+                                      "\n                                                        " +
+                                        _vm._s(
+                                          (
+                                            Number(_vm.precio) -
+                                            Number(_vm.montoE)
+                                          ).toFixed(2)
+                                        ) +
+                                        "\n                                                        "
+                                    ),
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-danger mr-2",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.PagarSaldo(
+                                              _vm.id_eventoE
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("PAGAR")]
+                                    )
+                                  ]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("tr", [
+                                _c("td", [_vm._v("TOTAL")]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(_vm.precio))])
+                              ])
+                            ])
+                          : _c(
+                              "tbody",
+                              [
+                                _vm._l(_vm.arraySituacionEvento, function(se) {
+                                  return _c("tr", [
+                                    _c("td", [_vm._v(_vm._s(se.situacion))]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "td",
+                                      {
+                                        staticStyle: { "text-align": "right" }
+                                      },
+                                      [_vm._v(_vm._s(se.monto))]
+                                    )
+                                  ])
+                                }),
+                                _vm._v(" "),
+                                _c("tr", [
+                                  _c(
+                                    "td",
+                                    { staticStyle: { "font-weight": "bold" } },
+                                    [_vm._v("TOTAL")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "td",
+                                    { staticStyle: { "text-align": "right" } },
+                                    [_vm._v(_vm._s(_vm.precio))]
+                                  )
+                                ])
+                              ],
+                              2
+                            )
+                      ])
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "row mt-2" }, [
                     _c("div", { staticClass: "col-sm-12" }, [
                       _c("label", [_vm._v("OBSERVACIÓN:")]),
                       _vm._v(" "),
@@ -111850,7 +112145,20 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "thead-light" }, [
+      _c("tr", [
+        _c("th", [_vm._v("SITUACIÓN")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("MONTO (Bs.)")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 

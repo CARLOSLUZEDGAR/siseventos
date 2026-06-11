@@ -123,11 +123,13 @@
         <App ruta="{{route('basepath')}}"></App>
     </div>
     <footer class="main-footer">
-        <strong>Copyright &copy; {{ date('Y') }} "Dirección General de Aeronaves de Estado"</strong> 
-        <br> 
-        Todos los derechos reservados. 
+        <strong>Copyright &copy; {{ date('Y') }}</strong> 
+        <!-- <br>  -->
+        <!-- Todos los derechos reservados.  -->
         <div class="float-right d-none d-sm-inline-block">
-            Desarrollado por la Sección Archivos e Informatica - <a href="http://www.fab.bo/" target="_blank">DGAE-FAB.</a>&nbsp;&nbsp;&nbsp;&nbsp;<b>Versión</b> 2.0
+                    Todos los Derechos Reservados. 
+            <!-- Desarrollado por la Sección Archivos e Informatica - <a href="http://www.fab.bo/" target="_blank">DGAE-FAB.</a>&nbsp;&nbsp;&nbsp;&nbsp;<b>Versión</b> 1.0 -->
+            <!-- Desarrollado por la Sección Archivos e Informatica - <a href="http://www.fab.bo/" target="_blank">DGAE-FAB.</a>&nbsp;&nbsp;&nbsp;&nbsp;<b>Versión</b> 1.0 -->
         </div>
     </footer>
 @else

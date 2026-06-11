@@ -11,6 +11,37 @@ use Illuminate\Support\Facades\Auth;
 
 class ReporteController extends Controller
 {
+    public function GenerarContrato(Request $request)
+    {
+        $evento = DB::table('eventos as e')
+                    ->join('predios as p', 'e.predio_id', 'p.id')
+                    ->join('tipo_eventos as te', 'e.tipo_evento_id', 'te.id')
+                    ->join('tarifas as t', 'e.tarifa_id', 't.id')
+                    ->select('e.id',
+                        'e.contratante',
+                        'p.nombre',
+                        'te.evento',
+                        't.tarifa',
+                        'e.fecha_evento')
+                    ->where('e.id', $request->idE)
+                    ->where('e.estado', 1)
+                    ->first();
+
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fecha_emision = date('d')."/".date('n')."/".date('Y');
+        $qr = QrCode::encoding('UTF-8')->size(100)->generate("No. REGISTRO: $evento->id\nCONTRATANTE: $evento->contratante\nSALON: $evento->nombre\nEVENTO: $evento->evento\nFECHA: $evento->fecha_evento");
+        $codigo = $qr;
+
+        $pdf = PDF::loadView('reportes.contrato',['evento'=>$evento,
+                                                    'qr'=>$codigo,
+                                                    ])
+        //8.3cm 5cm
+        ->setPaper('letter', 'portrait');                                               
+        
+        return $pdf->stream($evento->id.'_contrato.pdf');
+        // return $pdf->download($personal->id_licencia.'-'.$personal->per_ci.'.pdf');
+    }
+
     public function GenerarCarnet(Request $request)
     {
         $personal = DB::table('personals as p')

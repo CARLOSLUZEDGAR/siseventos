@@ -13,6 +13,7 @@ class SituacionEventos extends Model
         'evento_id',
         'situacion_id',
         'forma_pago',
+        'monto',
         'observacion', 
         'estado', 
         'sysuser'

@@ -3,25 +3,6 @@
 
         <div class="row mb-4">
 
-            <!-- Año -->
-            <div class="col-md-3">
-                <label>GESTIÓN</label>
-
-                <select class="form-control"
-                        v-model="anio"
-                        @change="actualizarCalendario">
-
-                    <option v-for="a in anios"
-                            :key="a"
-                            :value="a">
-
-                        {{ a }}
-
-                    </option>
-
-                </select>
-            </div>
-
             <!-- Mes -->
             <div class="col-md-3">
                 <label>MES</label>
@@ -35,6 +16,25 @@
                             :value="index">
 
                         {{ m }}
+
+                    </option>
+
+                </select>
+            </div>
+
+            <!-- Año -->
+            <div class="col-md-3">
+                <label>GESTIÓN</label>
+
+                <select class="form-control"
+                        v-model="anio"
+                        @change="actualizarCalendario">
+
+                    <option v-for="a in anios"
+                            :key="a"
+                            :value="a">
+
+                        {{ a }}
 
                     </option>
 
@@ -136,7 +136,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <strong>FECHA:</strong>
-                                            {{ evento.fecha_evento }}
+                                            <!-- {{ evento.fecha_evento }} -->
+                                            {{ formatearFecha }}
                                         </div>
                                     </div>
                                 </div>
@@ -259,7 +260,7 @@
                                         </div>
                                     </div>
                                     <div class="row mt-2">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <label>SITUACIÓN:</label>
                                             <v-select
                                                 label="situacion"
@@ -286,7 +287,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <label>FORMA DE PAGO:</label>
                                             <v-select
                                                 :options="arrayFormaPago"
@@ -309,6 +310,23 @@
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.forma_pago.required">
                                                     Este campo es requerido
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" v-if="situacion && situacion.id == 1">
+                                            <label class="form-control-label">
+                                                MONTO (Bs.):
+                                            </label>
+                                            <input type="number" step="0.01" min="0" :max="tarifa ? tarifa.precio : null" class="form-control" v-model.number="monto" :class="{'is-invalid' : $v.monto.$error, 'is-valid': !$v.monto.$invalid}">
+                                            <div class="invalid-feedback">
+                                                <span v-if="!$v.monto.required">
+                                                    Este campo es requerido
+                                                </span>
+                                                <span v-if="$v.monto.required && !$v.monto.decimalDos">
+                                                    Debe ingresar un monto válido con máximo 2 decimales
+                                                </span>
+                                                <span v-else-if="!$v.monto.montoMaximo">
+                                                    El monto no puede ser mayor a {{ tarifa.precio }} Bs.
                                                 </span>
                                             </div>
                                         </div>
@@ -431,61 +449,45 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="row mt-2">
-                                        <div class="col-md-6">
-                                            <label>SITUACIÓN:</label>
-                                            <v-select
-                                                label="situacion"
-                                                :options="arraySituacion"
-                                                v-model="situacion"
-                                                :class="{
-                                                    'is-invalid': $v.situacion.$error,
-                                                    'is-valid': !$v.situacion.$invalid
-                                                }"
-                                            >
-                                                <template v-slot:no-options="{ search, searching }">
-                                                    <template v-if="searching">
-                                                        Lo sentimos, no hay opciones de coincidencia para
-                                                        <em>{{ search }}</em>
-                                                    </template>
-                                                    <em v-else>
-                                                        Lo sentimos, no hay opciones disponibles.
-                                                    </em>
-                                                </template>
-                                            </v-select>
-                                            <div class="invalid-feedback">
-                                                <span v-if="!$v.situacion.required">
-                                                    Este campo es requerido
-                                                </span>
-                                            </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>SITUACIÓN</th>
+                                                        <th>MONTO (Bs.)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody v-if="situacion_idE == 1">
+                                                    <tr>
+                                                        <td>{{ situacionE }}</td>
+                                                        <td>{{ montoE }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>SALDO</td>
+                                                        <td style="text-align: right;">
+                                                            {{ (Number(precio) - Number(montoE)).toFixed(2) }}
+                                                            <button type="button" class="btn btn-danger mr-2" @click="PagarSaldo(id_eventoE)">PAGAR</button>  
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>TOTAL</td>
+                                                        <td>{{ precio }}</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody v-else>
+                                                    <tr v-for="se in arraySituacionEvento">
+                                                        <td>{{ se.situacion }}</td>
+                                                        <td style="text-align: right;">{{ se.monto }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="font-weight: bold;">TOTAL</td>
+                                                        <td style="text-align: right;">{{ precio }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label>FORMA DE PAGO:</label>
-                                            <v-select
-                                                :options="arrayFormaPago"
-                                                v-model="forma_pago"
-                                                :class="{
-                                                    'is-invalid': $v.forma_pago.$error,
-                                                    'is-valid': !$v.forma_pago.$invalid
-                                                }"
-                                            >
-                                                <template v-slot:no-options="{ search, searching }">
-                                                    <template v-if="searching">
-                                                        Lo sentimos, no hay opciones de coincidencia para
-                                                        <em>{{ search }}</em>
-                                                    </template>
-                                                    <em v-else>
-                                                        Lo sentimos, no hay opciones disponibles.
-                                                    </em>
-                                                </template>
-                                            </v-select>
-                                            <div class="invalid-feedback">
-                                                <span v-if="!$v.forma_pago.required">
-                                                    Este campo es requerido
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div> -->
+                                    </div>
                                     <div class="row mt-2">
                                         <div class="col-sm-12">
                                             <label>OBSERVACIÓN:</label>
@@ -517,7 +519,25 @@
 </template>
 
 <script>
-import { required, between, minLength, maxLength, alpha, numeric, email, helpers, date} from "vuelidate/lib/validators";
+import { required, requiredIf, between, minLength, maxLength, alpha, numeric, email, helpers, date} from "vuelidate/lib/validators";
+
+const decimalDos = value => {
+    if (!value) return true;
+
+    return /^\d+(\.\d{1,2})?$/.test(value);
+};
+
+const montoMaximo = function(value) {
+
+    if (!value) return true;
+
+    if (!this.situacion || this.situacion.id != 1) {
+        return true;
+    }
+
+    return Number(value) <= Number(this.tarifa.precio);
+};
+
 export default {
 
     data() {
@@ -570,6 +590,7 @@ export default {
             situacion: '',
             arrayFormaPago: ['TRANSFERENCIA', 'EFECTIVO'],
             forma_pago: '',
+            monto: '',
             observacion: '',
             arrayEvento: [],
             eventosDiaSeleccionado: [],
@@ -585,7 +606,12 @@ export default {
             tipo_eventoE: '',
             tarifa_idE: '',
             tarifaE: '',
+            precio: '',
+            situacion_idE: '',
+            situacionE: '',
+            montoE: '',
             observacionE: '',
+            arraySituacionEvento: [],
             prediosDisponiblesEditar: [],
         }
     },
@@ -597,7 +623,11 @@ export default {
         tipo_evento: { required },
         tarifa: { required },
         situacion: { required },
-        forma_pago: { required},
+        forma_pago: { required },
+        monto: { required: requiredIf(function () {
+            return this.situacion && this.situacion.id == 1;
+        }),
+        decimalDos, montoMaximo },
 
         fecha_eventoE: { required },
         responsableE: { required },
@@ -605,6 +635,8 @@ export default {
         predioE: { required },
         tipo_eventoE: { required },
         tarifaE: { required },
+        situacionE: { required },
+        montoE: { required },
 
 
         validationsGroupReg: [
@@ -614,7 +646,8 @@ export default {
             'tipo_evento',
             'tarifa',
             'situacion',
-            'forma_pago'
+            'forma_pago',
+            'monto'
         ],
 
         validationsGroupMod: [
@@ -623,8 +656,21 @@ export default {
             // 'predio_idE',
             'predioE',
             'tipo_eventoE',
-            'tarifaE'
+            'tarifaE',
+            'situacionE',
+            'montoE'
         ],
+    },
+
+    watch: {
+        situacion(valor) {
+
+            if (!valor || valor.id != 1) {
+                this.monto = null;
+                this.$v.monto.$reset();
+            }
+
+        }
     },
 
     mounted() {
@@ -725,6 +771,7 @@ export default {
                 // DATOS DEL EVENTO
                 // =========================================
                 this.arrayMostrarEvento = response.data.eventos;
+                this.arraySituacionEvento = response.data.situacion_evento;
                 this.$v.validationsGroupMod.$reset();
                 this.id_eventoE = this.arrayMostrarEvento.id;
                 this.fecha_eventoE = this.arrayMostrarEvento.fecha_evento;
@@ -735,7 +782,11 @@ export default {
                 this.tipo_eventoE = this.arrayMostrarEvento.evento;
                 this.tarifa_idE = this.arrayMostrarEvento.tarifa_id;
                 this.tarifaE = this.arrayMostrarEvento.tarifa;
+                this.situacion_idE = this.arrayMostrarEvento.situacion_id;
+                this.situacionE = this.arrayMostrarEvento.situacion;
+                this.montoE =   this.arrayMostrarEvento.monto;
                 this.observacionE = this.arrayMostrarEvento.observacion;
+                this.precio = this.arrayMostrarEvento.precio;
                 // =========================================
                 // FECHA DEL EVENTO
                 // =========================================
@@ -788,11 +839,18 @@ export default {
                     this.tarifa = '',
                     this.situacion = '',
                     this.forma_pago = '',
-                    this.observacion = ''
+                    this.observacion = '',
+                    this.monto = ''
                     break;
                 case 2:
                     this.fecha_eventoE = '',
-                    this.responsableE = ''
+                    this.responsableE = '',
+                    this.predioE = '',
+                    this.tipo_eventoE = '',
+                    this.tarifaE = '',
+                    this.situacionE = '',
+                    this.observacionE = '',
+                    this.montoE = ''
                     break; 
             
                 default:
@@ -881,65 +939,80 @@ export default {
         },
 
         Guardar() {
-            if(!this.$v.validationsGroupReg.$invalid){
+             if (!this.$v.validationsGroupReg.$invalid) {
                 swal.fire({
-                    title: '¿Desea registrar este evento?', // TITULO 
-                    icon: 'question', //ICONO (success, warnning, error, info, question)
-                    showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
-                    confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
-                    cancelButtonColor: '#868077', // CLOR DEL BOTON CANCELAR
-                    confirmButtonText: 'Confirmar', //TITULO DEL BOTON CONFIRMAR
-                    cancelButtonText: 'Cancelar', //TIUTLO DEL BOTON CANCELAR
+                    title: '¿Desea registrar este evento?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: 'info',
+                    cancelButtonColor: '#868077',
+                    confirmButtonText: 'Confirmar / Generar Contrato',
+                    cancelButtonText: 'Cancelar',
                     buttonsStyling: true,
                     reverseButtons: true
-                    }).then((result) => {
+                }).then((result) => {
                     if (result.value) {
-                        let me = this;
-                        axios
-                        .post("/registrarEvento", {
-                                fecha_evento: me.fecha_evento,
-                                predio: me.predio.id,
-                                responsable: me.responsable.toUpperCase(),
-                                tipo_evento: me.tipo_evento.id,
-                                tarifa: me.tarifa.id,
-                                situacion: me.situacion.id,
-                                forma_pago: me.forma_pago,
-                                observacion: me.observacion.toUpperCase()
+                        axios.post('/registrarEvento', {
+                            fecha_evento: this.fecha_evento,
+                            predio_id: this.predio.id,
+                            responsable: this.responsable.toUpperCase(),
+                            tipo_evento_id: this.tipo_evento.id,
+                            tarifa_id: this.tarifa.id,
+                            situacion_id: this.situacion.id,
+                            forma_pago: this.forma_pago,
+                            monto: this.situacion.id == 1
+                                ? this.monto
+                                : this.tarifa.precio,
+                            observacion: this.observacion
+                                ? this.observacion.toUpperCase()
+                                : ''
                         })
-                        .then(function (response) {
-                            swal.fire(
-                                "REGISTRADO", //TITULO
-                                "Se registro correctamente el evento.", //TEXTO DE MENSAJE
-                                "success" // TIPO DE MODAL (success, warnning, error, info)
-                            );
-                            $('#ModalEvento').modal('hide');
-                            me.Cerrar(1);
-                            me.ListarEvento();
-                            
+                        .then((response) => {
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'CORRECTO',
+                                    text: response.data.mensaje
+                                });
+                                $('#ModalEvento').modal('hide');
+                                this.Cerrar(1);
+                                this.GenerarContrato(response.data.evento.id);
+                                this.ListarEvento();
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'ADVERTENCIA',
+                                    text: response.data.mensaje
+                                });
+                            }
+
                         })
-                        .catch(function (error) {
-                            // handle error
+                        .catch((error) => {
                             console.log(error);
-                        })
-                    }else{
-                        let me = this;
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ERROR',
+                                text: 'Ocurrió un error inesperado'
+                            });
+                        });
+                    } else {
                         swal.fire(
-                            "Informacion", //TITULO
-                            "Solicitud cancelada.", //TEXTO DE MENSAJE
-                            "info" // TIPO DE MODAL (success, warnning, error, info)
+                            'Información',
+                            'Solicitud cancelada.',
+                            'info'
                         );
                         $('#ModalEvento').modal('hide');
-                        me.Cerrar();
+                        this.Cerrar(1);
                     }
-                })
-            }else{
+                });
+            } else {
                 this.$v.validationsGroupReg.$touch();
                 Swal.fire({
                     icon: 'warning',
                     title: 'Ingrese todos los datos requeridos',
                     showConfirmButton: false,
                     timer: 2000
-                }) 
+                });
             }
         },
 
@@ -967,7 +1040,6 @@ export default {
                         })
                         .then((response) => {
                             if(response.data.success){
-
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'CORRECTO',
@@ -1015,6 +1087,84 @@ export default {
                 }) 
             }
         },
+
+        PagarSaldo(idEvento){
+        //    if(!this.$v.validationsGroupSaldo.$invalid){
+                swal.fire({
+                    title: '¿Desea pagar el saldo de este evento?', // TITULO 
+                    icon: 'question', //ICONO (success, warnning, error, info, question)
+                    showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
+                    confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
+                    cancelButtonColor: '#868077', // CLOR DEL BOTON CANCELAR
+                    confirmButtonText: 'Confirmar', //TITULO DEL BOTON CONFIRMAR
+                    cancelButtonText: 'Cancelar', //TIUTLO DEL BOTON CANCELAR
+                    buttonsStyling: true,
+                    reverseButtons: true
+                    }).then((result) => {
+                    if (result.value) {
+                        let me = this;
+                        axios.post('/pagarSaldoEvento', {
+                            id_evento: idEvento,
+                            precio: this.precio,
+                            adelanto: this.montoE
+                            // fecha_evento: this.fecha_eventoE,
+                            // predio_id: this.predio_idE,
+                            // observacion: this.observacionE.toUpperCase()
+                            // responsable: this.responsableE
+                        })
+                        .then((response) => {
+                            if(response.data.success){
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'CORRECTO',
+                                    text: response.data.mensaje
+                                });
+
+                                $('#ModalEditar').modal('hide');
+                                // $('#ModalEvento').modal('hide');
+                                me.Cerrar(2);
+                                me.ListarEvento();
+                            }else{
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'ADVERTENCIA',
+                                    text: response.data.mensaje
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ERROR',
+                                text: 'Ocurrió un error inesperado'
+                            });
+                        });
+                    }else{
+                        let me = this;
+                        swal.fire(
+                            "Informacion", //TITULO
+                            "Solicitud cancelada.", //TEXTO DE MENSAJE
+                            "info" // TIPO DE MODAL (success, warnning, error, info)
+                        );
+                        $('#ModalEditar').modal('hide');
+                        me.Cerrar(2);
+                    }
+                })
+            // }else{
+            //     this.$v.validationsGroupMod.$touch();
+            //     Swal.fire({
+            //         icon: 'warning',
+            //         title: 'Ingrese todos los datos requeridos',
+            //         showConfirmButton: false,
+            //         timer: 2000
+            //     }) 
+            // } 
+        },
+
+        GenerarContrato(idEvento){
+            window.open('/contrato?idE='+idEvento);
+        }
     }
 }
 </script>
