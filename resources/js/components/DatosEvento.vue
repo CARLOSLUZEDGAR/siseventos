@@ -190,7 +190,7 @@
                                         </div>
                                     </div>
                                     <div class="row mt-2">
-                                        <div class="col-md-12">
+                                        <div class="col-md-4">
                                             <label class="form-control-label">
                                                 RESPONSABLE:
                                             </label>
@@ -198,6 +198,34 @@
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.responsable.required">
                                                     Este campo es requerido
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-control-label">
+                                                CEDULA IDENTIDAD:
+                                            </label>
+                                            <input type="text" class="form-control" v-model="ci" style="text-transform:uppercase;" :class="{'is-invalid' : $v.ci.$error, 'is-valid': !$v.ci.$invalid}">
+                                            <div class="invalid-feedback">
+                                                <span v-if="!$v.ci.required">
+                                                    Este campo es requerido
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-control-label">
+                                                CELULAR:
+                                            </label>
+                                            <input type="text" class="form-control" v-model="celular" style="text-transform:uppercase;" :class="{'is-invalid' : $v.celular.$error, 'is-valid': !$v.celular.$invalid}">
+                                            <div class="invalid-feedback">
+                                                <span v-if="!$v.celular.required">
+                                                    Este campo es requerido
+                                                </span>
+                                                <span v-else-if="!$v.celular.numeric">
+                                                    Solo digitos
+                                                </span>
+                                                <span v-else-if="!$v.celular.length">
+                                                    Debe contener 8 digitos
                                                 </span>
                                             </div>
                                         </div>
@@ -579,6 +607,8 @@ export default {
 
             // modal: 0,
             responsable: '',
+            ci: '',
+            celular: '',
             fecha_evento: '',
             arrayPredios: [],
             predio: '',
@@ -600,6 +630,8 @@ export default {
             id_eventoE: '',
             fecha_eventoE: '',
             responsableE: '',
+            ciE: '',
+            celularE: '',
             predio_idE: '',
             predioE: '',
             tipo_evento_idE: '',
@@ -618,6 +650,8 @@ export default {
 
     validations: { 
         responsable: { required },
+        ci: { required },
+        celular: { required, numeric, hasSpecificLength: value => value && value.toString().length === 8 },
         fecha_evento: { required },
         predio: { required },
         tipo_evento: { required },
@@ -631,6 +665,8 @@ export default {
 
         fecha_eventoE: { required },
         responsableE: { required },
+        ciE: { required },
+        celularE: { required },
         // predio_idE: { required },
         predioE: { required },
         tipo_eventoE: { required },
@@ -641,6 +677,8 @@ export default {
 
         validationsGroupReg: [
             'responsable',
+            'ci',
+            'celular',
             'fecha_evento',
             'predio',
             'tipo_evento',
@@ -653,6 +691,8 @@ export default {
         validationsGroupMod: [
             'fecha_eventoE',
             'responsableE',
+            'ciE',
+            'celularE',
             // 'predio_idE',
             'predioE',
             'tipo_eventoE',
@@ -664,22 +704,18 @@ export default {
 
     watch: {
         situacion(valor) {
-
             if (!valor || valor.id != 1) {
                 this.monto = null;
                 this.$v.monto.$reset();
             }
-
         }
     },
 
     mounted() {
-
         let actual = new Date().getFullYear();
         for (let i = actual - 5; i <= actual + 5; i++) {
             this.anios.push(i);
         }
-
         this.generarCalendario();
         this.ListarPredio();
         this.ListarTipoEvento();
@@ -687,49 +723,34 @@ export default {
         this.ListarSituacion();
         this.ListarEvento();
         this.actualizarCalendario();
-
     },
 
     computed: {
-
         formatearFecha() {
-
             if (!this.fecha_evento) return '';
-
             let partes = this.fecha_evento.split('-');
-
             return partes[2] + '/' +
                 partes[1] + '/' +
                 partes[0];
         }
-
     },
 
     methods: {
-
         generarCalendario() {
-
             this.calendario = [];
-
             let primerDia = new Date(this.anio, this.mes, 1);
-
             let ultimoDia = new Date(this.anio, this.mes + 1, 0);
-
             let inicioSemana = primerDia.getDay();
-
             // Ajustar domingo
             inicioSemana = inicioSemana === 0 ? 6 : inicioSemana - 1;
-
             // Espacios vacíos
             for (let i = 0; i < inicioSemana; i++) {
                 this.calendario.push(null);
             }
-
             // Dias del mes
             for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
                 this.calendario.push(dia);
             }
-
         },
 
         actualizarCalendario() {
@@ -835,6 +856,8 @@ export default {
                     this.fecha_evento = '',
                     this.predio = '',
                     this.responsable = '',
+                    this.ci = '',
+                    this.celular = '',
                     this.tipo_evento = '',
                     this.tarifa = '',
                     this.situacion = '',
@@ -845,6 +868,8 @@ export default {
                 case 2:
                     this.fecha_eventoE = '',
                     this.responsableE = '',
+                    this.ciE = '',
+                    this.celularE = '',
                     this.predioE = '',
                     this.tipo_eventoE = '',
                     this.tarifaE = '',
@@ -946,7 +971,7 @@ export default {
                     showCancelButton: true,
                     confirmButtonColor: 'info',
                     cancelButtonColor: '#868077',
-                    confirmButtonText: 'Confirmar / Generar Contrato',
+                    confirmButtonText: 'Confirmar/Generar Recibo',
                     cancelButtonText: 'Cancelar',
                     buttonsStyling: true,
                     reverseButtons: true
@@ -956,6 +981,8 @@ export default {
                             fecha_evento: this.fecha_evento,
                             predio_id: this.predio.id,
                             responsable: this.responsable.toUpperCase(),
+                            ci: this.ci,
+                            celular: this.celular,
                             tipo_evento_id: this.tipo_evento.id,
                             tarifa_id: this.tarifa.id,
                             situacion_id: this.situacion.id,
@@ -976,7 +1003,7 @@ export default {
                                 });
                                 $('#ModalEvento').modal('hide');
                                 this.Cerrar(1);
-                                this.GenerarContrato(response.data.evento.id);
+                                this.GenerarContrato(response.data.evento.id, response.data.situacion_evento.id);
                                 this.ListarEvento();
                             } else {
                                 Swal.fire({
@@ -1096,7 +1123,7 @@ export default {
                     showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
                     confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
                     cancelButtonColor: '#868077', // CLOR DEL BOTON CANCELAR
-                    confirmButtonText: 'Confirmar', //TITULO DEL BOTON CONFIRMAR
+                    confirmButtonText: 'Confirmar/Generar Recibo', //TITULO DEL BOTON CONFIRMAR
                     cancelButtonText: 'Cancelar', //TIUTLO DEL BOTON CANCELAR
                     buttonsStyling: true,
                     reverseButtons: true
@@ -1123,6 +1150,7 @@ export default {
                                 $('#ModalEditar').modal('hide');
                                 // $('#ModalEvento').modal('hide');
                                 me.Cerrar(2);
+                                this.GenerarContrato(response.data.situacion_evento.evento_id, response.data.situacion_evento.id);
                                 me.ListarEvento();
                             }else{
                                 Swal.fire({
@@ -1162,8 +1190,8 @@ export default {
             // } 
         },
 
-        GenerarContrato(idEvento){
-            window.open('/contrato?idE='+idEvento);
+        GenerarContrato(idEvento, idSituacionEvento){
+            window.open('/contrato?idE='+idEvento+'&idSE='+idSituacionEvento);
         }
     }
 }

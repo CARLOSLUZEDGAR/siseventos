@@ -4228,6 +4228,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var decimalDos = function decimalDos(value) {
@@ -4256,6 +4284,8 @@ var montoMaximo = function montoMaximo(value) {
       calendario: [],
       // modal: 0,
       responsable: '',
+      ci: '',
+      celular: '',
       fecha_evento: '',
       arrayPredios: [],
       predio: '',
@@ -4276,6 +4306,8 @@ var montoMaximo = function montoMaximo(value) {
       id_eventoE: '',
       fecha_eventoE: '',
       responsableE: '',
+      ciE: '',
+      celularE: '',
       predio_idE: '',
       predioE: '',
       tipo_evento_idE: '',
@@ -4294,6 +4326,16 @@ var montoMaximo = function montoMaximo(value) {
   validations: {
     responsable: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    ci: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    celular: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
+      numeric: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["numeric"],
+      hasSpecificLength: function hasSpecificLength(value) {
+        return value && value.toString().length === 8;
+      }
     },
     fecha_evento: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
@@ -4326,6 +4368,12 @@ var montoMaximo = function montoMaximo(value) {
     responsableE: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
+    ciE: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    celularE: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
     // predio_idE: { required },
     predioE: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
@@ -4342,8 +4390,8 @@ var montoMaximo = function montoMaximo(value) {
     montoE: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
-    validationsGroupReg: ['responsable', 'fecha_evento', 'predio', 'tipo_evento', 'tarifa', 'situacion', 'forma_pago', 'monto'],
-    validationsGroupMod: ['fecha_eventoE', 'responsableE', // 'predio_idE',
+    validationsGroupReg: ['responsable', 'ci', 'celular', 'fecha_evento', 'predio', 'tipo_evento', 'tarifa', 'situacion', 'forma_pago', 'monto'],
+    validationsGroupMod: ['fecha_eventoE', 'responsableE', 'ciE', 'celularE', // 'predio_idE',
     'predioE', 'tipo_eventoE', 'tarifaE', 'situacionE', 'montoE']
   },
   watch: {
@@ -4489,11 +4537,11 @@ var montoMaximo = function montoMaximo(value) {
     Cerrar: function Cerrar(valor) {
       switch (valor) {
         case 1:
-          this.fecha_evento = '', this.predio = '', this.responsable = '', this.tipo_evento = '', this.tarifa = '', this.situacion = '', this.forma_pago = '', this.observacion = '', this.monto = '';
+          this.fecha_evento = '', this.predio = '', this.responsable = '', this.ci = '', this.celular = '', this.tipo_evento = '', this.tarifa = '', this.situacion = '', this.forma_pago = '', this.observacion = '', this.monto = '';
           break;
 
         case 2:
-          this.fecha_eventoE = '', this.responsableE = '', this.predioE = '', this.tipo_eventoE = '', this.tarifaE = '', this.situacionE = '', this.observacionE = '', this.montoE = '';
+          this.fecha_eventoE = '', this.responsableE = '', this.ciE = '', this.celularE = '', this.predioE = '', this.tipo_eventoE = '', this.tarifaE = '', this.situacionE = '', this.observacionE = '', this.montoE = '';
           break;
 
         default:
@@ -4561,7 +4609,7 @@ var montoMaximo = function montoMaximo(value) {
           showCancelButton: true,
           confirmButtonColor: 'info',
           cancelButtonColor: '#868077',
-          confirmButtonText: 'Confirmar / Generar Contrato',
+          confirmButtonText: 'Confirmar/Generar Recibo',
           cancelButtonText: 'Cancelar',
           buttonsStyling: true,
           reverseButtons: true
@@ -4571,6 +4619,8 @@ var montoMaximo = function montoMaximo(value) {
               fecha_evento: _this2.fecha_evento,
               predio_id: _this2.predio.id,
               responsable: _this2.responsable.toUpperCase(),
+              ci: _this2.ci,
+              celular: _this2.celular,
               tipo_evento_id: _this2.tipo_evento.id,
               tarifa_id: _this2.tarifa.id,
               situacion_id: _this2.situacion.id,
@@ -4588,7 +4638,7 @@ var montoMaximo = function montoMaximo(value) {
 
                 _this2.Cerrar(1);
 
-                _this2.GenerarContrato(response.data.evento.id);
+                _this2.GenerarContrato(response.data.evento.id, response.data.situacion_evento.id);
 
                 _this2.ListarEvento();
               } else {
@@ -4715,7 +4765,7 @@ var montoMaximo = function montoMaximo(value) {
         // COLOR DEL BOTON PARA CONFIRMAR
         cancelButtonColor: '#868077',
         // CLOR DEL BOTON CANCELAR
-        confirmButtonText: 'Confirmar',
+        confirmButtonText: 'Confirmar/Generar Recibo',
         //TITULO DEL BOTON CONFIRMAR
         cancelButtonText: 'Cancelar',
         //TIUTLO DEL BOTON CANCELAR
@@ -4742,6 +4792,9 @@ var montoMaximo = function montoMaximo(value) {
               $('#ModalEditar').modal('hide'); // $('#ModalEvento').modal('hide');
 
               me.Cerrar(2);
+
+              _this4.GenerarContrato(response.data.situacion_evento.evento_id, response.data.situacion_evento.id);
+
               me.ListarEvento();
             } else {
               Swal.fire({
@@ -4778,8 +4831,8 @@ var montoMaximo = function montoMaximo(value) {
       //     }) 
       // } 
     },
-    GenerarContrato: function GenerarContrato(idEvento) {
-      window.open('/contrato?idE=' + idEvento);
+    GenerarContrato: function GenerarContrato(idEvento, idSituacionEvento) {
+      window.open('/contrato?idE=' + idEvento + '&idSE=' + idSituacionEvento);
     }
   }
 });
@@ -111243,7 +111296,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "row mt-2" }, [
-                          _c("div", { staticClass: "col-md-12" }, [
+                          _c("div", { staticClass: "col-md-4" }, [
                             _c("label", { staticClass: "form-control-label" }, [
                               _vm._v(
                                 "\n                                            RESPONSABLE:\n                                        "
@@ -111282,6 +111335,108 @@ var render = function() {
                                 ? _c("span", [
                                     _vm._v(
                                       "\n                                                Este campo es requerido\n                                            "
+                                    )
+                                  ])
+                                : _vm._e()
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("label", { staticClass: "form-control-label" }, [
+                              _vm._v(
+                                "\n                                            CEDULA IDENTIDAD:\n                                        "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.ci,
+                                  expression: "ci"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              class: {
+                                "is-invalid": _vm.$v.ci.$error,
+                                "is-valid": !_vm.$v.ci.$invalid
+                              },
+                              staticStyle: { "text-transform": "uppercase" },
+                              attrs: { type: "text" },
+                              domProps: { value: _vm.ci },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.ci = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "invalid-feedback" }, [
+                              !_vm.$v.ci.required
+                                ? _c("span", [
+                                    _vm._v(
+                                      "\n                                                Este campo es requerido\n                                            "
+                                    )
+                                  ])
+                                : _vm._e()
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("label", { staticClass: "form-control-label" }, [
+                              _vm._v(
+                                "\n                                            CELULAR:\n                                        "
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.celular,
+                                  expression: "celular"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              class: {
+                                "is-invalid": _vm.$v.celular.$error,
+                                "is-valid": !_vm.$v.celular.$invalid
+                              },
+                              staticStyle: { "text-transform": "uppercase" },
+                              attrs: { type: "text" },
+                              domProps: { value: _vm.celular },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.celular = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "invalid-feedback" }, [
+                              !_vm.$v.celular.required
+                                ? _c("span", [
+                                    _vm._v(
+                                      "\n                                                Este campo es requerido\n                                            "
+                                    )
+                                  ])
+                                : !_vm.$v.celular.numeric
+                                ? _c("span", [
+                                    _vm._v(
+                                      "\n                                                Solo digitos\n                                            "
+                                    )
+                                  ])
+                                : !_vm.$v.celular.length
+                                ? _c("span", [
+                                    _vm._v(
+                                      "\n                                                Debe contener 8 digitos\n                                            "
                                     )
                                   ])
                                 : _vm._e()

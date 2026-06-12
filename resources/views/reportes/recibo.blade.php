@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="img/dgae_logo.png"> 
-    <title>CONTRATO</title>
+    <title>RECIBO</title>
     
     <!-- CSS only -->
 {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous"> --}}
@@ -104,7 +104,7 @@
                         </span>
                     </td>
                     <td style="/*border: 1px solid #000;*/ padding: 0px; font-size: 10px; text-align: right; font-weight: bold;">
-                        <span>Desarrollado por la: DGAE - 
+                        <span>CIRCULO AERONAUTICO - 
                             <?php
                                 $gestion_act = date("Y");
                                 echo $gestion_act;
@@ -141,73 +141,119 @@
             </div> -->
 
 
-            <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: bold; /*border: 1px solid #C00;*/">
+            <!-- <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: bold; /*border: 1px solid #C00;*/">
                 <p style="margin: 1px">EL DIRECTOR GENERAL DE AERONAVES DE ESTADO DE LA FUERZA AÉREA BOLIVIANA</p>
+            </div> -->
+
+            <div style="padding-top: 2px; padding-bottom: 2px; text-align: center; font-size: 14pt; font-weight: bold; /*border: 1px solid #C00;*/">
+                <p style="margin: 1px"><u>RECIBO</u></p>
             </div>
 
-            <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: bold; /*border: 1px solid #C00;*/">
-                <p style="margin: 1px">CERTIFICA:</p>
+            <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
+                <p style="margin: 1px">En la ciudad de <span style="font-weight: bold;">La Paz</span>, a los <span style="font-weight: bold;">{{ $fecha_det}}</span>, se deja expresa constancia del <span style="font-weight: bold;">{{$situacion_evento->situacion}}</span> por el uso del <span style="font-weight: bold;">{{ $evento->nombre }}</span>, conforme al siguiente detalle:</p>
+            </div>
+
+            <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
+                <p style="margin: 1px"><span style="font-weight: bold;">NOMBRE COMPLETO:</span> {{$evento->contratante}}</p>
+                <p style="margin: 1px"><span style="font-weight: bold;">CEDULA DE IDENTIDAD:</span> {{$evento->ci}}</p>
+                <p style="margin: 1px"><span style="font-weight: bold;">AMBIENTE RESERVADO:</span> {{$evento->nombre}}</p>
+                <?php
+                    $date = date_create($evento->fecha_evento);
+                    $fechaevento = date_format($date,"d/m/Y");
+                ?>
+                <p style="margin: 1px"><span style="font-weight: bold;">FECHA DEL EVENTO:</span> {{$fecha_evento_dia}}</p>
+                
+                <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE EVENTO:</span> {{$evento->evento}}</p>
+                <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE TARIFA:</span> {{$evento->tarifa}}</p>
+                <!-- <p style="margin: 1px"><span style="font-weight: bold;">MONTO DEPOSITADO: Bs. {{$situacion_evento->monto}}</span></p> -->
+            </div>
+
+            <div>
+                <table width="100%" style="border-collapse: collapse; border-spacing: 0; /*border: black 1px;*/ margin-bottom: 5px; font-size: 12pt" class="table table-bordered table-striped">
+                    <tbody class="table-striped">
+                        <tr>
+                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                <p style="margin: 1px"><span style="font-weight: bold;">SITUACIÓN</span></p>
+                            </td>
+                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                <p style="margin: 1px"><span style="font-weight: bold;">MONTO (Bs.)</span></p>                            
+                            </td>
+                        </tr>
+                    @if ($situacion_evento->id == 1)
+                        @foreach($listar_situacion_evento as $row)
+                            <tr>
+                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                    <p style="margin: 1px"><span style="font-weight: normal;">{{$row->situacion}}</span></p>
+                                </td>
+                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                    <p style="margin: 1px"><span style="font-weight: normal;">{{$row->monto}}</span></p>                            
+                                </td>
+                            </tr>
+                        @endforeach
+                        <tr>
+                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                <p style="margin: 1px"><span style="font-weight: normal;">SALDO</span></p>
+                            </td>
+                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                <p style="margin: 1px"><span style="font-weight: normal;">{{$evento->precio - $situacion_evento->monto}}</span></p>                            
+                            </td>
+                        </tr>
+                    @else
+                        @foreach($listar_situacion_evento as $row)
+                            <tr>
+                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                    <p style="margin: 1px"><span style="font-weight: normal;">{{$row->situacion}}</span></p>
+                                </td>
+                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                    <p style="margin: 1px"><span style="font-weight: normal;">{{$row->monto}}</span></p>                            
+                                </td>
+                            </tr>
+                        @endforeach
+                        <tr>
+                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                <p style="margin: 1px"><span style="font-weight: bold;">TOTAL PAGADO</span></p>
+                            </td>
+                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
+                                <p style="margin: 1px"><span style="font-weight: bold;">{{$evento->precio}}</span></p>                            
+                            </td>
+                        </tr>
+                    @endif 
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="padding-top: 2cm; padding-bottom: 2cm; text-align: center; font-size: 12pt; font-weight: bold; /*border: 1px solid #C00;*/">
+                <p style="margin: 1px"></p>
             </div>
             
             <div>
                 <table width="100%" style="border-collapse: collapse; border-spacing: 0; /*border: black 1px;*/ margin-bottom: 5px;" class="table table-bordered table-striped">
                     <tbody class="table-striped">
                         <tr>
-                            
-                            <td width="25%" style="/*border: 1px solid #000;*/ padding: 1px; font-size: 12pt; text-align: left;">
-                                <span style="margin: 1px; font-weight: bold;">ARRENDADOR:</span>
+                            <td width="50%" style="/*border: 1px solid #000;*/ padding: 1px; text-align: center; font-size: 9pt; vertical-align: top;">
+                                <p style="margin: 1px"><span style="font-weight: normal;">HUMBERTO MAMANI PARISACA</span></p>
+                                <p style="margin: 1px"><span style="font-weight: bold;">ADMINISTRADOR DEL CIRCULO AÉRONAUTICO</span></p>                            
                             </td>
-                            <td width="45%" style="/*border: 1px solid #000;*/ padding: 1px; font-size: 12pt; text-align: left;">
-                                <span style="margin: 1px;">{{$evento->contratante}}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="25%" style="/*border: 1px solid #000;*/ padding: 1px; font-size: 12pt; text-align: left; vertical-align: top;">
-                                <span style="margin: 1px; font-weight: bold;">SALON:</span>
-                            </td>
-                            <td width="45%" style="/*border: 1px solid #000;*/ padding: 1px; font-size: 12pt; text-align: left;">
-                                <span style="margin: 1px;">{{$evento->nombre}}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="25%" style="/*border: 1px solid #000;*/ padding: 1px; font-size: 12pt; text-align: left;">
-                                <span style="margin: 1px; font-weight: bold;">FECHA EVENTO:</span>
-                            </td>
-                            <td width="45%" style="/*border: 1px solid #000;*/ padding: 1px; font-size: 12pt; text-align: left;">
-                                <?php
-                                    $date = date_create($evento->fecha_evento);
-                                    $fechaevento = date_format($date,"d/m/Y");
-                                ?>
-                                <span style="margin: 1px;"><?php echo $fechaevento; ?></span>
+                            <td width="50%" style="/*border: 1px solid #000;*/ padding: 1px; text-align: center; font-size: 9pt; vertical-align: top;">
+                                <p style="margin: 1px"><span style="font-weight: normal;">{{$evento->contratante}}</span></p>
+                                <p style="margin: 1px"><span style="font-weight: bold;">ARRENDATARIO</span></p>
+                                <p style="margin: 1px"><span style="font-weight: bold;">CELULAR:</span>{{ $evento->celular }}</p>                                                      
                             </td>
                         </tr> 
                     </tbody>
                 </table>
             </div>
-            <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
-                    <p style="margin: 1px">Cuenta con la siguiente información:</p>
-            </div>
+            
 
-            <div style="padding-top: 2px; padding-bottom: 2px; text-align: center; font-size: 12pt; font-weight: bold; /*border: 1px solid #C00;*/">
-                <p style="margin: 1px">LICENCIAS EXPEDIDAS</p>
-            </div>
-
-            <div style="padding-top: 1px; padding-bottom: 1px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
-                <p style="margin: 1px">Es cuanto tengo a bien certificar, para los fines consiguientes.</p>
-            </div>
-
-            <div style="padding-top: 1px; padding-bottom: 1px; text-align: right; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
+            <!-- <div style="padding-top: 1px; padding-bottom: 1px; text-align: right; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
                 La Paz, 
                     <?php
                         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                         echo date('d')." de ".$meses[date('n')-1]." del ".date('Y');
                     ?>
-            </div>
+            </div> -->
 
-            <div style="padding-top: 3cm; padding-bottom: 0px; text-align: center; /*position: fixed; bottom: 2cm; left: 3cm; right: 2cm;*/ /*font-size: 14px; font-weight: bold;*/ /*border: 1px solid #C00;*/">
-                <p style="margin: 1px; font-size: 12pt;">Cnl. DAEN. Marco Antonio Garnica Bustillos</p>
-                <p style="margin: 1px; font-size: 12pt; font-weight: bold;">DIRECTOR GENERAL DE AERONAVES DE ESTADO</p>
-            </div>
+            
         </div>
     </main>
     

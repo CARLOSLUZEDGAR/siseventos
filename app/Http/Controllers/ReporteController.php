@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,26 +20,59 @@ class ReporteController extends Controller
                     ->join('tarifas as t', 'e.tarifa_id', 't.id')
                     ->select('e.id',
                         'e.contratante',
+                        'e.ci',
+                        'e.celular',
                         'p.nombre',
                         'te.evento',
                         't.tarifa',
+                        't.precio',
                         'e.fecha_evento')
                     ->where('e.id', $request->idE)
                     ->where('e.estado', 1)
                     ->first();
 
+        $situacion_evento = DB::table('situacion_eventos as se')
+                            ->join('situaciones as s', 'se.situacion_id', 's.id')
+                            ->select('s.id',
+                                    's.situacion',
+                                    'se.monto')
+                            ->where('se.estado', 1)
+                            ->where('s.estado', 1)
+                            ->where('se.id', $request->idSE)
+                            ->first();
+
+        $listar_situacion_evento = DB::table('situacion_eventos as se')
+                            ->join('situaciones as s', 'se.situacion_id', 's.id')
+                            ->select('s.situacion',
+                                    'se.monto')
+                            ->where('se.estado', 1)
+                            ->where('s.estado', 1)
+                            ->where('se.evento_id', $request->idE)
+                            ->orderBy('se.situacion_id', 'asc')
+                            ->get();
+
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-        $fecha_emision = date('d')."/".date('n')."/".date('Y');
+        $fecha_emision_corto= date('d')."/".date('n')."/".date('Y');
+        Carbon::setLocale('es');
+        $fecha = Carbon::now();
+        $fecha_emision = $fecha->format('d') . ' días del mes de ' . $fecha->translatedFormat('F') . ' de ' . $fecha->format('Y');
+        $fecha_evento_dia = mb_strtoupper(Carbon::parse($evento->fecha_evento)->locale('es')->translatedFormat('l, d \d\e F \d\e Y'),'UTF-8');
+
         $qr = QrCode::encoding('UTF-8')->size(100)->generate("No. REGISTRO: $evento->id\nCONTRATANTE: $evento->contratante\nSALON: $evento->nombre\nEVENTO: $evento->evento\nFECHA: $evento->fecha_evento");
         $codigo = $qr;
 
-        $pdf = PDF::loadView('reportes.contrato',['evento'=>$evento,
-                                                    'qr'=>$codigo,
+        $pdf = PDF::loadView('reportes.recibo',['evento'=>$evento,
+                                                'situacion_evento'=>$situacion_evento,
+                                                'listar_situacion_evento' =>$listar_situacion_evento,
+                                                'qr'=>$codigo,
+                                                'fecha_det'=>$fecha_emision,
+                                                'fecha_evento_dia'=>$fecha_evento_dia
+
                                                     ])
         //8.3cm 5cm
         ->setPaper('letter', 'portrait');                                               
         
-        return $pdf->stream($evento->id.'_contrato.pdf');
+        return $pdf->stream($evento->id.'_recibo.pdf');
         // return $pdf->download($personal->id_licencia.'-'.$personal->per_ci.'.pdf');
     }
 

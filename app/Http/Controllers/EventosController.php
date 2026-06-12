@@ -18,6 +18,8 @@ class EventosController extends Controller
                 'fecha_evento'  => 'required',
                 'predio_id'     => 'required',
                 'responsable'   => 'required',
+                'ci'            => 'required',
+                'celular'       => 'required',
                 'tipo_evento_id'=> 'required',
                 'tarifa_id'     => 'required',
                 'situacion_id'  => 'required',
@@ -42,6 +44,8 @@ class EventosController extends Controller
             // REGISTRAR EVENTO
             $evento = Eventos::create([
                 'contratante'    => $request->responsable,
+                'ci'             => $request->ci,
+                'celular'        => $request->celular,
                 'predio_id'      => $request->predio_id,
                 'tipo_evento_id' => $request->tipo_evento_id,
                 'tarifa_id'      => $request->tarifa_id,
@@ -51,7 +55,7 @@ class EventosController extends Controller
                 'sysuser'        => Auth::user()->id
             ]);
             // REGISTRAR SITUACIÓN
-            SituacionEventos::create([
+            $situacion_evento = SituacionEventos::create([
                 'evento_id'    => $evento->id,
                 'situacion_id' => $request->situacion_id,
                 'forma_pago'   => $request->forma_pago,
@@ -66,7 +70,8 @@ class EventosController extends Controller
             return response()->json([
                 'success' => true,
                 'mensaje' => 'Evento registrado correctamente',
-                'evento' => $evento
+                'evento' => $evento,
+                'situacion_evento' => $situacion_evento
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -146,7 +151,7 @@ class EventosController extends Controller
             $pago_saldo = $request->precio - $request->adelanto;
             // INICIAR TRANSACCIÓN
             DB::beginTransaction();
-            SituacionEventos::create([
+            $situacion_evento = SituacionEventos::create([
                 'evento_id'    => $request->id_evento,
                 'situacion_id' => 2,
                 'forma_pago'   => 'TRANSFERENCIA',
@@ -160,7 +165,8 @@ class EventosController extends Controller
 
             return response()->json([
                 'success' => true,
-                'mensaje' => 'Evento pagado correctamente'
+                'mensaje' => 'Evento pagado correctamente',
+                'situacion_evento' => $situacion_evento
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();

@@ -11,6 +11,8 @@ class Eventos extends Model
     protected $fillable = [
         'id', 
         'contratante', 
+        'ci',
+        'celular',
         'predio_id', 
         'tipo_evento_id', 
         'tarifa_id', 
