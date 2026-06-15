@@ -28,8 +28,8 @@
         header {
             position: fixed;
             top: 0cm;
-            left: 3cm;
-            right:2cm;
+            left: 0cm;
+            right:0cm;
             height: 3cm;
             /*background-color: #3498DB;*/
             color: black;
@@ -64,20 +64,13 @@
 <body>
 
 <header>        
-    <div style="padding-top: 22px; padding-bottom: 1px;">
+    <div style="padding-top: 0px; padding-bottom: 0px;">
         <table width="100%" style="border-collapse: collapse; border-spacing: 0; /*border: black 1px;*/margin-bottom: 0px; " class="table table-bordered table-striped">
             <tbody class="table-striped">
                 <tr>
                     <td style="/*border: 1px solid #000;*/ vertical-align: bottom;">
-                        <div style="text-align: center; width: 230px; font-size: 11.5px; /*border: 1px solid #C00;*/">
-                            <p style="margin: 1px;">FUERZA AÉREA BOLIVIANA</p>
-                            <p style="margin: 1px;">CIRCULO AERONAUTICO</p>
-                            <p style="margin: 1px;"><u><strong>BOLIVIA</strong></u></p>
-                        </div>
-                    </td>
-                    <td style="/*border: 1px solid #000;*/ vertical-align: bottom;">
                         <div style="padding-top: 0px; padding-bottom: 0px; text-align: right;">
-                            <img style="/*border: 1px solid #C00;*/ width: 58; height: 58" src="data:image/png;base64, {!! base64_encode($qr) !!} ">
+                            <img style="/*border: 1px solid #C00;*/ width: 100%; height: 100%" src="img/circulo_logo_recibo.png">
                         </div>
                     </td>
                 </tr>  
@@ -145,7 +138,7 @@
                 <p style="margin: 1px">EL DIRECTOR GENERAL DE AERONAVES DE ESTADO DE LA FUERZA AÉREA BOLIVIANA</p>
             </div> -->
 
-            <div style="padding-top: 2px; padding-bottom: 2px; text-align: center; font-size: 14pt; font-weight: bold; /*border: 1px solid #C00;*/">
+            <div style="padding-top: 1cm; padding-bottom: 2px; text-align: center; font-size: 14pt; font-weight: bold; /*border: 1px solid #C00;*/">
                 <p style="margin: 1px"><u>RECIBO</u></p>
             </div>
 
