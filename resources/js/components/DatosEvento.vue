@@ -370,7 +370,7 @@
                                 <div class="card-footer">
                                     <div class="row mt-2 d-flex justify-content-end">
                                         <!-- <button type="button" class="btn btn-danger mr-2" data-dismiss="modal" @click="Cerrar()">CANCELAR</button> -->
-                                        <button type="button" class="btn btn-primary" @click="Guardar()">GUARDAR</button>
+                                        <button type="button" class="btn btn-primary" @click="Guardar()" :disabled="procesando">{{ procesando ? 'Procesando...' : 'GUARDAR' }}</button>
                                     </div>  
                                 </div>
                             </div>
@@ -495,7 +495,7 @@
                                                         <td>SALDO</td>
                                                         <td style="text-align: right;">
                                                             {{ (Number(precio) - Number(montoE)).toFixed(2) }}
-                                                            <button type="button" class="btn btn-danger mr-2" @click="PagarSaldo(id_eventoE)">PAGAR</button>  
+                                                            <button type="button" class="btn btn-danger mr-2" @click="PagarSaldo(id_eventoE)" :disabled="procesando">{{ procesando ? 'Procesando...' : 'PAGAR SALDO' }}</button>  
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -527,7 +527,7 @@
                                 <div class="card-footer">
                                     <div class="row mt-2 d-flex justify-content-end">
                                         <button type="button" class="btn btn-danger mr-2" data-dismiss="modal" @click="Cerrar(2)">CANCELAR</button>
-                                        <button type="button" class="btn btn-primary" @click="Editar()">EDITAR</button>
+                                        <button type="button" class="btn btn-primary" @click="Editar()" :disabled="procesando">{{ procesando ? 'Procesando...' : 'EDITAR' }}</button>
                                     </div>  
                                 </div>
                             </div>
@@ -645,6 +645,8 @@ export default {
             observacionE: '',
             arraySituacionEvento: [],
             prediosDisponiblesEditar: [],
+
+            procesando: false,
         }
     },
 
@@ -964,6 +966,10 @@ export default {
         },
 
         Guardar() {
+            if (this.procesando) {
+                return;
+            }
+
              if (!this.$v.validationsGroupReg.$invalid) {
                 swal.fire({
                     title: '¿Desea registrar este evento?',
@@ -977,6 +983,7 @@ export default {
                     reverseButtons: true
                 }).then((result) => {
                     if (result.value) {
+                        this.procesando = true;
                         axios.post('/registrarEvento', {
                             fecha_evento: this.fecha_evento,
                             predio_id: this.predio.id,
@@ -995,6 +1002,8 @@ export default {
                                 : ''
                         })
                         .then((response) => {
+                            this.procesando = false;
+
                             if (response.data.success) {
                                 Swal.fire({
                                     icon: 'success',
@@ -1003,8 +1012,8 @@ export default {
                                 });
                                 $('#ModalEvento').modal('hide');
                                 this.Cerrar(1);
-                                this.GenerarContrato(response.data.evento.id, response.data.situacion_evento.id);
                                 this.ListarEvento();
+                                this.GenerarContrato(response.data.evento.id, response.data.situacion_evento.id);
                             } else {
                                 Swal.fire({
                                     icon: 'warning',
@@ -1015,6 +1024,7 @@ export default {
 
                         })
                         .catch((error) => {
+                            this.procesando = false;
                             console.log(error);
                             Swal.fire({
                                 icon: 'error',
@@ -1044,6 +1054,10 @@ export default {
         },
 
         Editar(){
+            if (this.procesando) {
+                return;
+            }
+
             if(!this.$v.validationsGroupMod.$invalid){
                 swal.fire({
                     title: '¿Desea editar este evento?', // TITULO 
@@ -1058,6 +1072,7 @@ export default {
                     }).then((result) => {
                     if (result.value) {
                         let me = this;
+                        this.procesando = true;
                         axios.post('/editarEvento', {
                             id_evento: this.id_eventoE,
                             fecha_evento: this.fecha_eventoE,
@@ -1072,11 +1087,10 @@ export default {
                                     title: 'CORRECTO',
                                     text: response.data.mensaje
                                 });
-
                                 $('#ModalEditar').modal('hide');
                                 $('#ModalEvento').modal('hide');
-                                me.Cerrar(2);
-                                me.ListarEvento();
+                                this.Cerrar(2);
+                                this.ListarEvento();
                             }else{
                                 Swal.fire({
                                     icon: 'warning',
@@ -1092,6 +1106,11 @@ export default {
                                 title: 'ERROR',
                                 text: 'Ocurrió un error inesperado'
                             });
+                        })
+                         .finally(() => {
+
+                            this.procesando = false;
+
                         });
                     }else{
                         let me = this;
@@ -1116,6 +1135,9 @@ export default {
         },
 
         PagarSaldo(idEvento){
+            if (this.procesando) {
+                return;
+            }
         //    if(!this.$v.validationsGroupSaldo.$invalid){
                 swal.fire({
                     title: '¿Desea pagar el saldo de este evento?', // TITULO 
@@ -1130,6 +1152,7 @@ export default {
                     }).then((result) => {
                     if (result.value) {
                         let me = this;
+                        this.procesando = true;
                         axios.post('/pagarSaldoEvento', {
                             id_evento: idEvento,
                             precio: this.precio,
@@ -1149,9 +1172,9 @@ export default {
 
                                 $('#ModalEditar').modal('hide');
                                 // $('#ModalEvento').modal('hide');
-                                me.Cerrar(2);
+                                this.Cerrar(2);
+                                this.ListarEvento();
                                 this.GenerarContrato(response.data.situacion_evento.evento_id, response.data.situacion_evento.id);
-                                me.ListarEvento();
                             }else{
                                 Swal.fire({
                                     icon: 'warning',
@@ -1167,6 +1190,11 @@ export default {
                                 title: 'ERROR',
                                 text: 'Ocurrió un error inesperado'
                             });
+                        })
+                        .finally(() => {
+
+                            this.procesando = false;
+
                         });
                     }else{
                         let me = this;

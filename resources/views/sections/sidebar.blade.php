@@ -91,20 +91,23 @@
                 </li>
                 @endcan
 
-
+                @can('view-ayuda', Model::class)
                 <li class="nav-item">{{-- AYUDAS --}}
                     <router-link class="nav-link" to='/ayuda'>
                       <i class="nav-icon fas fa-info-circle"></i>
                       <p>AYUDAS</p>
                     </router-link>
                 </li>
+                @endcan
 
+                @can('view-acerca', Model::class)
                 <li class="nav-item">{{-- ACERCA DE --}}
                     <router-link class="nav-link" to='/acercade'>
                       <i class="nav-icon fas fa-boxes"></i>
                       <p>ACERCA DE</p>
                     </router-link>
                 </li>
+                @endcan
 
             </ul>
         </nav>

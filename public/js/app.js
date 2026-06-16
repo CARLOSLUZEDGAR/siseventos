@@ -4320,7 +4320,8 @@ var montoMaximo = function montoMaximo(value) {
       montoE: '',
       observacionE: '',
       arraySituacionEvento: [],
-      prediosDisponiblesEditar: []
+      prediosDisponiblesEditar: [],
+      procesando: false
     };
   },
   validations: {
@@ -4602,6 +4603,10 @@ var montoMaximo = function montoMaximo(value) {
     Guardar: function Guardar() {
       var _this2 = this;
 
+      if (this.procesando) {
+        return;
+      }
+
       if (!this.$v.validationsGroupReg.$invalid) {
         swal.fire({
           title: '¿Desea registrar este evento?',
@@ -4615,6 +4620,7 @@ var montoMaximo = function montoMaximo(value) {
           reverseButtons: true
         }).then(function (result) {
           if (result.value) {
+            _this2.procesando = true;
             axios.post('/registrarEvento', {
               fecha_evento: _this2.fecha_evento,
               predio_id: _this2.predio.id,
@@ -4628,6 +4634,8 @@ var montoMaximo = function montoMaximo(value) {
               monto: _this2.situacion.id == 1 ? _this2.monto : _this2.tarifa.precio,
               observacion: _this2.observacion ? _this2.observacion.toUpperCase() : ''
             }).then(function (response) {
+              _this2.procesando = false;
+
               if (response.data.success) {
                 Swal.fire({
                   icon: 'success',
@@ -4638,9 +4646,9 @@ var montoMaximo = function montoMaximo(value) {
 
                 _this2.Cerrar(1);
 
-                _this2.GenerarContrato(response.data.evento.id, response.data.situacion_evento.id);
-
                 _this2.ListarEvento();
+
+                _this2.GenerarContrato(response.data.evento.id, response.data.situacion_evento.id);
               } else {
                 Swal.fire({
                   icon: 'warning',
@@ -4649,6 +4657,7 @@ var montoMaximo = function montoMaximo(value) {
                 });
               }
             })["catch"](function (error) {
+              _this2.procesando = false;
               console.log(error);
               Swal.fire({
                 icon: 'error',
@@ -4676,6 +4685,10 @@ var montoMaximo = function montoMaximo(value) {
     Editar: function Editar() {
       var _this3 = this;
 
+      if (this.procesando) {
+        return;
+      }
+
       if (!this.$v.validationsGroupMod.$invalid) {
         swal.fire({
           title: '¿Desea editar este evento?',
@@ -4697,6 +4710,7 @@ var montoMaximo = function montoMaximo(value) {
         }).then(function (result) {
           if (result.value) {
             var me = _this3;
+            _this3.procesando = true;
             axios.post('/editarEvento', {
               id_evento: _this3.id_eventoE,
               fecha_evento: _this3.fecha_eventoE,
@@ -4712,8 +4726,10 @@ var montoMaximo = function montoMaximo(value) {
                 });
                 $('#ModalEditar').modal('hide');
                 $('#ModalEvento').modal('hide');
-                me.Cerrar(2);
-                me.ListarEvento();
+
+                _this3.Cerrar(2);
+
+                _this3.ListarEvento();
               } else {
                 Swal.fire({
                   icon: 'warning',
@@ -4728,6 +4744,8 @@ var montoMaximo = function montoMaximo(value) {
                 title: 'ERROR',
                 text: 'Ocurrió un error inesperado'
               });
+            })["finally"](function () {
+              _this3.procesando = false;
             });
           } else {
             var _me = _this3;
@@ -4753,7 +4771,11 @@ var montoMaximo = function montoMaximo(value) {
     PagarSaldo: function PagarSaldo(idEvento) {
       var _this4 = this;
 
-      //    if(!this.$v.validationsGroupSaldo.$invalid){
+      if (this.procesando) {
+        return;
+      } //    if(!this.$v.validationsGroupSaldo.$invalid){
+
+
       swal.fire({
         title: '¿Desea pagar el saldo de este evento?',
         // TITULO 
@@ -4774,6 +4796,7 @@ var montoMaximo = function montoMaximo(value) {
       }).then(function (result) {
         if (result.value) {
           var me = _this4;
+          _this4.procesando = true;
           axios.post('/pagarSaldoEvento', {
             id_evento: idEvento,
             precio: _this4.precio,
@@ -4791,11 +4814,11 @@ var montoMaximo = function montoMaximo(value) {
               });
               $('#ModalEditar').modal('hide'); // $('#ModalEvento').modal('hide');
 
-              me.Cerrar(2);
+              _this4.Cerrar(2);
+
+              _this4.ListarEvento();
 
               _this4.GenerarContrato(response.data.situacion_evento.evento_id, response.data.situacion_evento.id);
-
-              me.ListarEvento();
             } else {
               Swal.fire({
                 icon: 'warning',
@@ -4810,6 +4833,8 @@ var montoMaximo = function montoMaximo(value) {
               title: 'ERROR',
               text: 'Ocurrió un error inesperado'
             });
+          })["finally"](function () {
+            _this4.procesando = false;
           });
         } else {
           var _me2 = _this4;
@@ -111830,14 +111855,23 @@ var render = function() {
                               "button",
                               {
                                 staticClass: "btn btn-primary",
-                                attrs: { type: "button" },
+                                attrs: {
+                                  type: "button",
+                                  disabled: _vm.procesando
+                                },
                                 on: {
                                   click: function($event) {
                                     return _vm.Guardar()
                                   }
                                 }
                               },
-                              [_vm._v("GUARDAR")]
+                              [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.procesando ? "Procesando..." : "GUARDAR"
+                                  )
+                                )
+                              ]
                             )
                           ]
                         )
@@ -112169,7 +112203,10 @@ var render = function() {
                                       "button",
                                       {
                                         staticClass: "btn btn-danger mr-2",
-                                        attrs: { type: "button" },
+                                        attrs: {
+                                          type: "button",
+                                          disabled: _vm.procesando
+                                        },
                                         on: {
                                           click: function($event) {
                                             return _vm.PagarSaldo(
@@ -112178,7 +112215,15 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      [_vm._v("PAGAR")]
+                                      [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.procesando
+                                              ? "Procesando..."
+                                              : "PAGAR SALDO"
+                                          )
+                                        )
+                                      ]
                                     )
                                   ]
                                 )
@@ -112280,14 +112325,18 @@ var render = function() {
                         "button",
                         {
                           staticClass: "btn btn-primary",
-                          attrs: { type: "button" },
+                          attrs: { type: "button", disabled: _vm.procesando },
                           on: {
                             click: function($event) {
                               return _vm.Editar()
                             }
                           }
                         },
-                        [_vm._v("EDITAR")]
+                        [
+                          _vm._v(
+                            _vm._s(_vm.procesando ? "Procesando..." : "EDITAR")
+                          )
+                        ]
                       )
                     ]
                   )

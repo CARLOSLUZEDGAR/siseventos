@@ -185,10 +185,10 @@
                         @endforeach
                         <tr>
                             <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: normal;">SALDO</span></p>
+                                <p style="margin: 1px"><span style="font-weight: bold;">SALDO</span></p>
                             </td>
                             <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: normal;">{{$evento->precio - $situacion_evento->monto}}</span></p>                            
+                                <p style="margin: 1px"><span style="font-weight: bold;">{{$evento->precio - $situacion_evento->monto}}</span></p>                            
                             </td>
                         </tr>
                     @else
@@ -230,7 +230,7 @@
                             <td width="50%" style="/*border: 1px solid #000;*/ padding: 1px; text-align: center; font-size: 9pt; vertical-align: top;">
                                 <p style="margin: 1px"><span style="font-weight: normal;">{{$evento->contratante}}</span></p>
                                 <p style="margin: 1px"><span style="font-weight: bold;">ARRENDATARIO</span></p>
-                                <p style="margin: 1px"><span style="font-weight: bold;">CELULAR:</span>{{ $evento->celular }}</p>                                                      
+                                <p style="margin: 1px"><span style="font-weight: bold;">CELULAR:</span> {{ $evento->celular }}</p>                                                      
                             </td>
                         </tr> 
                     </tbody>
