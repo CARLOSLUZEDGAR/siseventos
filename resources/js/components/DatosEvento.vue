@@ -76,7 +76,7 @@
                             backgroundColor: evento.color
                         }"
                     >
-                        {{ evento.nombre }}
+                        <!-- {{ evento.nombre }} -->
                     </div>
                 </div>
             </div>
@@ -84,20 +84,13 @@
         </div>
 
         <div class="modal fade" data-backdrop="static" id="ModalEvento">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <!-- HEADER -->
                     <div class="modal-header">
-                        <!-- <template v-if="modal == 0"> -->
                             <h4 class="modal-title">
                                 FECHA: {{ formatearFecha }}
                             </h4>
-                        <!-- </template>
-                        <template v-else>
-                            <h4 class="modal-title">
-                                EDITAR EVENTO
-                            </h4>
-                        </template> -->
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="Cerrar(1)">
                             <span aria-hidden="true">
                                 &times;
@@ -369,7 +362,6 @@
                                 </div>
                                 <div class="card-footer">
                                     <div class="row mt-2 d-flex justify-content-end">
-                                        <!-- <button type="button" class="btn btn-danger mr-2" data-dismiss="modal" @click="Cerrar()">CANCELAR</button> -->
                                         <button type="button" class="btn btn-primary" @click="Guardar()" :disabled="procesando">{{ procesando ? 'Procesando...' : 'GUARDAR' }}</button>
                                     </div>  
                                 </div>
@@ -385,28 +377,19 @@
                     <!-- FOOTER -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal" @click="Cerrar(1)">CANCELAR</button>
-                        <!-- <button v-if="modal == 0 && prediosDisponibles.length > 0" type="button" class="btn btn-primary" @click="Guardar()">GUARDAR</button>
-                        <button v-else type="button" class="btn btn-primary" @click="Editar()">EDITAR</button> -->
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="modal fade" data-backdrop="static" id="ModalEditar">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <!-- HEADER -->
                     <div class="modal-header">
-                        <!-- <template v-if="modal == 0"> -->
                             <h4 class="modal-title">
                                 EDITAR EVENTO
                             </h4>
-                        <!-- </template>
-                        <template v-else>
-                            <h4 class="modal-title">
-                                EDITAR EVENTO
-                            </h4>
-                        </template> -->
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="Cerrar(2)">
                             <span aria-hidden="true">
                                 &times;
@@ -534,12 +517,6 @@
                             
                         
                     </div>
-                    <!-- FOOTER -->
-                    <!-- <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" @click="Cerrar()">CANCELAR</button>
-                        <button v-if="modal == 0 && prediosDisponibles.length > 0" type="button" class="btn btn-primary" @click="Guardar()">GUARDAR</button>
-                        <button v-else type="button" class="btn btn-primary" @click="Editar()">EDITAR</button>
-                    </div> -->
                 </div>
             </div>
         </div>
