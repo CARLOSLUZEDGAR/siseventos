@@ -84,7 +84,7 @@
         </div>
 
         <div class="modal fade" data-backdrop="static" id="ModalEvento">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <!-- HEADER -->
                     <div class="modal-header">
@@ -393,7 +393,7 @@
         </div>
 
         <div class="modal fade" data-backdrop="static" id="ModalEditar">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <!-- HEADER -->
                     <div class="modal-header">
@@ -1313,9 +1313,9 @@ export default {
 
 }
 
-.v-select,
+/* .v-select,
 .vs__dropdown-toggle {
     width: 100%;
-}
+} */
 
 </style>
