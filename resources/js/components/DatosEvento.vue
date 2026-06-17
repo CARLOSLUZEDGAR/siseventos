@@ -76,7 +76,7 @@
                             backgroundColor: evento.color
                         }"
                     >
-                        <!-- {{ evento.nombre }} -->
+                        
                     </div>
                 </div>
             </div>
