@@ -64,21 +64,22 @@
 
                 <div v-if="dia">
 
-                    <!-- NUMERO DIA -->
-                    <strong>{{ dia }}</strong>
+    <!-- NUMERO DIA -->
+    <strong>{{ dia }}</strong>
 
-                    <!-- EVENTOS -->
-                    <div
-                        v-for="(evento, index) in obtenerEventosDia(dia)"
-                        :key="index"
-                        class="evento-calendario"
-                        :style="{
-                            backgroundColor: evento.color
-                        }"
-                    >
-                        
-                    </div>
-                </div>
+    <!-- EVENTOS -->
+    <div class="ocupacion-dia">
+        <span
+            v-for="(evento, index) in obtenerEventosDia(dia)"
+            :key="index"
+            class="evento-punto"
+            :style="{
+                backgroundColor: evento.color
+            }"
+        ></span>
+    </div>
+
+</div>
             </div>
 
         </div>
@@ -1288,6 +1289,22 @@ export default {
 
     text-overflow: ellipsis;
 
+}
+
+.ocupacion-dia {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    margin-top: 3px;
+    flex-wrap: wrap;
+}
+
+.evento-punto {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
 }
 
 /* .v-select,
