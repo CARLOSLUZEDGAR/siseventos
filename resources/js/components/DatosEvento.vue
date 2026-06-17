@@ -24,7 +24,7 @@
 
             <!-- Año -->
             <div class="col-md-3">
-                <label>GESTIÓN</label>
+                <label>GESTIÓNes</label>
 
                 <select class="form-control"
                         v-model="anio"
