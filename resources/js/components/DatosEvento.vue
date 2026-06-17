@@ -1313,4 +1313,9 @@ export default {
 
 }
 
+.v-select,
+.vs__dropdown-toggle {
+    width: 100%;
+}
+
 </style>
