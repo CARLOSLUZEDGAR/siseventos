@@ -64,19 +64,18 @@
 
                 <div v-if="dia">
 
-    <!-- NUMERO DIA -->
+    <!-- NÚMERO DÍA -->
     <strong>{{ dia }}</strong>
 
     <!-- EVENTOS -->
-    <div class="ocupacion-dia">
-        <span
-            v-for="(evento, index) in obtenerEventosDia(dia)"
-            :key="index"
-            class="evento-punto"
-            :style="{
-                backgroundColor: evento.color
-            }"
-        ></span>
+    <div
+        v-for="(evento, index) in obtenerEventosDia(dia)"
+        :key="index"
+        class="evento-punto"
+        :style="{
+            backgroundColor: evento.color
+        }"
+    >
     </div>
 
 </div>
@@ -85,7 +84,7 @@
         </div>
 
         <div class="modal fade" data-backdrop="static" id="ModalEvento">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <!-- HEADER -->
                     <div class="modal-header">
@@ -384,7 +383,7 @@
         </div>
 
         <div class="modal fade" data-backdrop="static" id="ModalEditar">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <!-- HEADER -->
                     <div class="modal-header">
@@ -1291,25 +1290,16 @@ export default {
 
 }
 
-.ocupacion-dia {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 3px;
-    margin-top: 3px;
-    flex-wrap: wrap;
-}
-
 .evento-punto {
-    width: 10px;
-    height: 10px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    display: inline-block;
+    margin: 2px auto;
 }
 
-/* .v-select,
+.v-select,
 .vs__dropdown-toggle {
     width: 100%;
-} */
+}
 
 </style>

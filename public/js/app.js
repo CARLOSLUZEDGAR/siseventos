@@ -4233,29 +4233,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 var decimalDos = function decimalDos(value) {
@@ -15116,7 +15093,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.calendar[data-v-d06600d6] {\r\n\r\n    display: grid;\r\n\r\n    grid-template-columns: repeat(7, 1fr);\r\n\r\n    gap: 5px;\n}\n.calendar-header[data-v-d06600d6] {\r\n\r\n    background: #007bff;\r\n\r\n    color: white;\r\n\r\n    text-align: center;\r\n\r\n    padding: 10px;\r\n\r\n    font-weight: bold;\n}\n.calendar-day[data-v-d06600d6] {\r\n\r\n    min-height: 100px;\r\n\r\n    border: 1px solid #ccc;\r\n\r\n    padding: 10px;\r\n\r\n    cursor: pointer;\r\n\r\n    transition: 0.2s;\r\n\r\n    background: white;\n}\n.calendar-day[data-v-d06600d6]:hover {\r\n\r\n    background: #f0f0f0;\n}\n.empty[data-v-d06600d6] {\r\n\r\n    background: #f8f9fa;\r\n\r\n    cursor: default;\n}\n.calendar-day[data-v-d06600d6] {\r\n\r\n    min-height: 120px;\r\n\r\n    border: 1px solid #dcdcdc;\r\n\r\n    padding: 5px;\r\n\r\n    cursor: pointer;\n}\n.evento-calendario[data-v-d06600d6] {\r\n\r\n    color: white;\r\n\r\n    font-size: 11px;\r\n\r\n    margin-top: 4px;\r\n\r\n    padding: 2px 5px;\r\n\r\n    border-radius: 4px;\r\n\r\n    overflow: hidden;\r\n\r\n    white-space: nowrap;\r\n\r\n    text-overflow: ellipsis;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.calendar[data-v-d06600d6] {\r\n\r\n    display: grid;\r\n\r\n    grid-template-columns: repeat(7, 1fr);\r\n\r\n    gap: 5px;\n}\n.calendar-header[data-v-d06600d6] {\r\n\r\n    background: #007bff;\r\n\r\n    color: white;\r\n\r\n    text-align: center;\r\n\r\n    padding: 10px;\r\n\r\n    font-weight: bold;\n}\n.calendar-day[data-v-d06600d6] {\r\n\r\n    min-height: 100px;\r\n\r\n    border: 1px solid #ccc;\r\n\r\n    padding: 10px;\r\n\r\n    cursor: pointer;\r\n\r\n    transition: 0.2s;\r\n\r\n    background: white;\n}\n.calendar-day[data-v-d06600d6]:hover {\r\n\r\n    background: #f0f0f0;\n}\n.empty[data-v-d06600d6] {\r\n\r\n    background: #f8f9fa;\r\n\r\n    cursor: default;\n}\n.calendar-day[data-v-d06600d6] {\r\n\r\n    min-height: 120px;\r\n\r\n    border: 1px solid #dcdcdc;\r\n\r\n    padding: 5px;\r\n\r\n    cursor: pointer;\n}\n.evento-calendario[data-v-d06600d6] {\r\n\r\n    color: white;\r\n\r\n    font-size: 11px;\r\n\r\n    margin-top: 4px;\r\n\r\n    padding: 2px 5px;\r\n\r\n    border-radius: 4px;\r\n\r\n    overflow: hidden;\r\n\r\n    white-space: nowrap;\r\n\r\n    text-overflow: ellipsis;\n}\n.evento-punto[data-v-d06600d6] {\r\n    width: 20px;\r\n    height: 20px;\r\n    border-radius: 50%;\r\n    margin: 2px auto;\n}\n.v-select[data-v-d06600d6],\r\n.vs__dropdown-toggle[data-v-d06600d6] {\r\n    width: 100%;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -110959,7 +110936,9 @@ var render = function() {
           _vm._l(_vm.meses, function(m, index) {
             return _c("option", { key: index, domProps: { value: index } }, [
               _vm._v(
-                "\n\n                    " + _vm._s(m) + "\n\n                "
+                "\n\n                        " +
+                  _vm._s(m) +
+                  "\n\n                    "
               )
             ])
           }),
@@ -111004,7 +110983,9 @@ var render = function() {
           _vm._l(_vm.anios, function(a) {
             return _c("option", { key: a, domProps: { value: a } }, [
               _vm._v(
-                "\n\n                    " + _vm._s(a) + "\n\n                "
+                "\n\n                        " +
+                  _vm._s(a) +
+                  "\n\n                    "
               )
             ])
           }),
@@ -111019,7 +111000,7 @@ var render = function() {
       [
         _vm._l(_vm.diasSemana, function(dia) {
           return _c("div", { key: dia, staticClass: "calendar-header" }, [
-            _vm._v("\n\n            " + _vm._s(dia) + "\n\n        ")
+            _vm._v("\n\n                " + _vm._s(dia) + "\n\n            ")
           ])
         }),
         _vm._v(" "),
@@ -111047,23 +111028,13 @@ var render = function() {
                         evento,
                         index
                       ) {
-                        return _c(
-                          "div",
-                          {
-                            key: index,
-                            staticClass: "evento-calendario",
-                            style: {
-                              backgroundColor: evento.color
-                            }
-                          },
-                          [
-                            _vm._v(
-                              "\n                    " +
-                                _vm._s(evento.nombre) +
-                                "\n                "
-                            )
-                          ]
-                        )
+                        return _c("div", {
+                          key: index,
+                          staticClass: "evento-punto",
+                          style: {
+                            backgroundColor: evento.color
+                          }
+                        })
                       })
                     ],
                     2
@@ -111083,825 +111054,851 @@ var render = function() {
         attrs: { "data-backdrop": "static", id: "ModalEvento" }
       },
       [
-        _c("div", { staticClass: "modal-dialog modal-lg" }, [
-          _c("div", { staticClass: "modal-content" }, [
-            _c("div", { staticClass: "modal-header" }, [
-              _c("h4", { staticClass: "modal-title" }, [
-                _vm._v(
-                  "\n                            FECHA: " +
-                    _vm._s(_vm.formatearFecha) +
-                    "\n                        "
+        _c(
+          "div",
+          { staticClass: "modal-dialog modal-lg modal-dialog-scrollable" },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v(
+                    "\n                                FECHA: " +
+                      _vm._s(_vm.formatearFecha) +
+                      "\n                            "
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: {
+                      type: "button",
+                      "data-dismiss": "modal",
+                      "aria-label": "Close"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.Cerrar(1)
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v(
+                        "\n                                ×\n                            "
+                      )
+                    ])
+                  ]
                 )
               ]),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "close",
-                  attrs: {
-                    type: "button",
-                    "data-dismiss": "modal",
-                    "aria-label": "Close"
-                  },
-                  on: {
-                    click: function($event) {
-                      return _vm.Cerrar(1)
-                    }
-                  }
-                },
-                [
-                  _c("span", { attrs: { "aria-hidden": "true" } }, [
-                    _vm._v(
-                      "\n                            ×\n                        "
-                    )
-                  ])
-                ]
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "modal-body" }, [
-              _vm.eventosDiaSeleccionado.length > 0
-                ? _c(
-                    "div",
-                    [
-                      _c("h5", { staticClass: "mb-3" }, [
-                        _vm._v(
-                          "\n                            SALONES OCUPADOS\n                        "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _vm._l(_vm.eventosDiaSeleccionado, function(
-                        evento,
-                        index
-                      ) {
-                        return _c(
-                          "div",
-                          { key: index, staticClass: "card mb-3" },
-                          [
-                            _c(
-                              "div",
-                              {
-                                staticClass: "card-header text-white",
-                                style: { backgroundColor: evento.color }
-                              },
-                              [
-                                _c("strong", [
-                                  _vm._v(
-                                    "\n                                    " +
-                                      _vm._s(evento.nombre) +
-                                      "\n                                "
-                                  )
-                                ])
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "card-body" }, [
-                              _c("div", { staticClass: "row" }, [
-                                _c("div", { staticClass: "col-md-6" }, [
-                                  _c("strong", [_vm._v("RESPONSABLE:")]),
-                                  _vm._v(
-                                    "\n                                        " +
-                                      _vm._s(evento.contratante) +
-                                      "\n                                    "
-                                  )
+              _c("div", { staticClass: "modal-body" }, [
+                _vm.eventosDiaSeleccionado.length > 0
+                  ? _c(
+                      "div",
+                      [
+                        _c("h5", { staticClass: "mb-3" }, [
+                          _vm._v(
+                            "\n                                SALONES OCUPADOS\n                            "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.eventosDiaSeleccionado, function(
+                          evento,
+                          index
+                        ) {
+                          return _c(
+                            "div",
+                            { key: index, staticClass: "card mb-3" },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "card-header text-white",
+                                  style: { backgroundColor: evento.color }
+                                },
+                                [
+                                  _c("strong", [
+                                    _vm._v(
+                                      "\n                                        " +
+                                        _vm._s(evento.nombre) +
+                                        "\n                                    "
+                                    )
+                                  ])
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "card-body" }, [
+                                _c("div", { staticClass: "row" }, [
+                                  _c("div", { staticClass: "col-md-6" }, [
+                                    _c("strong", [_vm._v("RESPONSABLE:")]),
+                                    _vm._v(
+                                      "\n                                            " +
+                                        _vm._s(evento.contratante) +
+                                        "\n                                        "
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6" }, [
+                                    _c("strong", [_vm._v("TIPO EVENTO:")]),
+                                    _vm._v(
+                                      "\n                                            " +
+                                        _vm._s(evento.evento) +
+                                        "\n                                        "
+                                    )
+                                  ])
                                 ]),
                                 _vm._v(" "),
-                                _c("div", { staticClass: "col-md-6" }, [
-                                  _c("strong", [_vm._v("TIPO EVENTO:")]),
-                                  _vm._v(
-                                    "\n                                        " +
-                                      _vm._s(evento.evento) +
-                                      "\n                                    "
-                                  )
+                                _c("div", { staticClass: "row mt-2" }, [
+                                  _c("div", { staticClass: "col-md-6" }, [
+                                    _c("strong", [_vm._v("TARIFA:")]),
+                                    _vm._v(
+                                      "\n                                            " +
+                                        _vm._s(evento.tarifa) +
+                                        "\n                                        "
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6" }, [
+                                    _c("strong", [_vm._v("FECHA:")]),
+                                    _vm._v(" "),
+                                    _vm._v(
+                                      "\n                                            " +
+                                        _vm._s(_vm.formatearFecha) +
+                                        "\n                                        "
+                                    )
+                                  ])
                                 ])
                               ]),
                               _vm._v(" "),
-                              _c("div", { staticClass: "row mt-2" }, [
-                                _c("div", { staticClass: "col-md-6" }, [
-                                  _c("strong", [_vm._v("TARIFA:")]),
-                                  _vm._v(
-                                    "\n                                        " +
-                                      _vm._s(evento.tarifa) +
-                                      "\n                                    "
+                              _c(
+                                "div",
+                                { staticClass: "card-footer text-right" },
+                                [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-primary",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.editarEventoDia(evento.id)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("EDITAR")]
                                   )
-                                ]),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "col-md-6" }, [
-                                  _c("strong", [_vm._v("FECHA:")]),
-                                  _vm._v(" "),
+                                ]
+                              )
+                            ]
+                          )
+                        })
+                      ],
+                      2
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.prediosDisponibles.length > 0
+                  ? _c("div", [
+                      _c("hr"),
+                      _vm._v(" "),
+                      _c("h5", { staticClass: "mb-3" }, [
+                        _vm._v(
+                          "\n                                REGISTRAR NUEVO EVENTO\n                            "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card mb-3" }, [
+                        _c("div", { staticClass: "card-body" }, [
+                          _c("div", { staticClass: "row mt-2" }, [
+                            _c("div", { staticClass: "col-md-6" }, [
+                              _c(
+                                "label",
+                                { staticClass: "form-control-label" },
+                                [
                                   _vm._v(
-                                    "\n                                        " +
-                                      _vm._s(_vm.formatearFecha) +
-                                      "\n                                    "
+                                    "\n                                                FECHA EVENTO:\n                                            "
                                   )
-                                ])
-                              ])
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                staticClass: "form-control",
+                                attrs: { type: "text", disabled: "" },
+                                domProps: { value: _vm.formatearFecha }
+                              })
                             ]),
                             _vm._v(" "),
                             _c(
                               "div",
-                              { staticClass: "card-footer text-right" },
+                              { staticClass: "col-md-6" },
                               [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-primary",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        return _vm.editarEventoDia(evento.id)
-                                      }
-                                    }
-                                  },
-                                  [_vm._v("EDITAR")]
-                                )
-                              ]
-                            )
-                          ]
-                        )
-                      })
-                    ],
-                    2
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.prediosDisponibles.length > 0
-                ? _c("div", [
-                    _c("hr"),
-                    _vm._v(" "),
-                    _c("h5", { staticClass: "mb-3" }, [
-                      _vm._v(
-                        "\n                            REGISTRAR NUEVO EVENTO\n                        "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "card mb-3" }, [
-                      _c("div", { staticClass: "card-body" }, [
-                        _c("div", { staticClass: "row mt-2" }, [
-                          _c("div", { staticClass: "col-md-6" }, [
-                            _c("label", { staticClass: "form-control-label" }, [
-                              _vm._v(
-                                "\n                                            FECHA EVENTO:\n                                        "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              staticClass: "form-control",
-                              attrs: { type: "text", disabled: "" },
-                              domProps: { value: _vm.formatearFecha }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "col-md-6" },
-                            [
-                              _c("label", [_vm._v("PREDIO:")]),
-                              _vm._v(" "),
-                              _c("v-select", {
-                                class: {
-                                  "is-invalid": _vm.$v.predio.$error,
-                                  "is-valid": !_vm.$v.predio.$invalid
-                                },
-                                attrs: {
-                                  label: "nombre",
-                                  options: _vm.prediosDisponibles
-                                },
-                                scopedSlots: _vm._u(
-                                  [
-                                    {
-                                      key: "no-options",
-                                      fn: function(ref) {
-                                        var search = ref.search
-                                        var searching = ref.searching
-                                        return [
-                                          searching
-                                            ? [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones de coincidencia para\n                                                    "
-                                                ),
-                                                _c("em", [
-                                                  _vm._v(_vm._s(search))
-                                                ])
-                                              ]
-                                            : _c("em", [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones disponibles.\n                                                "
-                                                )
-                                              ])
-                                        ]
-                                      }
-                                    }
-                                  ],
-                                  null,
-                                  false,
-                                  3511366226
-                                ),
-                                model: {
-                                  value: _vm.predio,
-                                  callback: function($$v) {
-                                    _vm.predio = $$v
-                                  },
-                                  expression: "predio"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "invalid-feedback" }, [
-                                !_vm.$v.predio.required
-                                  ? _c("span", [
-                                      _vm._v(
-                                        "\n                                                Este campo es requerido\n                                            "
-                                      )
-                                    ])
-                                  : _vm._e()
-                              ])
-                            ],
-                            1
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "row mt-2" }, [
-                          _c("div", { staticClass: "col-md-4" }, [
-                            _c("label", { staticClass: "form-control-label" }, [
-                              _vm._v(
-                                "\n                                            RESPONSABLE:\n                                        "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.responsable,
-                                  expression: "responsable"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              class: {
-                                "is-invalid": _vm.$v.responsable.$error,
-                                "is-valid": !_vm.$v.responsable.$invalid
-                              },
-                              staticStyle: { "text-transform": "uppercase" },
-                              attrs: { type: "text" },
-                              domProps: { value: _vm.responsable },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.responsable = $event.target.value
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "invalid-feedback" }, [
-                              !_vm.$v.responsable.required
-                                ? _c("span", [
-                                    _vm._v(
-                                      "\n                                                Este campo es requerido\n                                            "
-                                    )
-                                  ])
-                                : _vm._e()
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col-md-4" }, [
-                            _c("label", { staticClass: "form-control-label" }, [
-                              _vm._v(
-                                "\n                                            CEDULA IDENTIDAD:\n                                        "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.ci,
-                                  expression: "ci"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              class: {
-                                "is-invalid": _vm.$v.ci.$error,
-                                "is-valid": !_vm.$v.ci.$invalid
-                              },
-                              staticStyle: { "text-transform": "uppercase" },
-                              attrs: { type: "text" },
-                              domProps: { value: _vm.ci },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.ci = $event.target.value
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "invalid-feedback" }, [
-                              !_vm.$v.ci.required
-                                ? _c("span", [
-                                    _vm._v(
-                                      "\n                                                Este campo es requerido\n                                            "
-                                    )
-                                  ])
-                                : _vm._e()
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col-md-4" }, [
-                            _c("label", { staticClass: "form-control-label" }, [
-                              _vm._v(
-                                "\n                                            CELULAR:\n                                        "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.celular,
-                                  expression: "celular"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              class: {
-                                "is-invalid": _vm.$v.celular.$error,
-                                "is-valid": !_vm.$v.celular.$invalid
-                              },
-                              staticStyle: { "text-transform": "uppercase" },
-                              attrs: { type: "text" },
-                              domProps: { value: _vm.celular },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.celular = $event.target.value
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "invalid-feedback" }, [
-                              !_vm.$v.celular.required
-                                ? _c("span", [
-                                    _vm._v(
-                                      "\n                                                Este campo es requerido\n                                            "
-                                    )
-                                  ])
-                                : !_vm.$v.celular.numeric
-                                ? _c("span", [
-                                    _vm._v(
-                                      "\n                                                Solo digitos\n                                            "
-                                    )
-                                  ])
-                                : !_vm.$v.celular.length
-                                ? _c("span", [
-                                    _vm._v(
-                                      "\n                                                Debe contener 8 digitos\n                                            "
-                                    )
-                                  ])
-                                : _vm._e()
-                            ])
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "row mt-2" }, [
-                          _c(
-                            "div",
-                            { staticClass: "col-md-6" },
-                            [
-                              _c("label", [_vm._v("TIPO EVENTO:")]),
-                              _vm._v(" "),
-                              _c("v-select", {
-                                class: {
-                                  "is-invalid": _vm.$v.tipo_evento.$error,
-                                  "is-valid": !_vm.$v.tipo_evento.$invalid
-                                },
-                                attrs: {
-                                  label: "evento",
-                                  options: _vm.arrayTipoEvento
-                                },
-                                scopedSlots: _vm._u(
-                                  [
-                                    {
-                                      key: "no-options",
-                                      fn: function(ref) {
-                                        var search = ref.search
-                                        var searching = ref.searching
-                                        return [
-                                          searching
-                                            ? [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones de coincidencia para\n                                                    "
-                                                ),
-                                                _c("em", [
-                                                  _vm._v(_vm._s(search))
-                                                ])
-                                              ]
-                                            : _c("em", [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones disponibles.\n                                                "
-                                                )
-                                              ])
-                                        ]
-                                      }
-                                    }
-                                  ],
-                                  null,
-                                  false,
-                                  3511366226
-                                ),
-                                model: {
-                                  value: _vm.tipo_evento,
-                                  callback: function($$v) {
-                                    _vm.tipo_evento = $$v
-                                  },
-                                  expression: "tipo_evento"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "invalid-feedback" }, [
-                                !_vm.$v.tipo_evento.required
-                                  ? _c("span", [
-                                      _vm._v(
-                                        "\n                                                Este campo es requerido\n                                            "
-                                      )
-                                    ])
-                                  : _vm._e()
-                              ])
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "col-md-6" },
-                            [
-                              _c("label", [_vm._v("TARIFA:")]),
-                              _vm._v(" "),
-                              _c("v-select", {
-                                class: {
-                                  "is-invalid": _vm.$v.tarifa.$error,
-                                  "is-valid": !_vm.$v.tarifa.$invalid
-                                },
-                                attrs: {
-                                  label: "tarifa",
-                                  options: _vm.arrayTarifa
-                                },
-                                scopedSlots: _vm._u(
-                                  [
-                                    {
-                                      key: "no-options",
-                                      fn: function(ref) {
-                                        var search = ref.search
-                                        var searching = ref.searching
-                                        return [
-                                          searching
-                                            ? [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones de coincidencia para\n                                                    "
-                                                ),
-                                                _c("em", [
-                                                  _vm._v(_vm._s(search))
-                                                ])
-                                              ]
-                                            : _c("em", [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones disponibles.\n\n                                                "
-                                                )
-                                              ])
-                                        ]
-                                      }
-                                    }
-                                  ],
-                                  null,
-                                  false,
-                                  329538144
-                                ),
-                                model: {
-                                  value: _vm.tarifa,
-                                  callback: function($$v) {
-                                    _vm.tarifa = $$v
-                                  },
-                                  expression: "tarifa"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "invalid-feedback" }, [
-                                !_vm.$v.tarifa.required
-                                  ? _c("span", [
-                                      _vm._v(
-                                        "\n                                                Este campo es requerido\n                                            "
-                                      )
-                                    ])
-                                  : _vm._e()
-                              ])
-                            ],
-                            1
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "row mt-2" }, [
-                          _c(
-                            "div",
-                            { staticClass: "col-md-4" },
-                            [
-                              _c("label", [_vm._v("SITUACIÓN:")]),
-                              _vm._v(" "),
-                              _c("v-select", {
-                                class: {
-                                  "is-invalid": _vm.$v.situacion.$error,
-                                  "is-valid": !_vm.$v.situacion.$invalid
-                                },
-                                attrs: {
-                                  label: "situacion",
-                                  options: _vm.arraySituacion
-                                },
-                                scopedSlots: _vm._u(
-                                  [
-                                    {
-                                      key: "no-options",
-                                      fn: function(ref) {
-                                        var search = ref.search
-                                        var searching = ref.searching
-                                        return [
-                                          searching
-                                            ? [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones de coincidencia para\n                                                    "
-                                                ),
-                                                _c("em", [
-                                                  _vm._v(_vm._s(search))
-                                                ])
-                                              ]
-                                            : _c("em", [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones disponibles.\n                                                "
-                                                )
-                                              ])
-                                        ]
-                                      }
-                                    }
-                                  ],
-                                  null,
-                                  false,
-                                  3511366226
-                                ),
-                                model: {
-                                  value: _vm.situacion,
-                                  callback: function($$v) {
-                                    _vm.situacion = $$v
-                                  },
-                                  expression: "situacion"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "invalid-feedback" }, [
-                                !_vm.$v.situacion.required
-                                  ? _c("span", [
-                                      _vm._v(
-                                        "\n                                                Este campo es requerido\n                                            "
-                                      )
-                                    ])
-                                  : _vm._e()
-                              ])
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "col-md-4" },
-                            [
-                              _c("label", [_vm._v("FORMA DE PAGO:")]),
-                              _vm._v(" "),
-                              _c("v-select", {
-                                class: {
-                                  "is-invalid": _vm.$v.forma_pago.$error,
-                                  "is-valid": !_vm.$v.forma_pago.$invalid
-                                },
-                                attrs: { options: _vm.arrayFormaPago },
-                                scopedSlots: _vm._u(
-                                  [
-                                    {
-                                      key: "no-options",
-                                      fn: function(ref) {
-                                        var search = ref.search
-                                        var searching = ref.searching
-                                        return [
-                                          searching
-                                            ? [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones de coincidencia para\n                                                    "
-                                                ),
-                                                _c("em", [
-                                                  _vm._v(_vm._s(search))
-                                                ])
-                                              ]
-                                            : _c("em", [
-                                                _vm._v(
-                                                  "\n                                                    Lo sentimos, no hay opciones disponibles.\n                                                "
-                                                )
-                                              ])
-                                        ]
-                                      }
-                                    }
-                                  ],
-                                  null,
-                                  false,
-                                  3511366226
-                                ),
-                                model: {
-                                  value: _vm.forma_pago,
-                                  callback: function($$v) {
-                                    _vm.forma_pago = $$v
-                                  },
-                                  expression: "forma_pago"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "invalid-feedback" }, [
-                                !_vm.$v.forma_pago.required
-                                  ? _c("span", [
-                                      _vm._v(
-                                        "\n                                                Este campo es requerido\n                                            "
-                                      )
-                                    ])
-                                  : _vm._e()
-                              ])
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _vm.situacion && _vm.situacion.id == 1
-                            ? _c("div", { staticClass: "col-md-4" }, [
-                                _c(
-                                  "label",
-                                  { staticClass: "form-control-label" },
-                                  [
-                                    _vm._v(
-                                      "\n                                            MONTO (Bs.):\n                                        "
-                                    )
-                                  ]
-                                ),
+                                _c("label", [_vm._v("PREDIO:")]),
                                 _vm._v(" "),
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model.number",
-                                      value: _vm.monto,
-                                      expression: "monto",
-                                      modifiers: { number: true }
-                                    }
-                                  ],
-                                  staticClass: "form-control",
+                                _c("v-select", {
                                   class: {
-                                    "is-invalid": _vm.$v.monto.$error,
-                                    "is-valid": !_vm.$v.monto.$invalid
+                                    "is-invalid": _vm.$v.predio.$error,
+                                    "is-valid": !_vm.$v.predio.$invalid
                                   },
                                   attrs: {
-                                    type: "number",
-                                    step: "0.01",
-                                    min: "0",
-                                    max: _vm.tarifa ? _vm.tarifa.precio : null
+                                    label: "nombre",
+                                    options: _vm.prediosDisponibles
                                   },
-                                  domProps: { value: _vm.monto },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "no-options",
+                                        fn: function(ref) {
+                                          var search = ref.search
+                                          var searching = ref.searching
+                                          return [
+                                            searching
+                                              ? [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones de coincidencia para\n                                                        "
+                                                  ),
+                                                  _c("em", [
+                                                    _vm._v(_vm._s(search))
+                                                  ])
+                                                ]
+                                              : _c("em", [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones disponibles.\n                                                    "
+                                                  )
+                                                ])
+                                          ]
+                                        }
                                       }
-                                      _vm.monto = _vm._n($event.target.value)
+                                    ],
+                                    null,
+                                    false,
+                                    3799268946
+                                  ),
+                                  model: {
+                                    value: _vm.predio,
+                                    callback: function($$v) {
+                                      _vm.predio = $$v
                                     },
-                                    blur: function($event) {
-                                      return _vm.$forceUpdate()
-                                    }
+                                    expression: "predio"
                                   }
                                 }),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "invalid-feedback" }, [
-                                  !_vm.$v.monto.required
+                                  !_vm.$v.predio.required
                                     ? _c("span", [
                                         _vm._v(
-                                          "\n                                                Este campo es requerido\n                                            "
-                                        )
-                                      ])
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.$v.monto.required &&
-                                  !_vm.$v.monto.decimalDos
-                                    ? _c("span", [
-                                        _vm._v(
-                                          "\n                                                Debe ingresar un monto válido con máximo 2 decimales\n                                            "
-                                        )
-                                      ])
-                                    : !_vm.$v.monto.montoMaximo
-                                    ? _c("span", [
-                                        _vm._v(
-                                          "\n                                                El monto no puede ser mayor a " +
-                                            _vm._s(_vm.tarifa.precio) +
-                                            " Bs.\n                                            "
+                                          "\n                                                    Este campo es requerido\n                                                "
                                         )
                                       ])
                                     : _vm._e()
                                 ])
+                              ],
+                              1
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row mt-2" }, [
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "label",
+                                { staticClass: "form-control-label" },
+                                [
+                                  _vm._v(
+                                    "\n                                                RESPONSABLE:\n                                            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.responsable,
+                                    expression: "responsable"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.$v.responsable.$error,
+                                  "is-valid": !_vm.$v.responsable.$invalid
+                                },
+                                staticStyle: { "text-transform": "uppercase" },
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.responsable },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.responsable = $event.target.value
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "invalid-feedback" }, [
+                                !_vm.$v.responsable.required
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "\n                                                    Este campo es requerido\n                                                "
+                                      )
+                                    ])
+                                  : _vm._e()
                               ])
-                            : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "label",
+                                { staticClass: "form-control-label" },
+                                [
+                                  _vm._v(
+                                    "\n                                                CEDULA IDENTIDAD:\n                                            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ci,
+                                    expression: "ci"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.$v.ci.$error,
+                                  "is-valid": !_vm.$v.ci.$invalid
+                                },
+                                staticStyle: { "text-transform": "uppercase" },
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.ci },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.ci = $event.target.value
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "invalid-feedback" }, [
+                                !_vm.$v.ci.required
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "\n                                                    Este campo es requerido\n                                                "
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "label",
+                                { staticClass: "form-control-label" },
+                                [
+                                  _vm._v(
+                                    "\n                                                CELULAR:\n                                            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.celular,
+                                    expression: "celular"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.$v.celular.$error,
+                                  "is-valid": !_vm.$v.celular.$invalid
+                                },
+                                staticStyle: { "text-transform": "uppercase" },
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.celular },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.celular = $event.target.value
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "invalid-feedback" }, [
+                                !_vm.$v.celular.required
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "\n                                                    Este campo es requerido\n                                                "
+                                      )
+                                    ])
+                                  : !_vm.$v.celular.numeric
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "\n                                                    Solo digitos\n                                                "
+                                      )
+                                    ])
+                                  : !_vm.$v.celular.length
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "\n                                                    Debe contener 8 digitos\n                                                "
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row mt-2" }, [
+                            _c(
+                              "div",
+                              { staticClass: "col-md-6" },
+                              [
+                                _c("label", [_vm._v("TIPO EVENTO:")]),
+                                _vm._v(" "),
+                                _c("v-select", {
+                                  class: {
+                                    "is-invalid": _vm.$v.tipo_evento.$error,
+                                    "is-valid": !_vm.$v.tipo_evento.$invalid
+                                  },
+                                  attrs: {
+                                    label: "evento",
+                                    options: _vm.arrayTipoEvento
+                                  },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "no-options",
+                                        fn: function(ref) {
+                                          var search = ref.search
+                                          var searching = ref.searching
+                                          return [
+                                            searching
+                                              ? [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones de coincidencia para\n                                                        "
+                                                  ),
+                                                  _c("em", [
+                                                    _vm._v(_vm._s(search))
+                                                  ])
+                                                ]
+                                              : _c("em", [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones disponibles.\n                                                    "
+                                                  )
+                                                ])
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    false,
+                                    3799268946
+                                  ),
+                                  model: {
+                                    value: _vm.tipo_evento,
+                                    callback: function($$v) {
+                                      _vm.tipo_evento = $$v
+                                    },
+                                    expression: "tipo_evento"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "invalid-feedback" }, [
+                                  !_vm.$v.tipo_evento.required
+                                    ? _c("span", [
+                                        _vm._v(
+                                          "\n                                                    Este campo es requerido\n                                                "
+                                        )
+                                      ])
+                                    : _vm._e()
+                                ])
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-md-6" },
+                              [
+                                _c("label", [_vm._v("TARIFA:")]),
+                                _vm._v(" "),
+                                _c("v-select", {
+                                  class: {
+                                    "is-invalid": _vm.$v.tarifa.$error,
+                                    "is-valid": !_vm.$v.tarifa.$invalid
+                                  },
+                                  attrs: {
+                                    label: "tarifa",
+                                    options: _vm.arrayTarifa
+                                  },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "no-options",
+                                        fn: function(ref) {
+                                          var search = ref.search
+                                          var searching = ref.searching
+                                          return [
+                                            searching
+                                              ? [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones de coincidencia para\n                                                        "
+                                                  ),
+                                                  _c("em", [
+                                                    _vm._v(_vm._s(search))
+                                                  ])
+                                                ]
+                                              : _c("em", [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones disponibles.\n\n                                                    "
+                                                  )
+                                                ])
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    false,
+                                    3236068448
+                                  ),
+                                  model: {
+                                    value: _vm.tarifa,
+                                    callback: function($$v) {
+                                      _vm.tarifa = $$v
+                                    },
+                                    expression: "tarifa"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "invalid-feedback" }, [
+                                  !_vm.$v.tarifa.required
+                                    ? _c("span", [
+                                        _vm._v(
+                                          "\n                                                    Este campo es requerido\n                                                "
+                                        )
+                                      ])
+                                    : _vm._e()
+                                ])
+                              ],
+                              1
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row mt-2" }, [
+                            _c(
+                              "div",
+                              { staticClass: "col-md-4" },
+                              [
+                                _c("label", [_vm._v("SITUACIÓN:")]),
+                                _vm._v(" "),
+                                _c("v-select", {
+                                  class: {
+                                    "is-invalid": _vm.$v.situacion.$error,
+                                    "is-valid": !_vm.$v.situacion.$invalid
+                                  },
+                                  attrs: {
+                                    label: "situacion",
+                                    options: _vm.arraySituacion
+                                  },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "no-options",
+                                        fn: function(ref) {
+                                          var search = ref.search
+                                          var searching = ref.searching
+                                          return [
+                                            searching
+                                              ? [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones de coincidencia para\n                                                        "
+                                                  ),
+                                                  _c("em", [
+                                                    _vm._v(_vm._s(search))
+                                                  ])
+                                                ]
+                                              : _c("em", [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones disponibles.\n                                                    "
+                                                  )
+                                                ])
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    false,
+                                    3799268946
+                                  ),
+                                  model: {
+                                    value: _vm.situacion,
+                                    callback: function($$v) {
+                                      _vm.situacion = $$v
+                                    },
+                                    expression: "situacion"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "invalid-feedback" }, [
+                                  !_vm.$v.situacion.required
+                                    ? _c("span", [
+                                        _vm._v(
+                                          "\n                                                    Este campo es requerido\n                                                "
+                                        )
+                                      ])
+                                    : _vm._e()
+                                ])
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-md-4" },
+                              [
+                                _c("label", [_vm._v("FORMA DE PAGO:")]),
+                                _vm._v(" "),
+                                _c("v-select", {
+                                  class: {
+                                    "is-invalid": _vm.$v.forma_pago.$error,
+                                    "is-valid": !_vm.$v.forma_pago.$invalid
+                                  },
+                                  attrs: { options: _vm.arrayFormaPago },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "no-options",
+                                        fn: function(ref) {
+                                          var search = ref.search
+                                          var searching = ref.searching
+                                          return [
+                                            searching
+                                              ? [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones de coincidencia para\n                                                        "
+                                                  ),
+                                                  _c("em", [
+                                                    _vm._v(_vm._s(search))
+                                                  ])
+                                                ]
+                                              : _c("em", [
+                                                  _vm._v(
+                                                    "\n                                                        Lo sentimos, no hay opciones disponibles.\n                                                    "
+                                                  )
+                                                ])
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    false,
+                                    3799268946
+                                  ),
+                                  model: {
+                                    value: _vm.forma_pago,
+                                    callback: function($$v) {
+                                      _vm.forma_pago = $$v
+                                    },
+                                    expression: "forma_pago"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "invalid-feedback" }, [
+                                  !_vm.$v.forma_pago.required
+                                    ? _c("span", [
+                                        _vm._v(
+                                          "\n                                                    Este campo es requerido\n                                                "
+                                        )
+                                      ])
+                                    : _vm._e()
+                                ])
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _vm.situacion && _vm.situacion.id == 1
+                              ? _c("div", { staticClass: "col-md-4" }, [
+                                  _c(
+                                    "label",
+                                    { staticClass: "form-control-label" },
+                                    [
+                                      _vm._v(
+                                        "\n                                                MONTO (Bs.):\n                                            "
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model.number",
+                                        value: _vm.monto,
+                                        expression: "monto",
+                                        modifiers: { number: true }
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.$v.monto.$error,
+                                      "is-valid": !_vm.$v.monto.$invalid
+                                    },
+                                    attrs: {
+                                      type: "number",
+                                      step: "0.01",
+                                      min: "0",
+                                      max: _vm.tarifa ? _vm.tarifa.precio : null
+                                    },
+                                    domProps: { value: _vm.monto },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.monto = _vm._n($event.target.value)
+                                      },
+                                      blur: function($event) {
+                                        return _vm.$forceUpdate()
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    { staticClass: "invalid-feedback" },
+                                    [
+                                      !_vm.$v.monto.required
+                                        ? _c("span", [
+                                            _vm._v(
+                                              "\n                                                    Este campo es requerido\n                                                "
+                                            )
+                                          ])
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      _vm.$v.monto.required &&
+                                      !_vm.$v.monto.decimalDos
+                                        ? _c("span", [
+                                            _vm._v(
+                                              "\n                                                    Debe ingresar un monto válido con máximo 2 decimales\n                                                "
+                                            )
+                                          ])
+                                        : !_vm.$v.monto.montoMaximo
+                                        ? _c("span", [
+                                            _vm._v(
+                                              "\n                                                    El monto no puede ser mayor a " +
+                                                _vm._s(_vm.tarifa.precio) +
+                                                " Bs.\n                                                "
+                                            )
+                                          ])
+                                        : _vm._e()
+                                    ]
+                                  )
+                                ])
+                              : _vm._e()
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row mt-2" }, [
+                            _c("div", { staticClass: "col-sm-12" }, [
+                              _c("label", [_vm._v("OBSERVACIÓN:")]),
+                              _vm._v(" "),
+                              _c("textarea", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.observacion,
+                                    expression: "observacion"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                staticStyle: { "text-transform": "uppercase" },
+                                attrs: { cols: "30", rows: "2" },
+                                domProps: { value: _vm.observacion },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.observacion = $event.target.value
+                                  }
+                                }
+                              })
+                            ])
+                          ])
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "row mt-2" }, [
-                          _c("div", { staticClass: "col-sm-12" }, [
-                            _c("label", [_vm._v("OBSERVACIÓN:")]),
-                            _vm._v(" "),
-                            _c("textarea", {
-                              directives: [
+                        _c("div", { staticClass: "card-footer" }, [
+                          _c(
+                            "div",
+                            {
+                              staticClass: "row mt-2 d-flex justify-content-end"
+                            },
+                            [
+                              _c(
+                                "button",
                                 {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.observacion,
-                                  expression: "observacion"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              staticStyle: { "text-transform": "uppercase" },
-                              attrs: { cols: "30", rows: "2" },
-                              domProps: { value: _vm.observacion },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
+                                  staticClass: "btn btn-primary",
+                                  attrs: {
+                                    type: "button",
+                                    disabled: _vm.procesando
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.Guardar()
+                                    }
                                   }
-                                  _vm.observacion = $event.target.value
-                                }
-                              }
-                            })
-                          ])
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "card-footer" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "row mt-2 d-flex justify-content-end"
-                          },
-                          [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-primary",
-                                attrs: {
-                                  type: "button",
-                                  disabled: _vm.procesando
                                 },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.Guardar()
-                                  }
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  _vm._s(
-                                    _vm.procesando ? "Procesando..." : "GUARDAR"
+                                [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.procesando
+                                        ? "Procesando..."
+                                        : "GUARDAR"
+                                    )
                                   )
-                                )
-                              ]
-                            )
-                          ]
-                        )
+                                ]
+                              )
+                            ]
+                          )
+                        ])
                       ])
                     ])
-                  ])
-                : _c("div", { staticClass: "alert alert-danger mt-3" }, [
-                    _vm._v(
-                      "\n                        TODOS LOS SALONES YA ESTÁN OCUPADOS\n                        PARA ESTA FECHA.\n                    "
-                    )
-                  ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "modal-footer" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-danger",
-                  attrs: { type: "button", "data-dismiss": "modal" },
-                  on: {
-                    click: function($event) {
-                      return _vm.Cerrar(1)
+                  : _c("div", { staticClass: "alert alert-danger mt-3" }, [
+                      _vm._v(
+                        "\n                            TODOS LOS SALONES YA ESTÁN OCUPADOS\n                            PARA ESTA FECHA.\n                        "
+                      )
+                    ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: {
+                      click: function($event) {
+                        return _vm.Cerrar(1)
+                      }
                     }
-                  }
-                },
-                [_vm._v("CANCELAR")]
-              )
+                  },
+                  [_vm._v("CANCELAR")]
+                )
+              ])
             ])
-          ])
-        ])
+          ]
+        )
       ]
     ),
     _vm._v(" "),
@@ -111912,439 +111909,451 @@ var render = function() {
         attrs: { "data-backdrop": "static", id: "ModalEditar" }
       },
       [
-        _c("div", { staticClass: "modal-dialog modal-lg" }, [
-          _c("div", { staticClass: "modal-content" }, [
-            _c("div", { staticClass: "modal-header" }, [
-              _c("h4", { staticClass: "modal-title" }, [
-                _vm._v(
-                  "\n                            EDITAR EVENTO\n                        "
+        _c(
+          "div",
+          { staticClass: "modal-dialog modal-lg modal-dialog-scrollable" },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v(
+                    "\n                                EDITAR EVENTO\n                            "
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: {
+                      type: "button",
+                      "data-dismiss": "modal",
+                      "aria-label": "Close"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.Cerrar(2)
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v(
+                        "\n                                ×\n                            "
+                      )
+                    ])
+                  ]
                 )
               ]),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "close",
-                  attrs: {
-                    type: "button",
-                    "data-dismiss": "modal",
-                    "aria-label": "Close"
-                  },
-                  on: {
-                    click: function($event) {
-                      return _vm.Cerrar(2)
-                    }
-                  }
-                },
-                [
-                  _c("span", { attrs: { "aria-hidden": "true" } }, [
-                    _vm._v(
-                      "\n                            ×\n                        "
-                    )
-                  ])
-                ]
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "modal-body" }, [
-              _c("hr"),
-              _vm._v(" "),
-              _c("div", { staticClass: "card mb-3" }, [
-                _c("div", { staticClass: "card-body" }, [
-                  _c("div", { staticClass: "row mt-2" }, [
-                    _c("div", { staticClass: "col-md-6" }, [
-                      _c("label", { staticClass: "form-control-label" }, [
-                        _vm._v(
-                          "\n                                            FECHA EVENTO:\n                                        "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.fecha_eventoE,
-                            expression: "fecha_eventoE"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        class: {
-                          "is-invalid": _vm.$v.fecha_eventoE.$error,
-                          "is-valid": !_vm.$v.fecha_eventoE.$invalid
-                        },
-                        attrs: { type: "date" },
-                        domProps: { value: _vm.fecha_eventoE },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.fecha_eventoE = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "invalid-feedback" }, [
-                        !_vm.$v.fecha_eventoE.required
-                          ? _c("span", [
-                              _vm._v(
-                                "\n                                                Este campo es requerido\n                                            "
-                              )
-                            ])
-                          : _vm._e()
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-6" }, [
-                      _c("label", [_vm._v("PREDIO:")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.predioE,
-                            expression: "predioE"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        class: {
-                          "is-invalid": _vm.$v.predioE.$error,
-                          "is-valid": !_vm.$v.predioE.$invalid
-                        },
-                        staticStyle: { "text-transform": "uppercase" },
-                        attrs: { type: "text", disabled: "" },
-                        domProps: { value: _vm.predioE },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.predioE = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "invalid-feedback" }, [
-                        !_vm.$v.predioE.required
-                          ? _c("span", [
-                              _vm._v(
-                                "\n                                                Este campo es requerido\n                                            "
-                              )
-                            ])
-                          : _vm._e()
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row mt-2" }, [
-                    _c("div", { staticClass: "col-md-12" }, [
-                      _c("label", { staticClass: "form-control-label" }, [
-                        _vm._v(
-                          "\n                                            RESPONSABLE:\n                                        "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.responsableE,
-                            expression: "responsableE"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        class: {
-                          "is-invalid": _vm.$v.responsableE.$error,
-                          "is-valid": !_vm.$v.responsableE.$invalid
-                        },
-                        staticStyle: { "text-transform": "uppercase" },
-                        attrs: { type: "text", disabled: "" },
-                        domProps: { value: _vm.responsableE },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.responsableE = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "invalid-feedback" }, [
-                        !_vm.$v.responsableE.required
-                          ? _c("span", [
-                              _vm._v(
-                                "\n                                                Este campo es requerido\n                                            "
-                              )
-                            ])
-                          : _vm._e()
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row mt-2" }, [
-                    _c("div", { staticClass: "col-md-6" }, [
-                      _c("label", [_vm._v("TIPO EVENTO:")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.tipo_eventoE,
-                            expression: "tipo_eventoE"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        class: {
-                          "is-invalid": _vm.$v.tipo_eventoE.$error,
-                          "is-valid": !_vm.$v.tipo_eventoE.$invalid
-                        },
-                        staticStyle: { "text-transform": "uppercase" },
-                        attrs: { type: "text", disabled: "" },
-                        domProps: { value: _vm.tipo_eventoE },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.tipo_eventoE = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "invalid-feedback" }, [
-                        !_vm.$v.tipo_eventoE.required
-                          ? _c("span", [
-                              _vm._v(
-                                "\n                                                Este campo es requerido\n                                            "
-                              )
-                            ])
-                          : _vm._e()
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-6" }, [
-                      _c("label", [_vm._v("TARIFA:")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.tarifaE,
-                            expression: "tarifaE"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        class: {
-                          "is-invalid": _vm.$v.tarifaE.$error,
-                          "is-valid": !_vm.$v.tarifaE.$invalid
-                        },
-                        staticStyle: { "text-transform": "uppercase" },
-                        attrs: { type: "text", disabled: "" },
-                        domProps: { value: _vm.tarifaE },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.tarifaE = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "invalid-feedback" }, [
-                        !_vm.$v.tarifaE.required
-                          ? _c("span", [
-                              _vm._v(
-                                "\n                                                Este campo es requerido\n                                            "
-                              )
-                            ])
-                          : _vm._e()
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row mt-2" }, [
-                    _c("div", { staticClass: "col-md-12" }, [
-                      _c("table", { staticClass: "table table-bordered" }, [
-                        _vm._m(0),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("hr"),
+                _vm._v(" "),
+                _c("div", { staticClass: "card mb-3" }, [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("div", { staticClass: "row mt-2" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("label", { staticClass: "form-control-label" }, [
+                          _vm._v(
+                            "\n                                                FECHA EVENTO:\n                                            "
+                          )
+                        ]),
                         _vm._v(" "),
-                        _vm.situacion_idE == 1
-                          ? _c("tbody", [
-                              _c("tr", [
-                                _c("td", [_vm._v(_vm._s(_vm.situacionE))]),
-                                _vm._v(" "),
-                                _c("td", [_vm._v(_vm._s(_vm.montoE))])
-                              ]),
-                              _vm._v(" "),
-                              _c("tr", [
-                                _c("td", [_vm._v("SALDO")]),
-                                _vm._v(" "),
-                                _c(
-                                  "td",
-                                  { staticStyle: { "text-align": "right" } },
-                                  [
-                                    _vm._v(
-                                      "\n                                                        " +
-                                        _vm._s(
-                                          (
-                                            Number(_vm.precio) -
-                                            Number(_vm.montoE)
-                                          ).toFixed(2)
-                                        ) +
-                                        "\n                                                        "
-                                    ),
-                                    _c(
-                                      "button",
-                                      {
-                                        staticClass: "btn btn-danger mr-2",
-                                        attrs: {
-                                          type: "button",
-                                          disabled: _vm.procesando
-                                        },
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.PagarSaldo(
-                                              _vm.id_eventoE
-                                            )
-                                          }
-                                        }
-                                      },
-                                      [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.procesando
-                                              ? "Procesando..."
-                                              : "PAGAR SALDO"
-                                          )
-                                        )
-                                      ]
-                                    )
-                                  ]
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.fecha_eventoE,
+                              expression: "fecha_eventoE"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.$v.fecha_eventoE.$error,
+                            "is-valid": !_vm.$v.fecha_eventoE.$invalid
+                          },
+                          attrs: { type: "date" },
+                          domProps: { value: _vm.fecha_eventoE },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.fecha_eventoE = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "invalid-feedback" }, [
+                          !_vm.$v.fecha_eventoE.required
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                                    Este campo es requerido\n                                                "
                                 )
-                              ]),
-                              _vm._v(" "),
-                              _c("tr", [
-                                _c("td", [_vm._v("TOTAL")]),
-                                _vm._v(" "),
-                                _c("td", [_vm._v(_vm._s(_vm.precio))])
                               ])
-                            ])
-                          : _c(
-                              "tbody",
-                              [
-                                _vm._l(_vm.arraySituacionEvento, function(se) {
-                                  return _c("tr", [
-                                    _c("td", [_vm._v(_vm._s(se.situacion))]),
+                            : _vm._e()
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("label", [_vm._v("PREDIO:")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.predioE,
+                              expression: "predioE"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.$v.predioE.$error,
+                            "is-valid": !_vm.$v.predioE.$invalid
+                          },
+                          staticStyle: { "text-transform": "uppercase" },
+                          attrs: { type: "text", disabled: "" },
+                          domProps: { value: _vm.predioE },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.predioE = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "invalid-feedback" }, [
+                          !_vm.$v.predioE.required
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                                    Este campo es requerido\n                                                "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-2" }, [
+                      _c("div", { staticClass: "col-md-12" }, [
+                        _c("label", { staticClass: "form-control-label" }, [
+                          _vm._v(
+                            "\n                                                RESPONSABLE:\n                                            "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.responsableE,
+                              expression: "responsableE"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.$v.responsableE.$error,
+                            "is-valid": !_vm.$v.responsableE.$invalid
+                          },
+                          staticStyle: { "text-transform": "uppercase" },
+                          attrs: { type: "text", disabled: "" },
+                          domProps: { value: _vm.responsableE },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.responsableE = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "invalid-feedback" }, [
+                          !_vm.$v.responsableE.required
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                                    Este campo es requerido\n                                                "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-2" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("label", [_vm._v("TIPO EVENTO:")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tipo_eventoE,
+                              expression: "tipo_eventoE"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.$v.tipo_eventoE.$error,
+                            "is-valid": !_vm.$v.tipo_eventoE.$invalid
+                          },
+                          staticStyle: { "text-transform": "uppercase" },
+                          attrs: { type: "text", disabled: "" },
+                          domProps: { value: _vm.tipo_eventoE },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.tipo_eventoE = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "invalid-feedback" }, [
+                          !_vm.$v.tipo_eventoE.required
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                                    Este campo es requerido\n                                                "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("label", [_vm._v("TARIFA:")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tarifaE,
+                              expression: "tarifaE"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.$v.tarifaE.$error,
+                            "is-valid": !_vm.$v.tarifaE.$invalid
+                          },
+                          staticStyle: { "text-transform": "uppercase" },
+                          attrs: { type: "text", disabled: "" },
+                          domProps: { value: _vm.tarifaE },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.tarifaE = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "invalid-feedback" }, [
+                          !_vm.$v.tarifaE.required
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                                    Este campo es requerido\n                                                "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-2" }, [
+                      _c("div", { staticClass: "col-md-12" }, [
+                        _c("table", { staticClass: "table table-bordered" }, [
+                          _vm._m(0),
+                          _vm._v(" "),
+                          _vm.situacion_idE == 1
+                            ? _c("tbody", [
+                                _c("tr", [
+                                  _c("td", [_vm._v(_vm._s(_vm.situacionE))]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(_vm.montoE))])
+                                ]),
+                                _vm._v(" "),
+                                _c("tr", [
+                                  _c("td", [_vm._v("SALDO")]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "td",
+                                    { staticStyle: { "text-align": "right" } },
+                                    [
+                                      _vm._v(
+                                        "\n                                                            " +
+                                          _vm._s(
+                                            (
+                                              Number(_vm.precio) -
+                                              Number(_vm.montoE)
+                                            ).toFixed(2)
+                                          ) +
+                                          "\n                                                            "
+                                      ),
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass: "btn btn-danger mr-2",
+                                          attrs: {
+                                            type: "button",
+                                            disabled: _vm.procesando
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.PagarSaldo(
+                                                _vm.id_eventoE
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.procesando
+                                                ? "Procesando..."
+                                                : "PAGAR SALDO"
+                                            )
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("tr", [
+                                  _c("td", [_vm._v("TOTAL")]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(_vm.precio))])
+                                ])
+                              ])
+                            : _c(
+                                "tbody",
+                                [
+                                  _vm._l(_vm.arraySituacionEvento, function(
+                                    se
+                                  ) {
+                                    return _c("tr", [
+                                      _c("td", [_vm._v(_vm._s(se.situacion))]),
+                                      _vm._v(" "),
+                                      _c(
+                                        "td",
+                                        {
+                                          staticStyle: { "text-align": "right" }
+                                        },
+                                        [_vm._v(_vm._s(se.monto))]
+                                      )
+                                    ])
+                                  }),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c(
+                                      "td",
+                                      {
+                                        staticStyle: { "font-weight": "bold" }
+                                      },
+                                      [_vm._v("TOTAL")]
+                                    ),
                                     _vm._v(" "),
                                     _c(
                                       "td",
                                       {
                                         staticStyle: { "text-align": "right" }
                                       },
-                                      [_vm._v(_vm._s(se.monto))]
+                                      [_vm._v(_vm._s(_vm.precio))]
                                     )
                                   ])
-                                }),
-                                _vm._v(" "),
-                                _c("tr", [
-                                  _c(
-                                    "td",
-                                    { staticStyle: { "font-weight": "bold" } },
-                                    [_vm._v("TOTAL")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "td",
-                                    { staticStyle: { "text-align": "right" } },
-                                    [_vm._v(_vm._s(_vm.precio))]
-                                  )
-                                ])
-                              ],
-                              2
-                            )
+                                ],
+                                2
+                              )
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-2" }, [
+                      _c("div", { staticClass: "col-sm-12" }, [
+                        _c("label", [_vm._v("OBSERVACIÓN:")]),
+                        _vm._v(" "),
+                        _c("textarea", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.observacionE,
+                              expression: "observacionE"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          staticStyle: { "text-transform": "uppercase" },
+                          attrs: { cols: "30", rows: "2" },
+                          domProps: { value: _vm.observacionE },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.observacionE = $event.target.value
+                            }
+                          }
+                        })
                       ])
                     ])
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "row mt-2" }, [
-                    _c("div", { staticClass: "col-sm-12" }, [
-                      _c("label", [_vm._v("OBSERVACIÓN:")]),
-                      _vm._v(" "),
-                      _c("textarea", {
-                        directives: [
+                  _c("div", { staticClass: "card-footer" }, [
+                    _c(
+                      "div",
+                      { staticClass: "row mt-2 d-flex justify-content-end" },
+                      [
+                        _c(
+                          "button",
                           {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.observacionE,
-                            expression: "observacionE"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        staticStyle: { "text-transform": "uppercase" },
-                        attrs: { cols: "30", rows: "2" },
-                        domProps: { value: _vm.observacionE },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
+                            staticClass: "btn btn-danger mr-2",
+                            attrs: { type: "button", "data-dismiss": "modal" },
+                            on: {
+                              click: function($event) {
+                                return _vm.Cerrar(2)
+                              }
                             }
-                            _vm.observacionE = $event.target.value
-                          }
-                        }
-                      })
-                    ])
+                          },
+                          [_vm._v("CANCELAR")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "button", disabled: _vm.procesando },
+                            on: {
+                              click: function($event) {
+                                return _vm.Editar()
+                              }
+                            }
+                          },
+                          [
+                            _vm._v(
+                              _vm._s(
+                                _vm.procesando ? "Procesando..." : "EDITAR"
+                              )
+                            )
+                          ]
+                        )
+                      ]
+                    )
                   ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "card-footer" }, [
-                  _c(
-                    "div",
-                    { staticClass: "row mt-2 d-flex justify-content-end" },
-                    [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-danger mr-2",
-                          attrs: { type: "button", "data-dismiss": "modal" },
-                          on: {
-                            click: function($event) {
-                              return _vm.Cerrar(2)
-                            }
-                          }
-                        },
-                        [_vm._v("CANCELAR")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary",
-                          attrs: { type: "button", disabled: _vm.procesando },
-                          on: {
-                            click: function($event) {
-                              return _vm.Editar()
-                            }
-                          }
-                        },
-                        [
-                          _vm._v(
-                            _vm._s(_vm.procesando ? "Procesando..." : "EDITAR")
-                          )
-                        ]
-                      )
-                    ]
-                  )
                 ])
               ])
             ])
-          ])
-        ])
+          ]
+        )
       ]
     )
   ])
