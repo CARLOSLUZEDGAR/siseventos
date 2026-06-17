@@ -76,7 +76,8 @@ return [
             'prefix_indexes' => true,
             'schema' => 'public',
             // 'sslmode' => 'require',
-            'sslmode' => 'prefer',
+            // 'sslmode' => 'prefer',
+            'sslmode' => env('DB_SSLMODE', 'require'),
         ],
 
         'sqlsrv' => [
