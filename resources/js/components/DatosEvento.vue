@@ -776,6 +776,8 @@ export default {
                 this.id_eventoE = this.arrayMostrarEvento.id;
                 this.fecha_eventoE = this.arrayMostrarEvento.fecha_evento;
                 this.responsableE = this.arrayMostrarEvento.contratante;
+                this.ciE = this.arrayMostrarEvento.ci;
+                this.celularE = this.arrayMostrarEvento.celular;
                 this.predio_idE = this.arrayMostrarEvento.predio_id;
                 this.predioE = this.arrayMostrarEvento.nombre;
                 this.tipo_evento_idE = this.arrayMostrarEvento.tipo_evento_id;

@@ -216,6 +216,8 @@ class EventosController extends Controller
                             'e.predio_id',
                             'p.nombre',
                             'e.contratante',
+                            'e.ci',
+                            'e.celular',
                             'p.nombre',
                             'p.color',
                             'e.tipo_evento_id',
