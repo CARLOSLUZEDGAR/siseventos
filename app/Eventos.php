@@ -17,6 +17,8 @@ class Eventos extends Model
         'tipo_evento_id', 
         'tarifa_id', 
         'fecha_evento',
+        'hora_inicio',
+        'hora_fin',
         'observacion', 
         'estado', 
         'sysuser'

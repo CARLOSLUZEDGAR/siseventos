@@ -155,7 +155,7 @@
                     $fechaevento = date_format($date,"d/m/Y");
                 ?>
                 <p style="margin: 1px"><span style="font-weight: bold;">FECHA DEL EVENTO:</span> {{$fecha_evento_dia}}</p>
-                
+                <p style="margin: 1px"><span style="font-weight: bold;">HORARIO:</span> DE {{$evento->hora_inicio}} A {{$evento->hora_fin}}</p>
                 <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE EVENTO:</span> {{$evento->evento}}</p>
                 <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE TARIFA:</span> {{$evento->tarifa}}</p>
                 <!-- <p style="margin: 1px"><span style="font-weight: bold;">MONTO DEPOSITADO: Bs. {{$situacion_evento->monto}}</span></p> -->
@@ -188,7 +188,7 @@
                                 <p style="margin: 1px"><span style="font-weight: bold;">SALDO</span></p>
                             </td>
                             <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: bold;">{{$evento->precio - $situacion_evento->monto}}</span></p>                            
+                                <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format(((($evento->precio * $evento->porcentaje)/100) - $situacion_evento->monto), 2, ',', '.')}}</span></p>                            
                             </td>
                         </tr>
                     @else
@@ -198,7 +198,7 @@
                                     <p style="margin: 1px"><span style="font-weight: normal;">{{$row->situacion}}</span></p>
                                 </td>
                                 <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                    <p style="margin: 1px"><span style="font-weight: normal;">{{$row->monto}}</span></p>                            
+                                    <p style="margin: 1px"><span style="font-weight: normal;">{{ number_format($row->monto, 2, ',', '.')}}</span></p>                            
                                 </td>
                             </tr>
                         @endforeach
@@ -207,7 +207,7 @@
                                 <p style="margin: 1px"><span style="font-weight: bold;">TOTAL PAGADO</span></p>
                             </td>
                             <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: bold;">{{$evento->precio}}</span></p>                            
+                                <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format((($evento->precio * $evento->porcentaje) / 100), 2, ',', '.') }}</span></p>                            
                             </td>
                         </tr>
                     @endif 

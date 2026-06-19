@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Tarifas extends Model
+class PredioCostos extends Model
 {
-    protected $table = 'tarifas';
+    protected $table = 'predio_costos';
     protected $primaryKey = 'id';
     protected $fillable = [
         'id', 
-        'tarifa', 
-        'porcentaje',
+        'predio_id', 
+        'precio',
         'vigencia',
         'observacion', 
         'estado', 

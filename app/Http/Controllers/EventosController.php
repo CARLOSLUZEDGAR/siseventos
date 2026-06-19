@@ -16,6 +16,8 @@ class EventosController extends Controller
             // VALIDACIONES
             $request->validate([
                 'fecha_evento'  => 'required',
+                'hora_inicio'   => 'required',
+                'hora_fin'      => 'required',
                 'predio_id'     => 'required',
                 'responsable'   => 'required',
                 'ci'            => 'required',
@@ -28,14 +30,20 @@ class EventosController extends Controller
             ]);
             // VERIFICAR SI EL SALÓN YA ESTÁ OCUPADO
             $existe = DB::table('eventos')
-                        ->whereDate('fecha_evento', $request->fecha_evento)
-                        ->where('predio_id', $request->predio_id)
-                        ->where('estado', 1)
-                        ->exists();
+                    ->whereDate('fecha_evento', $request->fecha_evento)
+                    ->where('predio_id', $request->predio_id)
+                    ->where('estado', 1)
+                    ->where(function ($query) use ($request) {
+
+                        $query->where('hora_inicio', '<', $request->hora_fin)
+                            ->where('hora_fin', '>', $request->hora_inicio);
+
+                    })
+                    ->exists();
             if ($existe) {
                 return response()->json([
                     'success' => false,
-                    'mensaje' => 'El salón ya se encuentra ocupado en la fecha seleccionada'
+                    'mensaje' => 'El salón ya se encuentra ocupado en la fecha y horario seleccionados'
                 ], 200);
             }
             
@@ -50,6 +58,8 @@ class EventosController extends Controller
                 'tipo_evento_id' => $request->tipo_evento_id,
                 'tarifa_id'      => $request->tarifa_id,
                 'fecha_evento'   => $request->fecha_evento,
+                'hora_inicio'    => $request->hora_inicio,
+                'hora_fin'       => $request->hora_fin,
                 'observacion'    => $request->observacion,
                 'estado'         => 1,
                 'sysuser'        => Auth::user()->id
@@ -91,21 +101,26 @@ class EventosController extends Controller
                 'id_evento'      => 'required',
                 'fecha_evento'   => 'required',
                 'predio_id'      => 'required',
-                // 'responsable'    => 'required',
+                'hora_inicio'    => 'required',
+                'hora_fin'       => 'required'
+                // 'observacion'    => 'required',
             ]);
             // VERIFICAR SI EL SALÓN YA ESTÁ OCUPADO
             $existe = DB::table('eventos')
-                        ->whereDate('fecha_evento', $request->fecha_evento)
-                        ->where('predio_id', $request->predio_id)
-                        ->where('id', '!=', $request->id_evento) // IGNORA EL MISMO EVENTO
-                        ->where('estado', 1)
-                        ->exists();
+                    ->whereDate('fecha_evento', $request->fecha_evento)
+                    ->where('predio_id', $request->predio_id)
+                    ->where('estado', 1)
+                    ->where(function ($query) use ($request) {
 
-            // SI EXISTE OTRO EVENTO
-            if($existe){
+                        $query->where('hora_inicio', '<', $request->hora_fin)
+                            ->where('hora_fin', '>', $request->hora_inicio);
+
+                    })
+                    ->exists();
+            if ($existe) {
                 return response()->json([
                     'success' => false,
-                    'mensaje' => 'El salón ya se encuentra ocupado en la fecha seleccionada'
+                    'mensaje' => 'El salón ya se encuentra ocupado en la fecha y horario seleccionados'
                 ], 200);
             }
             // INICIAR TRANSACCIÓN
@@ -116,7 +131,6 @@ class EventosController extends Controller
                 ->update([
                     'fecha_evento' => $request->fecha_evento,
                     'predio_id'    => $request->predio_id,
-                    // 'contratante'  => $request->responsable,
                     'observacion'  => $request->observacion,
                     'sysuser'      => Auth::user()->id,
                     'updated_at'   => now()
@@ -146,6 +160,7 @@ class EventosController extends Controller
                 'id_evento'     => 'required',
                 'precio'        => 'required',
                 'adelanto'      => 'required',
+                'forma_pago'    => 'required'
                 // 'responsable'    => 'required',
             ]);
             $pago_saldo = $request->precio - $request->adelanto;
@@ -154,8 +169,8 @@ class EventosController extends Controller
             $situacion_evento = SituacionEventos::create([
                 'evento_id'    => $request->id_evento,
                 'situacion_id' => 2,
-                'forma_pago'   => 'TRANSFERENCIA',
-                'monto'        =>  $pago_saldo,
+                'forma_pago'   => $request->forma_pago,
+                'monto'        => $pago_saldo,
                 'observacion'  => 'PAGO TOTAL',
                 'estado'       => 1,
                 'sysuser'      => Auth::user()->id
@@ -191,7 +206,9 @@ class EventosController extends Controller
                             'p.color',
                             'te.evento',
                             't.tarifa',
-                            'e.fecha_evento')
+                            'e.fecha_evento',
+                            'e.hora_inicio',
+                            'e.hora_fin')
                     ->where('e.estado', 1)
                     ->where('p.estado', 1)
                     ->where('te.estado', 1)
@@ -199,6 +216,7 @@ class EventosController extends Controller
                     ->whereYear('e.fecha_evento', $request->anio)
                     ->whereMonth('e.fecha_evento', $request->mes)
                     ->orderBy('e.fecha_evento', 'asc')
+                    ->orderBy('e.hora_inicio', 'asc')
                     ->get();
 
         return ['eventos' => $evento];
@@ -212,6 +230,7 @@ class EventosController extends Controller
                     ->join('tarifas as t', 'e.tarifa_id', 't.id')
                     ->join('situacion_eventos as se', 'e.id', 'se.evento_id')
                     ->join('situaciones as s', 'se.situacion_id', 's.id')
+                    ->join('predio_costos as pc', 'e.predio_id', 'pc.predio_id')
                     ->select('e.id',
                             'e.predio_id',
                             'p.nombre',
@@ -224,18 +243,22 @@ class EventosController extends Controller
                             'te.evento',
                             'e.tarifa_id',
                             't.tarifa',
-                            't.precio',
+                            't.porcentaje',
                             'e.fecha_evento',
+                            'e.hora_inicio',
+                            'e.hora_fin',
                             'e.observacion',
                             's.id as situacion_id',
                             's.situacion',
-                            'se.monto')
+                            'se.monto',
+                            'pc.precio')
                     ->where('e.estado', 1)
                     ->where('p.estado', 1)
                     ->where('te.estado', 1)
                     ->where('t.estado', 1)
                     ->where('se.estado', 1)
                     ->where('s.estado', 1)
+                    ->where('pc.estado', 1)
                     ->where('e.id', $request->evento_id)
                     ->orderBy('se.created_at', 'desc')
                     ->first();

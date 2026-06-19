@@ -14,7 +14,7 @@ class TarifasController extends Controller
 
     public function ListarTarifa(Request $request)
     {
-        $tarifa = Tarifas::select('id', 'tarifa', 'precio', 'estado')
+        $tarifa = Tarifas::select('id', 'tarifa', 'porcentaje', 'vigencia', 'estado')
                         ->where('estado', 1)
                         ->orderBy('id', 'asc')
                         ->get();

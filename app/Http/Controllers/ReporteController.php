@@ -18,6 +18,7 @@ class ReporteController extends Controller
                     ->join('predios as p', 'e.predio_id', 'p.id')
                     ->join('tipo_eventos as te', 'e.tipo_evento_id', 'te.id')
                     ->join('tarifas as t', 'e.tarifa_id', 't.id')
+                    ->join('predio_costos as pc', 'e.predio_id', 'pc.predio_id')
                     ->select('e.id',
                         'e.contratante',
                         'e.ci',
@@ -25,8 +26,11 @@ class ReporteController extends Controller
                         'p.nombre',
                         'te.evento',
                         't.tarifa',
-                        't.precio',
-                        'e.fecha_evento')
+                        't.porcentaje',
+                        'e.fecha_evento',
+                        'e.hora_inicio',
+                        'e.hora_fin',
+                        'pc.precio')
                     ->where('e.id', $request->idE)
                     ->where('e.estado', 1)
                     ->first();
