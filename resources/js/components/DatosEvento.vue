@@ -176,13 +176,13 @@
                                         </div>
                                     </div>
                                     <div class="row mt-2">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label class="form-control-label">
-                                                FECHA EVENTO:
+                                                FECHA INICIO:
                                             </label>
                                             <input type="text" class="form-control" :value="formatearFecha" disabled>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label class="form-control-label">
                                                 HORA INICIO:
                                             </label>
@@ -202,7 +202,18 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
+                                            <label class="form-control-label">
+                                                FECHA FIN:
+                                            </label>
+                                            <input type="date" class="form-control" v-model="fecha_evento_fin" :min="fecha_evento" :class="{'is-invalid' : $v.fecha_evento_fin.$error, 'is-valid': !$v.fecha_evento_fin.$invalid}">
+                                            <div class="invalid-feedback">
+                                                <span v-if="!$v.fecha_evento_fin.required">
+                                                    Este campo es requerido
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
                                             <label class="form-control-label">
                                                 HORA FIN:
                                             </label>
@@ -225,27 +236,27 @@
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-md-4">
-                                            <label>TIPO EVENTO:</label>
+                                            <label>TIPO PREDIO:</label>
                                             <select
                                                 class="form-control"
-                                                v-model="tipo_evento"
+                                                v-model="tipo_predio"
+                                                @change="ListarPredio(tipo_predio), ListarTipoEvento(tipo_predio)"
                                                 :class="{
-                                                    'is-invalid': $v.tipo_evento.$error,
-                                                    'is-valid': !$v.tipo_evento.$invalid
+                                                    'is-invalid': $v.tipo_predio.$error,
+                                                    'is-valid': !$v.tipo_predio.$invalid
                                                 }"
                                             >
                                                 <option value="">SELECCIONE...</option>
-
                                                 <option
-                                                    v-for="item in arrayTipoEvento"
+                                                    v-for="item in arrayTipoPredios"
                                                     :key="item.id"
                                                     :value="item"
                                                 >
-                                                    {{ item.evento }}
+                                                    {{ item.clasificacion }}
                                                 </option>
                                             </select>
                                             <div class="invalid-feedback">
-                                                <span v-if="!$v.tipo_evento.required">
+                                                <span v-if="!$v.tipo_predio.required">
                                                     Este campo es requerido
                                                 </span>
                                             </div>
@@ -260,7 +271,7 @@
                                                     'is-valid': !$v.predio.$invalid
                                                 }"
                                             >
-                                                <option :value="null">SELECCIONE...</option>
+                                                <option value="">SELECCIONE...</option>
                                                 <option
                                                     v-for="item in arrayPredios"
                                                     :key="item.id"
@@ -275,6 +286,33 @@
                                                 </span>
                                             </div>
                                         </div>
+                                        <div class="col-md-4">
+                                            <label>TIPO EVENTO:</label>
+                                            <select
+                                                class="form-control"
+                                                v-model="tipo_evento"
+                                                :class="{
+                                                    'is-invalid': $v.tipo_evento.$error,
+                                                    'is-valid': !$v.tipo_evento.$invalid
+                                                }"
+                                            >
+                                                <option value="">SELECCIONE...</option>
+                                                <option
+                                                    v-for="item in arrayTipoEvento"
+                                                    :key="item.id"
+                                                    :value="item"
+                                                >
+                                                    {{ item.evento }}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                <span v-if="!$v.tipo_evento.required">
+                                                    Este campo es requerido
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
                                         <div class="col-md-4">
                                             <label>TARIFA:</label>
                                             <select
@@ -300,8 +338,6 @@
                                                 </span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row mt-2">
                                         <div class="col-md-4">
                                             <label>SITUACIÓN:</label>
                                             <select
@@ -352,6 +388,8 @@
                                                 </span>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row mt-2">
                                         <div class="col-md-4" v-if="situacion && situacion.id == 1">
                                             <label class="form-control-label">
                                                 MONTO (Bs.):
@@ -685,9 +723,13 @@ export default {
             ci: '',
             celular: '',
             fecha_evento: '',
+            // fecha_evento_fin: new Date().toISOString().slice(0, 10),
+            fecha_evento_fin: '',
             hora_inicio: '',
             hora_fin: '',
+            arrayTipoPredios: [],
             arrayPredios: [],
+            tipo_predio: '',
             predio: '',
             arrayTipoEvento: [],
             tipo_evento: '',
@@ -737,8 +779,10 @@ export default {
         ci: { required },
         celular: { required, numeric, hasSpecificLength: value => value && value.toString().length === 8 },
         fecha_evento: { required },
+        fecha_evento_fin: { required },
         hora_inicio: { required },
         hora_fin: { required },
+        tipo_predio: { required },
         predio: { required },
         tipo_evento: { required },
         tarifa: { required },
@@ -770,8 +814,10 @@ export default {
             'ci',
             'celular',
             'fecha_evento',
+            'fecha_evento_fin',
             'hora_inicio',
             'hora_fin',
+            'tipo_predio',
             'predio',
             'tipo_evento',
             'tarifa',
@@ -808,8 +854,48 @@ export default {
             }
         },
 
-        hora_fin(valor) {
-        if (this.hora_inicio && valor <= this.hora_inicio) {
+        fecha_evento_fin(valor) {
+
+        if (valor && valor < this.fecha_evento) {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Fecha inválida',
+                text: 'La fecha fin no puede ser menor a la fecha inicio'
+            });
+
+            this.fecha_evento_fin = '';
+        }
+    },
+
+    hora_inicio(valor) {
+
+        if (
+            this.fecha_evento_fin === this.fecha_evento &&
+            this.hora_fin &&
+            valor &&
+            this.hora_fin <= valor
+        ) {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Hora inválida',
+                text: 'La hora fin debe ser mayor a la hora inicio'
+            });
+
+            this.hora_fin = '';
+        }
+    },
+
+    hora_fin(valor) {
+
+        if (
+            this.fecha_evento_fin === this.fecha_evento &&
+            this.hora_inicio &&
+            valor &&
+            valor <= this.hora_inicio
+        ) {
+
             Swal.fire({
                 icon: 'warning',
                 title: 'Hora inválida',
@@ -837,8 +923,9 @@ export default {
         }
 
         this.generarCalendario();
-        this.ListarPredio();
-        this.ListarTipoEvento();
+        this.ListarTipoPredio();
+        this.ListarPredio(this.tipo_predio);
+        this.ListarTipoEvento(this.tipo_predio);
         this.ListarTarifa();
         this.ListarSituacion();
         this.ListarEvento();
@@ -895,7 +982,7 @@ export default {
                 predio => !prediosOcupados.includes(predio.id)
             );
             // LIMPIAR CAMPOS
-            this.predio = null;
+            this.predio = '';
             this.$v.validationsGroupReg.$reset();
             // this.modal = 0;
             $('#ModalEvento').modal('show');
@@ -979,8 +1066,10 @@ export default {
             switch (valor) {
                 case 1:
                     this.fecha_evento = '',
+                    this.fecha_evento_fin = '',
                     this.hora_inicio = '',
                     this.hora_fin = '',
+                    this.tipo_predio = '',
                     this.predio = '',
                     this.responsable = '',
                     this.ci = '',
@@ -1013,14 +1102,29 @@ export default {
                 default:
                     break;
             }
-
-            
         },
 
-        ListarPredio() {
+        ListarTipoPredio() {
             let me = this;
             axios
+            .post("/listarTipoPredio", {
+            })
+            .then(function (response) {
+            me.arrayTipoPredios = response.data.tipo_predios
+            })
+            .catch(function (error) {
+            // handle error
+            console.log(error);
+            })
+        },
+
+        ListarPredio(tipo_predio) {
+            let me = this;
+            me.predio = '';
+            me.arrayPredios = [];
+            axios
             .post("/listarPredio", {
+                tipo_predio_id : tipo_predio,
             })
             .then(function (response) {
             me.arrayPredios = response.data.predios
@@ -1031,10 +1135,13 @@ export default {
             })
         },
 
-        ListarTipoEvento() {
+        ListarTipoEvento(tipo_predio) {
             let me = this;
+            me.tipo_evento = '';
+            me.arrayTipoEvento = [];
             axios
             .post("/listarTipoEvento", {
+                tipo_predio_id : tipo_predio,
             })
             .then(function (response) {
             me.arrayTipoEvento = response.data.tipo_eventos
@@ -1116,8 +1223,10 @@ export default {
                         this.procesando = true;
                         axios.post('/registrarEvento', {
                             fecha_evento: this.fecha_evento,
+                            fecha_evento_fin: this.fecha_evento_fin,
                             hora_inicio: this.hora_inicio,
                             hora_fin: this.hora_fin,
+                            tipo_predio_id: this.tipo_predio.id,
                             predio_id: this.predio.id,
                             responsable: this.responsable.toUpperCase(),
                             ci: this.ci,

@@ -49,6 +49,29 @@
                   </li>  
                 @endcan
                   {{-- PERMISO SIDEBAR 2 --}}
+
+                @can('side-registro', Model::class)
+                  <li class="nav-header" style="padding-left: 1px;">REGISTRO</li>
+                  <li class="nav-item">{{-- REGISTRO --}}
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon fas fa-building"></i>
+                      <p>
+                        REGISTRO
+                        <i class="fas fa-angle-left right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview" style="display: none;">
+                      @can('view-reg-predio', Model::class)
+                      <li class="nav-item">
+                        <router-link class="nav-link" to='/RegPredio'>
+                          <i class="nav-icon fas fa-calendar"></i>
+                          <p>PREDIOS</p>
+                        </router-link>
+                      </li>
+                      @endcan
+                    </ul>
+                  </li>  
+                @endcan
                                                                                                                                                               
               {{-- PERMISO SIDEBAR 1 --}}
                 @can('side-administracion', Model::class)

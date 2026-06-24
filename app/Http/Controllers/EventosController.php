@@ -15,35 +15,43 @@ class EventosController extends Controller
         try {
             // VALIDACIONES
             $request->validate([
-                'fecha_evento'  => 'required',
-                'hora_inicio'   => 'required',
-                'hora_fin'      => 'required',
-                'predio_id'     => 'required',
-                'responsable'   => 'required',
-                'ci'            => 'required',
-                'celular'       => 'required',
-                'tipo_evento_id'=> 'required',
-                'tarifa_id'     => 'required',
-                'situacion_id'  => 'required',
-                'forma_pago'    => 'required',
-                'monto'         => 'required'
+                'fecha_evento'      => 'required',
+                'fecha_evento_fin'  => 'required',
+                'hora_inicio'       => 'required',
+                'hora_fin'          => 'required',
+                'tipo_predio_id'    => 'required',
+                'predio_id'         => 'required',
+                'responsable'       => 'required',
+                'ci'                => 'required',
+                'celular'           => 'required',
+                'tipo_evento_id'    => 'required',
+                'tarifa_id'         => 'required',
+                'situacion_id'      => 'required',
+                'forma_pago'        => 'required',
+                'monto'             => 'required'
             ]);
             // VERIFICAR SI EL SALÓN YA ESTÁ OCUPADO
+            $inicioNuevo = $request->fecha_evento . ' ' . $request->hora_inicio;
+            $finNuevo    = $request->fecha_evento_fin . ' ' . $request->hora_fin;
             $existe = DB::table('eventos')
-                    ->whereDate('fecha_evento', $request->fecha_evento)
-                    ->where('predio_id', $request->predio_id)
-                    ->where('estado', 1)
-                    ->where(function ($query) use ($request) {
+                ->where('predio_id', $request->predio_id)
+                ->where('estado', 1)
+                ->where(function ($query) use ($inicioNuevo, $finNuevo) {
+                    $query->whereRaw(
+                        "(fecha_evento || ' ' || hora_inicio)::timestamp < ?",
+                        [$finNuevo]
+                    )
+                    ->whereRaw(
+                        "(fecha_evento_fin || ' ' || hora_fin)::timestamp > ?",
+                        [$inicioNuevo]
+                    );
+                })
+                ->exists();
 
-                        $query->where('hora_inicio', '<', $request->hora_fin)
-                            ->where('hora_fin', '>', $request->hora_inicio);
-
-                    })
-                    ->exists();
             if ($existe) {
                 return response()->json([
                     'success' => false,
-                    'mensaje' => 'El salón ya se encuentra ocupado en la fecha y horario seleccionados'
+                    'mensaje' => 'El salón ya se encuentra ocupado en el rango de fecha y hora seleccionado'
                 ], 200);
             }
             
@@ -51,18 +59,20 @@ class EventosController extends Controller
             DB::beginTransaction();
             // REGISTRAR EVENTO
             $evento = Eventos::create([
-                'contratante'    => $request->responsable,
-                'ci'             => $request->ci,
-                'celular'        => $request->celular,
-                'predio_id'      => $request->predio_id,
-                'tipo_evento_id' => $request->tipo_evento_id,
-                'tarifa_id'      => $request->tarifa_id,
-                'fecha_evento'   => $request->fecha_evento,
-                'hora_inicio'    => $request->hora_inicio,
-                'hora_fin'       => $request->hora_fin,
-                'observacion'    => $request->observacion,
-                'estado'         => 1,
-                'sysuser'        => Auth::user()->id
+                'contratante'       => $request->responsable,
+                'ci'                => $request->ci,
+                'celular'           => $request->celular,
+                'tipo_predio_id'    => $request->tipo_predio_id,
+                'predio_id'         => $request->predio_id,
+                'tipo_evento_id'    => $request->tipo_evento_id,
+                'tarifa_id'         => $request->tarifa_id,
+                'fecha_evento'      => $request->fecha_evento,
+                'hora_inicio'       => $request->hora_inicio,
+                'fecha_evento_fin'  => $request->fecha_evento_fin,
+                'hora_fin'          => $request->hora_fin,
+                'observacion'       => $request->observacion,
+                'estado'            => 1,
+                'sysuser'           => Auth::user()->id
             ]);
             // REGISTRAR SITUACIÓN
             $situacion_evento = SituacionEventos::create([

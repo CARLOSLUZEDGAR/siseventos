@@ -4,16 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Predios extends Model
+class TipoPredios extends Model
 {
-    protected $table = 'predios';
+    protected $table = 'tipo_predios';
     protected $primaryKey = 'id';
     protected $fillable = [
         'id', 
-        'nombre', 
-        'abreviatura',
         'clasificacion',
-        'color',
         'observacion', 
         'estado', 
         'sysuser'

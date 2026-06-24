@@ -65,6 +65,20 @@ export default new Router ({
             }
         },
 
+        {
+            path: '/RegPredio',
+            name: 'RegPredio',
+            component: require('./components/RegPredio.vue').default,
+            beforeEnter: (to, from, next) => {
+                let per = window.user.permissions.map(permission=>permission.name);
+                if (per.includes('view-reg-predio')) {
+                    next();
+                } else {
+                    next(from.path);
+                }
+            }
+        },
+
         // FIN RUTAS
 
         {

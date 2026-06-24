@@ -11,6 +11,7 @@ class TipoEventos extends Model
     protected $fillable = [
         'id', 
         'evento',
+        'clasificacion',
         'observacion', 
         'estado', 
         'sysuser'

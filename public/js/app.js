@@ -4331,6 +4331,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var decimalDos = function decimalDos(value) {
@@ -4362,9 +4400,13 @@ var montoMaximo = function montoMaximo(value) {
       ci: '',
       celular: '',
       fecha_evento: '',
+      // fecha_evento_fin: new Date().toISOString().slice(0, 10),
+      fecha_evento_fin: '',
       hora_inicio: '',
       hora_fin: '',
+      arrayTipoPredios: [],
       arrayPredios: [],
+      tipo_predio: '',
       predio: '',
       arrayTipoEvento: [],
       tipo_evento: '',
@@ -4423,10 +4465,16 @@ var montoMaximo = function montoMaximo(value) {
     fecha_evento: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
+    fecha_evento_fin: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
     hora_inicio: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
     hora_fin: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    tipo_predio: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
     predio: {
@@ -4488,7 +4536,7 @@ var montoMaximo = function montoMaximo(value) {
     forma_pagoE: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
-    validationsGroupReg: ['responsable', 'ci', 'celular', 'fecha_evento', 'hora_inicio', 'hora_fin', 'predio', 'tipo_evento', 'tarifa', 'situacion', 'forma_pago', 'monto'],
+    validationsGroupReg: ['responsable', 'ci', 'celular', 'fecha_evento', 'fecha_evento_fin', 'hora_inicio', 'hora_fin', 'tipo_predio', 'predio', 'tipo_evento', 'tarifa', 'situacion', 'forma_pago', 'monto'],
     validationsGroupMod: ['fecha_eventoE', 'hora_inicioE', 'hora_finE', 'responsableE', 'ciE', 'celularE', // 'predio_idE',
     'predioE', 'tipo_eventoE', 'tarifaE', 'situacionE', 'montoE'],
     validationGroupPagoSaldo: ['forma_pagoE']
@@ -4500,8 +4548,28 @@ var montoMaximo = function montoMaximo(value) {
         this.$v.monto.$reset();
       }
     },
+    fecha_evento_fin: function fecha_evento_fin(valor) {
+      if (valor && valor < this.fecha_evento) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Fecha inválida',
+          text: 'La fecha fin no puede ser menor a la fecha inicio'
+        });
+        this.fecha_evento_fin = '';
+      }
+    },
+    hora_inicio: function hora_inicio(valor) {
+      if (this.fecha_evento_fin === this.fecha_evento && this.hora_fin && valor && this.hora_fin <= valor) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Hora inválida',
+          text: 'La hora fin debe ser mayor a la hora inicio'
+        });
+        this.hora_fin = '';
+      }
+    },
     hora_fin: function hora_fin(valor) {
-      if (this.hora_inicio && valor <= this.hora_inicio) {
+      if (this.fecha_evento_fin === this.fecha_evento && this.hora_inicio && valor && valor <= this.hora_inicio) {
         Swal.fire({
           icon: 'warning',
           title: 'Hora inválida',
@@ -4525,8 +4593,9 @@ var montoMaximo = function montoMaximo(value) {
     }
 
     this.generarCalendario();
-    this.ListarPredio();
-    this.ListarTipoEvento();
+    this.ListarTipoPredio();
+    this.ListarPredio(this.tipo_predio);
+    this.ListarTipoEvento(this.tipo_predio);
     this.ListarTarifa();
     this.ListarSituacion();
     this.ListarEvento();
@@ -4575,7 +4644,7 @@ var montoMaximo = function montoMaximo(value) {
         return !prediosOcupados.includes(predio.id);
       }); // LIMPIAR CAMPOS
 
-      this.predio = null;
+      this.predio = '';
       this.$v.validationsGroupReg.$reset(); // this.modal = 0;
 
       $('#ModalEvento').modal('show');
@@ -4657,7 +4726,7 @@ var montoMaximo = function montoMaximo(value) {
     Cerrar: function Cerrar(valor) {
       switch (valor) {
         case 1:
-          this.fecha_evento = '', this.hora_inicio = '', this.hora_fin = '', this.predio = '', this.responsable = '', this.ci = '', this.celular = '', this.tipo_evento = '', this.tarifa = '', this.situacion = '', this.forma_pago = '', this.observacion = '', this.monto = '';
+          this.fecha_evento = '', this.fecha_evento_fin = '', this.hora_inicio = '', this.hora_fin = '', this.tipo_predio = '', this.predio = '', this.responsable = '', this.ci = '', this.celular = '', this.tipo_evento = '', this.tarifa = '', this.situacion = '', this.forma_pago = '', this.observacion = '', this.monto = '';
           break;
 
         case 2:
@@ -4668,18 +4737,35 @@ var montoMaximo = function montoMaximo(value) {
           break;
       }
     },
-    ListarPredio: function ListarPredio() {
+    ListarTipoPredio: function ListarTipoPredio() {
       var me = this;
-      axios.post("/listarPredio", {}).then(function (response) {
+      axios.post("/listarTipoPredio", {}).then(function (response) {
+        me.arrayTipoPredios = response.data.tipo_predios;
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
+    },
+    ListarPredio: function ListarPredio(tipo_predio) {
+      var me = this;
+      me.predio = '';
+      me.arrayPredios = [];
+      axios.post("/listarPredio", {
+        tipo_predio_id: tipo_predio
+      }).then(function (response) {
         me.arrayPredios = response.data.predios;
       })["catch"](function (error) {
         // handle error
         console.log(error);
       });
     },
-    ListarTipoEvento: function ListarTipoEvento() {
+    ListarTipoEvento: function ListarTipoEvento(tipo_predio) {
       var me = this;
-      axios.post("/listarTipoEvento", {}).then(function (response) {
+      me.tipo_evento = '';
+      me.arrayTipoEvento = [];
+      axios.post("/listarTipoEvento", {
+        tipo_predio_id: tipo_predio
+      }).then(function (response) {
         me.arrayTipoEvento = response.data.tipo_eventos;
       })["catch"](function (error) {
         // handle error
@@ -4742,8 +4828,10 @@ var montoMaximo = function montoMaximo(value) {
             _this2.procesando = true;
             axios.post('/registrarEvento', {
               fecha_evento: _this2.fecha_evento,
+              fecha_evento_fin: _this2.fecha_evento_fin,
               hora_inicio: _this2.hora_inicio,
               hora_fin: _this2.hora_fin,
+              tipo_predio_id: _this2.tipo_predio.id,
               predio_id: _this2.predio.id,
               responsable: _this2.responsable.toUpperCase(),
               ci: _this2.ci,
@@ -5777,6 +5865,259 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     Cerrar: function Cerrar() {}
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RegPredio.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RegPredio.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      /**
+       * Variables de recepcion 
+       */
+      ArrayPredios: [],
+
+      /**
+      * Variables paginacion
+      */
+      pagination: {
+        'total': 0,
+        'current_page': 0,
+        'per_page': 0,
+        'last_page': 0,
+        'from': 0,
+        'to': 0
+      },
+      offset: 3,
+      code: "",
+
+      /**
+       * BUSCADOR
+       */
+      buscar: '',
+      setTiemoutBuscador: ''
+    };
+  },
+  mounted: function mounted() {
+    this.ListarPredio(1);
+  },
+  computed: {
+    isActived: function isActived() {
+      return this.pagination.current_page;
+    },
+    //Calcuar los elementos de la paginacion
+    pagesNumber: function pagesNumber() {
+      if (!this.pagination.to) {
+        return [];
+      }
+
+      var from = this.pagination.current_page - this.offset;
+
+      if (from < 1) {
+        from = 1;
+      }
+
+      var to = from + this.offset * 2;
+
+      if (to >= this.pagination.last_page) {
+        to = this.pagination.last_page;
+      }
+
+      var pagesArray = [];
+
+      while (from <= to) {
+        pagesArray.push(from);
+        from++;
+      }
+
+      return pagesArray;
+    }
+  },
+  methods: {
+    cambiarPagina: function cambiarPagina(page) {
+      var me = this;
+      me.pagination.current_page = page;
+      me.ListarPredio(page);
+    },
+    ListarPredio: function ListarPredio(page) {
+      var me = this;
+      axios.post("/buscarPredio", {
+        buscar: me.buscar.toUpperCase(),
+        page: page
+      }).then(function (response) {
+        me.ArrayPredios = response.data.predios.data;
+        me.pagination = response.data.pagination;
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
+    },
+    BuscarPredio: function BuscarPredio() {
+      var _this = this;
+
+      clearTimeout(this.setTiemoutBuscador);
+      this.setTiemoutBuscador = setTimeout(function () {
+        _this.ListarPredio(1);
+      }, 360);
+    },
+    EditarPredio: function EditarPredio(id) {
+      this.$router.push({
+        name: "EditarRol",
+        params: {
+          id: id
+        }
+      });
+    }
   }
 });
 
@@ -111529,10 +111870,10 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "row mt-2" }, [
-                      _c("div", { staticClass: "col-md-4" }, [
+                      _c("div", { staticClass: "col-md-3" }, [
                         _c("label", { staticClass: "form-control-label" }, [
                           _vm._v(
-                            "\n                                            FECHA EVENTO:\n                                        "
+                            "\n                                            FECHA INICIO:\n                                        "
                           )
                         ]),
                         _vm._v(" "),
@@ -111543,7 +111884,7 @@ var render = function() {
                         })
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-4" }, [
+                      _c("div", { staticClass: "col-md-3" }, [
                         _c("label", { staticClass: "form-control-label" }, [
                           _vm._v(
                             "\n                                            HORA INICIO:\n                                        "
@@ -111618,7 +111959,51 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-4" }, [
+                      _c("div", { staticClass: "col-md-3" }, [
+                        _c("label", { staticClass: "form-control-label" }, [
+                          _vm._v(
+                            "\n                                            FECHA FIN:\n                                        "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.fecha_evento_fin,
+                              expression: "fecha_evento_fin"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.$v.fecha_evento_fin.$error,
+                            "is-valid": !_vm.$v.fecha_evento_fin.$invalid
+                          },
+                          attrs: { type: "date", min: _vm.fecha_evento },
+                          domProps: { value: _vm.fecha_evento_fin },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.fecha_evento_fin = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "invalid-feedback" }, [
+                          !_vm.$v.fecha_evento_fin.required
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                                Este campo es requerido\n                                            "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-3" }, [
                         _c("label", { staticClass: "form-control-label" }, [
                           _vm._v(
                             "\n                                            HORA FIN:\n                                        "
@@ -111696,6 +112081,149 @@ var render = function() {
                     _vm._v(" "),
                     _c("div", { staticClass: "row mt-2" }, [
                       _c("div", { staticClass: "col-md-4" }, [
+                        _c("label", [_vm._v("TIPO PREDIO:")]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.tipo_predio,
+                                expression: "tipo_predio"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.$v.tipo_predio.$error,
+                              "is-valid": !_vm.$v.tipo_predio.$invalid
+                            },
+                            on: {
+                              change: [
+                                function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.tipo_predio = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                },
+                                function($event) {
+                                  _vm.ListarPredio(_vm.tipo_predio),
+                                    _vm.ListarTipoEvento(_vm.tipo_predio)
+                                }
+                              ]
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("SELECCIONE...")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayTipoPredios, function(item) {
+                              return _c(
+                                "option",
+                                { key: item.id, domProps: { value: item } },
+                                [
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(item.clasificacion) +
+                                      "\n                                            "
+                                  )
+                                ]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "invalid-feedback" }, [
+                          !_vm.$v.tipo_predio.required
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                                Este campo es requerido\n                                            "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("label", [_vm._v("PREDIO:")]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.predio,
+                                expression: "predio"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.$v.predio.$error,
+                              "is-valid": !_vm.$v.predio.$invalid
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.predio = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("SELECCIONE...")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayPredios, function(item) {
+                              return _c(
+                                "option",
+                                { key: item.id, domProps: { value: item } },
+                                [
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(item.nombre) +
+                                      "\n                                            "
+                                  )
+                                ]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "invalid-feedback" }, [
+                          !_vm.$v.predio.required
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                                Este campo es requerido\n                                            "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
                         _c("label", [_vm._v("TIPO EVENTO:")]),
                         _vm._v(" "),
                         _c(
@@ -111761,76 +112289,10 @@ var render = function() {
                               ])
                             : _vm._e()
                         ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-4" }, [
-                        _c("label", [_vm._v("PREDIO:")]),
-                        _vm._v(" "),
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.predio,
-                                expression: "predio"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            class: {
-                              "is-invalid": _vm.$v.predio.$error,
-                              "is-valid": !_vm.$v.predio.$invalid
-                            },
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.predio = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { domProps: { value: null } }, [
-                              _vm._v("SELECCIONE...")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayPredios, function(item) {
-                              return _c(
-                                "option",
-                                { key: item.id, domProps: { value: item } },
-                                [
-                                  _vm._v(
-                                    "\n                                                " +
-                                      _vm._s(item.nombre) +
-                                      "\n                                            "
-                                  )
-                                ]
-                              )
-                            })
-                          ],
-                          2
-                        ),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "invalid-feedback" }, [
-                          !_vm.$v.predio.required
-                            ? _c("span", [
-                                _vm._v(
-                                  "\n                                                Este campo es requerido\n                                            "
-                                )
-                              ])
-                            : _vm._e()
-                        ])
-                      ]),
-                      _vm._v(" "),
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-2" }, [
                       _c("div", { staticClass: "col-md-4" }, [
                         _c("label", [_vm._v("TARIFA:")]),
                         _vm._v(" "),
@@ -111897,10 +112359,8 @@ var render = function() {
                               ])
                             : _vm._e()
                         ])
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "row mt-2" }, [
+                      ]),
+                      _vm._v(" "),
                       _c("div", { staticClass: "col-md-4" }, [
                         _c("label", [_vm._v("SITUACIÓN:")]),
                         _vm._v(" "),
@@ -112035,8 +112495,10 @@ var render = function() {
                               ])
                             : _vm._e()
                         ])
-                      ]),
-                      _vm._v(" "),
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-2" }, [
                       _vm.situacion && _vm.situacion.id == 1
                         ? _c("div", { staticClass: "col-md-4" }, [
                             _c("label", { staticClass: "form-control-label" }, [
@@ -114114,6 +114576,316 @@ var staticRenderFns = [
           "th",
           { staticClass: "text-center", staticStyle: { width: "35%" } },
           [_vm._v("DETALLE")]
+        )
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RegPredio.vue?vue&type=template&id=11d16560&":
+/*!************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RegPredio.vue?vue&type=template&id=11d16560& ***!
+  \************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("section", { staticClass: "content" }, [
+      _c("div", { staticClass: "container-fluid" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-12" }, [
+            _c("div", { staticClass: "card card-primary card-outline" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-body" }, [
+                _c(
+                  "div",
+                  { staticClass: "row d-flex justify-content-center" },
+                  [
+                    _c("div", { staticClass: "col-md-4" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.buscar,
+                            expression: "buscar"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.buscar },
+                        on: {
+                          keyup: function($event) {
+                            return _vm.BuscarPredio()
+                          },
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.buscar = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]
+                )
+              ])
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-12" }, [
+            _c("div", { staticClass: "card card-primary card-outline" }, [
+              _c("div", { staticClass: "card-header" }, [
+                _c(
+                  "h3",
+                  { staticClass: "card-title" },
+                  [
+                    _c("i", { staticClass: "fas fa-list-ol" }),
+                    _vm._v(
+                      "  \n                LISTA DE PREDIO   \n                \n                "
+                    ),
+                    _c("router-link", { attrs: { to: "/nuevoRol" } }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success btn-sm",
+                          attrs: { type: "button" }
+                        },
+                        [
+                          _c("i", { staticClass: "fas fa-plus" }),
+                          _vm._v(" NUEVO\n                    ")
+                        ]
+                      )
+                    ])
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-body" }, [
+                _c(
+                  "table",
+                  {
+                    staticClass: "table table-bordered table-striped table-sm"
+                  },
+                  [
+                    _vm._m(2),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.ArrayPredios, function(a, index) {
+                        return _c("tr", [
+                          _c("td", { staticClass: "text-center" }, [
+                            _vm._v(_vm._s(index + 1))
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "td",
+                            {
+                              staticClass: "text-center",
+                              staticStyle: { "vertical-align": "middle" }
+                            },
+                            [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-primary btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.EditarRole(a.id)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", { staticClass: "fas fa-edit" }),
+                                  _vm._v(
+                                    " EDITAR\n                              "
+                                  )
+                                ]
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "td",
+                            {
+                              staticClass: "text-center",
+                              staticStyle: { "vertical-align": "middle" }
+                            },
+                            [_vm._v(_vm._s(a.nombre))]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "td",
+                            {
+                              staticClass: "text-center",
+                              staticStyle: { "vertical-align": "middle" }
+                            },
+                            [_vm._v(_vm._s(a.precio))]
+                          )
+                        ])
+                      }),
+                      0
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c("nav", [
+                  _c(
+                    "ul",
+                    { staticClass: "pagination" },
+                    [
+                      _vm.pagination.current_page > 1
+                        ? _c("li", { staticClass: "page-item" }, [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "page-link",
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.cambiarPagina(
+                                      _vm.pagination.current_page - 1
+                                    )
+                                  }
+                                }
+                              },
+                              [_vm._v("Ant")]
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm._l(_vm.pagesNumber, function(page) {
+                        return _c(
+                          "li",
+                          {
+                            key: page,
+                            staticClass: "page-item",
+                            class: [page == _vm.isActived ? "active" : ""]
+                          },
+                          [
+                            _c("a", {
+                              staticClass: "page-link",
+                              attrs: { href: "#" },
+                              domProps: { textContent: _vm._s(page) },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.cambiarPagina(page)
+                                }
+                              }
+                            })
+                          ]
+                        )
+                      }),
+                      _vm._v(" "),
+                      _vm.pagination.current_page < _vm.pagination.last_page
+                        ? _c("li", { staticClass: "page-item" }, [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "page-link",
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.cambiarPagina(
+                                      _vm.pagination.current_page + 1
+                                    )
+                                  }
+                                }
+                              },
+                              [_vm._v("Sig")]
+                            )
+                          ])
+                        : _vm._e()
+                    ],
+                    2
+                  )
+                ])
+              ])
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("section", { staticClass: "content-header" }, [
+      _c("div", { staticClass: "container-fluid" }, [
+        _c("div", { staticClass: "row mb-2" }, [
+          _c("div", { staticClass: "col-sm-6" }, [
+            _c("h1", [
+              _c("i", { staticClass: "fas fa-user-tag" }),
+              _vm._v("  \n            PREDIOS\n          ")
+            ])
+          ])
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title" }, [
+        _c("i", { staticClass: "fas fa-list-ol" }),
+        _vm._v("  \n                BUSCAR PREDIO\n              ")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { staticClass: "text-center", staticStyle: { width: "5%" } }, [
+          _vm._v("#")
+        ]),
+        _vm._v(" "),
+        _c(
+          "th",
+          { staticClass: "text-center", staticStyle: { width: "20%" } },
+          [_vm._v("OPCIONES")]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          { staticClass: "text-center", staticStyle: { width: "25%" } },
+          [_vm._v("PREDIO")]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          { staticClass: "text-center", staticStyle: { width: "40%" } },
+          [_vm._v("TIPO")]
         )
       ])
     ])
@@ -147680,6 +148452,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/RegPredio.vue":
+/*!***********************************************!*\
+  !*** ./resources/js/components/RegPredio.vue ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _RegPredio_vue_vue_type_template_id_11d16560___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RegPredio.vue?vue&type=template&id=11d16560& */ "./resources/js/components/RegPredio.vue?vue&type=template&id=11d16560&");
+/* harmony import */ var _RegPredio_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RegPredio.vue?vue&type=script&lang=js& */ "./resources/js/components/RegPredio.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _RegPredio_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _RegPredio_vue_vue_type_template_id_11d16560___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _RegPredio_vue_vue_type_template_id_11d16560___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/RegPredio.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/RegPredio.vue?vue&type=script&lang=js&":
+/*!************************************************************************!*\
+  !*** ./resources/js/components/RegPredio.vue?vue&type=script&lang=js& ***!
+  \************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RegPredio_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./RegPredio.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RegPredio.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RegPredio_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/RegPredio.vue?vue&type=template&id=11d16560&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/RegPredio.vue?vue&type=template&id=11d16560& ***!
+  \******************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RegPredio_vue_vue_type_template_id_11d16560___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./RegPredio.vue?vue&type=template&id=11d16560& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RegPredio.vue?vue&type=template&id=11d16560&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RegPredio_vue_vue_type_template_id_11d16560___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RegPredio_vue_vue_type_template_id_11d16560___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/RegistroPersonal.vue":
 /*!******************************************************!*\
   !*** ./resources/js/components/RegistroPersonal.vue ***!
@@ -148291,6 +149132,21 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
       });
 
       if (per.includes('view-renew-per')) {
+        next();
+      } else {
+        next(from.path);
+      }
+    }
+  }, {
+    path: '/RegPredio',
+    name: 'RegPredio',
+    component: __webpack_require__(/*! ./components/RegPredio.vue */ "./resources/js/components/RegPredio.vue")["default"],
+    beforeEnter: function beforeEnter(to, from, next) {
+      var per = window.user.permissions.map(function (permission) {
+        return permission.name;
+      });
+
+      if (per.includes('view-reg-predio')) {
         next();
       } else {
         next(from.path);

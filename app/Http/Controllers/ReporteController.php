@@ -19,15 +19,18 @@ class ReporteController extends Controller
                     ->join('tipo_eventos as te', 'e.tipo_evento_id', 'te.id')
                     ->join('tarifas as t', 'e.tarifa_id', 't.id')
                     ->join('predio_costos as pc', 'e.predio_id', 'pc.predio_id')
+                    ->join('tipo_predios as tp', 'e.tipo_predio_id', 'tp.id')
                     ->select('e.id',
                         'e.contratante',
                         'e.ci',
                         'e.celular',
+                        'tp.clasificacion',
                         'p.nombre',
                         'te.evento',
                         't.tarifa',
                         't.porcentaje',
                         'e.fecha_evento',
+                        'e.fecha_evento_fin',
                         'e.hora_inicio',
                         'e.hora_fin',
                         'pc.precio')
@@ -60,17 +63,20 @@ class ReporteController extends Controller
         Carbon::setLocale('es');
         $fecha = Carbon::now();
         $fecha_emision = $fecha->format('d') . ' días del mes de ' . $fecha->translatedFormat('F') . ' de ' . $fecha->format('Y');
-        $fecha_evento_dia = mb_strtoupper(Carbon::parse($evento->fecha_evento)->locale('es')->translatedFormat('l, d \d\e F \d\e Y'),'UTF-8');
+        $fecha_evento_inicio = mb_strtoupper(Carbon::parse($evento->fecha_evento)->locale('es')->translatedFormat('l, d \d\e F \d\e Y'),'UTF-8');
+        $fecha_evento_final = mb_strtoupper(Carbon::parse($evento->fecha_evento_fin)->locale('es')->translatedFormat('l, d \d\e F \d\e Y'),'UTF-8');
+
 
         $qr = QrCode::encoding('UTF-8')->size(100)->generate("No. REGISTRO: $evento->id\nCONTRATANTE: $evento->contratante\nSALON: $evento->nombre\nEVENTO: $evento->evento\nFECHA: $evento->fecha_evento");
         $codigo = $qr;
 
-        $pdf = PDF::loadView('reportes.recibo',['evento'=>$evento,
-                                                'situacion_evento'=>$situacion_evento,
-                                                'listar_situacion_evento' =>$listar_situacion_evento,
-                                                'qr'=>$codigo,
-                                                'fecha_det'=>$fecha_emision,
-                                                'fecha_evento_dia'=>$fecha_evento_dia
+        $pdf = PDF::loadView('reportes.recibo',['evento' => $evento,
+                                                'situacion_evento' => $situacion_evento,
+                                                'listar_situacion_evento' => $listar_situacion_evento,
+                                                'qr' => $codigo,
+                                                'fecha_det' => $fecha_emision,
+                                                'fecha_evento_inicio' => $fecha_evento_inicio,
+                                                'fecha_evento_final' => $fecha_evento_final
 
                                                     ])
         //8.3cm 5cm

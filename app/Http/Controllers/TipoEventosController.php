@@ -14,8 +14,9 @@ class TipoEventosController extends Controller
 
     public function ListarTipoEvento(Request $request)
     {
-        $tipo_evento = TipoEventos::select('id', 'evento', 'estado')
+        $tipo_evento = TipoEventos::select('id', 'evento', 'clasificacion', 'estado')
                         ->where('estado', 1)
+                        ->where('clasificacion', $request->tipo_predio_id)
                         ->orderBy('id', 'asc')
                         ->get();
 

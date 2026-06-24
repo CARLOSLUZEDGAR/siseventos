@@ -154,8 +154,8 @@
                     $date = date_create($evento->fecha_evento);
                     $fechaevento = date_format($date,"d/m/Y");
                 ?>
-                <p style="margin: 1px"><span style="font-weight: bold;">FECHA DEL EVENTO:</span> {{$fecha_evento_dia}}</p>
-                <p style="margin: 1px"><span style="font-weight: bold;">HORARIO:</span> DE {{$evento->hora_inicio}} A {{$evento->hora_fin}}</p>
+                <p style="margin: 1px"><span style="font-weight: bold;">FECHA INICIO EVENTO:</span> {{$fecha_evento_inicio}} <span style="font-weight: bold;">HORA INICIO:</span> {{$evento->hora_inicio}}</p>
+                <p style="margin: 1px"><span style="font-weight: bold;">FECHA FIN EVENTO:</span> {{$fecha_evento_final}} <span style="font-weight: bold;">HORA FINAL:</span> {{$evento->hora_fin}}</p>
                 <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE EVENTO:</span> {{$evento->evento}}</p>
                 <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE TARIFA:</span> {{$evento->tarifa}}</p>
                 <!-- <p style="margin: 1px"><span style="font-weight: bold;">MONTO DEPOSITADO: Bs. {{$situacion_evento->monto}}</span></p> -->
