@@ -505,9 +505,9 @@
                                         </div>
                                     </div>
                                     <div class="row mt-2">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label class="form-control-label">
-                                                FECHA EVENTO:
+                                                FECHA INICO:
                                             </label>
                                             <input type="date" class="form-control" v-model="fecha_eventoE" :class="{'is-invalid' : $v.fecha_eventoE.$error, 'is-valid': !$v.fecha_eventoE.$invalid}">
                                             <div class="invalid-feedback">
@@ -516,22 +516,51 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label class="form-control-label">
                                                 HORA INICIO:
                                             </label>
-                                            <input type="text" class="form-control" v-model="hora_inicioE" :class="{'is-invalid' : $v.hora_inicioE.$error, 'is-valid': !$v.hora_inicioE.$invalid}" disabled>
+                                            <select class="form-control" v-model="hora_inicioE" :class="{'is-invalid' : $v.hora_inicioE.$error, 'is-valid': !$v.hora_inicioE.$invalid}">
+                                                <option value="">SELECCIONE...</option>
+                                                <option
+                                                    v-for="hora in horasDisponibles"
+                                                    :key="'inicio-' + hora"
+                                                    :value="hora"
+                                                >
+                                                    {{ hora }}
+                                                </option>
+                                            </select>                                            
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.hora_inicioE.required">
                                                     Este campo es requerido
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
+                                            <label class="form-control-label">
+                                                FECHA FIN:
+                                            </label>
+                                            <input type="date" class="form-control" v-model="fecha_evento_finE" :min="fecha_eventoE" :class="{'is-invalid' : $v.fecha_evento_finE.$error, 'is-valid': !$v.fecha_evento_finE.$invalid}">
+                                            <div class="invalid-feedback">
+                                                <span v-if="!$v.fecha_evento_finE.required">
+                                                    Este campo es requerido
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
                                             <label class="form-control-label">
                                                 HORA FIN:
                                             </label>
-                                            <input type="text" class="form-control" v-model="hora_finE" :class="{'is-invalid' : $v.hora_finE.$error, 'is-valid': !$v.hora_finE.$invalid}" disabled>
+                                            <select class="form-control" v-model="hora_finE" :class="{'is-invalid' : $v.hora_finE.$error, 'is-valid': !$v.hora_finE.$invalid}">
+                                                <option value="">SELECCIONE...</option>
+                                                <option
+                                                    v-for="hora in horasDisponibles"
+                                                    :key="'inicio-' + hora"
+                                                    :value="hora"
+                                                >
+                                                    {{ hora }}
+                                                </option>
+                                            </select>                                              
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.hora_finE.required">
                                                     Este campo es requerido
@@ -541,10 +570,10 @@
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-md-4">
-                                            <label>TIPO EVENTO:</label>
-                                            <input type="text" class="form-control" v-model="tipo_eventoE" style="text-transform:uppercase;" :class="{'is-invalid' : $v.tipo_eventoE.$error, 'is-valid': !$v.tipo_eventoE.$invalid}" disabled>
+                                            <label>TIPO PREDIO:</label>
+                                            <input type="text" class="form-control" v-model="tipo_predioE" style="text-transform:uppercase;" :class="{'is-invalid' : $v.tipo_predioE.$error, 'is-valid': !$v.tipo_predioE.$invalid}" disabled>
                                             <div class="invalid-feedback">
-                                                <span v-if="!$v.tipo_eventoE.required">
+                                                <span v-if="!$v.tipo_predioE.required">
                                                     Este campo es requerido
                                                 </span>
                                             </div>
@@ -559,10 +588,10 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <label>TARIFA:</label>
-                                            <input type="text" class="form-control" v-model="tarifaE" style="text-transform:uppercase;" :class="{'is-invalid' : $v.tarifaE.$error, 'is-valid': !$v.tarifaE.$invalid}" disabled>
+                                            <label>TIPO EVENTO:</label>
+                                            <input type="text" class="form-control" v-model="tipo_eventoE" style="text-transform:uppercase;" :class="{'is-invalid' : $v.tipo_eventoE.$error, 'is-valid': !$v.tipo_eventoE.$invalid}" disabled>
                                             <div class="invalid-feedback">
-                                                <span v-if="!$v.tarifaE.required">
+                                                <span v-if="!$v.tipo_eventoE.required">
                                                     Este campo es requerido
                                                 </span>
                                             </div>
@@ -573,7 +602,7 @@
                                             <table class="table table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
-                                                        <th style="text-align: center; vertical-align: middle;">SITUACIÓN</th>
+                                                        <th style="text-align: center; vertical-align: middle;">SITUACIÓN (TARIFA: {{ tarifaE }})</th>
                                                         <th style="text-align: center; vertical-align: middle;">MONTO (Bs.)</th>
                                                         <th style="text-align: center; vertical-align: middle;" v-if="situacion_idE == 1">PAGO</th>
                                                     </tr>
@@ -749,12 +778,14 @@ export default {
 
             id_eventoE: '',
             fecha_eventoE: '',
+            fecha_evento_finE: '',
             hora_inicioE: '',
             hora_finE: '',
             responsableE: '',
             ciE: '',
             celularE: '',
             predio_idE: '',
+            tipo_predioE: '',
             predioE: '',
             tipo_evento_idE: '',
             tipo_eventoE: '',
@@ -794,12 +825,14 @@ export default {
         decimalDos, montoMaximo },
 
         fecha_eventoE: { required },
+        fecha_evento_finE: { required },
         hora_inicioE: { required },
         hora_finE: { required },
         responsableE: { required },
         ciE: { required },
         celularE: { required },
         // predio_idE: { required },
+        tipo_predioE: { required },
         predioE: { required },
         tipo_eventoE: { required },
         tarifaE: { required },
@@ -828,12 +861,14 @@ export default {
 
         validationsGroupMod: [
             'fecha_eventoE',
+            'fecha_evento_finE',
             'hora_inicioE',
             'hora_finE',
             'responsableE',
             'ciE',
             'celularE',
             // 'predio_idE',
+            'tipo_predioE',
             'predioE',
             'tipo_eventoE',
             'tarifaE',
@@ -856,55 +891,47 @@ export default {
 
         fecha_evento_fin(valor) {
 
-        if (valor && valor < this.fecha_evento) {
+            if (valor && valor < this.fecha_evento) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha inválida',
+                    text: 'La fecha fin no puede ser menor a la fecha inicio'
+                });
+                this.fecha_evento_fin = '';
+                return;
+            }
+            this.validarHoras();
+        },
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Fecha inválida',
-                text: 'La fecha fin no puede ser menor a la fecha inicio'
-            });
+        hora_inicio() {
+            this.validarHoras();
+        },
 
-            this.fecha_evento_fin = '';
-        }
-    },
+        hora_fin() {
+            this.validarHoras();
+        },
 
-    hora_inicio(valor) {
+        fecha_evento_finE(valor) {
 
-        if (
-            this.fecha_evento_fin === this.fecha_evento &&
-            this.hora_fin &&
-            valor &&
-            this.hora_fin <= valor
-        ) {
+            if (valor && valor < this.fecha_eventoE) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fecha inválida',
+                    text: 'La fecha fin no puede ser menor a la fecha inicio'
+                });
+                this.fecha_evento_finE = '';
+                return;
+            }
+            this.validarHorasE();
+        },
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Hora inválida',
-                text: 'La hora fin debe ser mayor a la hora inicio'
-            });
+        hora_inicioE() {
+            this.validarHorasE();
+        },
 
-            this.hora_fin = '';
-        }
-    },
-
-    hora_fin(valor) {
-
-        if (
-            this.fecha_evento_fin === this.fecha_evento &&
-            this.hora_inicio &&
-            valor &&
-            valor <= this.hora_inicio
-        ) {
-
-            Swal.fire({
-                icon: 'warning',
-                title: 'Hora inválida',
-                text: 'La hora fin debe ser mayor a la hora inicio'
-            });
-
-            this.hora_fin = '';
-        }
-    }
+        hora_finE() {
+            this.validarHorasE();
+        },
     },
 
     mounted() {
@@ -913,7 +940,7 @@ export default {
             this.anios.push(i);
         }
 
-        for (let j = 0; j < 24; j++) {
+        for (let j = 0; j <= 24; j++) {
             this.horasDisponibles.push(
                 String(j).padStart(2, '0') + ':00'
             );
@@ -1003,15 +1030,17 @@ export default {
                 this.$v.validationsGroupMod.$reset();
                 this.id_eventoE = this.arrayMostrarEvento.id;
                 this.fecha_eventoE = this.arrayMostrarEvento.fecha_evento;
+                this.fecha_evento_finE = this.arrayMostrarEvento.fecha_evento_fin;
                 this.responsableE = this.arrayMostrarEvento.contratante;
                 this.ciE = this.arrayMostrarEvento.ci;
                 this.celularE = this.arrayMostrarEvento.celular;
                 this.predio_idE = this.arrayMostrarEvento.predio_id;
+                this.tipo_predioE = this.arrayMostrarEvento.clasificacion;
                 this.predioE = this.arrayMostrarEvento.nombre;
                 this.tipo_evento_idE = this.arrayMostrarEvento.tipo_evento_id;
                 this.tipo_eventoE = this.arrayMostrarEvento.evento;
-                this.hora_inicioE = this.arrayMostrarEvento.hora_inicio;
-                this.hora_finE = this.arrayMostrarEvento.hora_fin;
+                this.hora_inicioE = this.arrayMostrarEvento.hora_inicio.slice(0, 5);
+                this.hora_finE = this.arrayMostrarEvento.hora_fin.slice(0, 5);
                 this.tarifa_idE = this.arrayMostrarEvento.tarifa_id;
                 this.tarifaE = this.arrayMostrarEvento.tarifa;
                 this.situacion_idE = this.arrayMostrarEvento.situacion_id;
@@ -1083,11 +1112,13 @@ export default {
                     break;
                 case 2:
                     this.fecha_eventoE = '',
+                    this.fecha_evento_finE = '',
                     this.hora_inicioE = '',
                     this.hora_finE = '',
                     this.responsableE = '',
                     this.ciE = '',
                     this.celularE = '',
+                    this.tipo_predioE = '',
                     this.predioE = '',
                     this.tipo_eventoE = '',
                     this.tarifaE = '',
@@ -1200,6 +1231,38 @@ export default {
             return this.arrayEvento.filter(
                 evento => evento.fecha_evento == fecha
             );
+        },
+
+        validarHoras() {
+            if (
+                this.fecha_evento_fin === this.fecha_evento &&
+                this.hora_inicio &&
+                this.hora_fin &&
+                this.hora_fin <= this.hora_inicio
+            ) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Hora inválida',
+                    text: 'La hora fin debe ser mayor a la hora inicio cuando ambas fechas son iguales'
+                });
+                this.hora_fin = '';
+            }
+        },
+
+        validarHorasE() {
+            if (
+                this.fecha_evento_finE === this.fecha_eventoE &&
+                this.hora_inicioE &&
+                this.hora_finE &&
+                this.hora_finE <= this.hora_inicioE
+            ) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Hora inválida',
+                    text: 'La hora fin debe ser mayor a la hora inicio cuando ambas fechas son iguales'
+                });
+                this.hora_finE = '';
+            }
         },
 
         Guardar() {
@@ -1316,6 +1379,7 @@ export default {
                             id_evento: this.id_eventoE,
                             fecha_evento: this.fecha_eventoE,
                             hora_inicio: this.hora_inicioE,
+                            fecha_evento_fin: this.fecha_evento_finE,
                             hora_fin: this.hora_finE,
                             predio_id: this.predio_idE,
                             // observacion: this.observacionE.toUpperCase()

@@ -79,6 +79,20 @@ export default new Router ({
             }
         },
 
+        {
+            path: '/RegClasificacion',
+            name: 'RegClasificacion',
+            component: require('./components/RegClasificacion.vue').default,
+            beforeEnter: (to, from, next) => {
+                let per = window.user.permissions.map(permission=>permission.name);
+                if (per.includes('view-reg-clasificacion')) {
+                    next();
+                } else {
+                    next(from.path);
+                }
+            }
+        },
+
         // FIN RUTAS
 
         {

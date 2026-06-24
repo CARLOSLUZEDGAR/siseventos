@@ -61,6 +61,14 @@
                       </p>
                     </a>
                     <ul class="nav nav-treeview" style="display: none;">
+                      @can('view-reg-clasificacion', Model::class)
+                      <li class="nav-item">
+                        <router-link class="nav-link" to='/RegClasificacion'>
+                          <i class="nav-icon fas fa-calendar"></i>
+                          <p>CLASIFICACIÓN</p>
+                        </router-link>
+                      </li>
+                      @endcan
                       @can('view-reg-predio', Model::class)
                       <li class="nav-item">
                         <router-link class="nav-link" to='/RegPredio'>

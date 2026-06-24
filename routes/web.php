@@ -86,9 +86,11 @@ Route::post('/listarTarifa','TarifasController@ListarTarifa');
 Route::post('/listarSituacion','SituacionesController@ListarSituacion');
 Route::post('/listarEvento','EventosController@ListarEvento');
 Route::post('/mostrarEvento','EventosController@MostrarEvento');
+Route::post('/mostrarClasificacion','TipoPrediosController@MostrarTipoPredio');
 Route::post('/editarEvento','EventosController@EditarEvento');
 Route::post('/pagarSaldoEvento','EventosController@PagarSaldoEvento');
 Route::post('/buscarPredio','PrediosController@BuscarPredio');
+Route::post('/buscarClasificacion','TipoPrediosController@BuscarTipoPredio');
 Route::post('/listarTipoPredio','TipoPrediosController@ListarTipoPredio');
 
 
