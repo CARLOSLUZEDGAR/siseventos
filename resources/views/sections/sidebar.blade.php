@@ -77,6 +77,22 @@
                         </router-link>
                       </li>
                       @endcan
+                      @can('view-reg-evento', Model::class)
+                      <li class="nav-item">
+                        <router-link class="nav-link" to='/RegEvento'>
+                          <i class="nav-icon fas fa-calendar"></i>
+                          <p>EVENTOS</p>
+                        </router-link>
+                      </li>
+                      @endcan
+                      @can('view-reg-tarifa', Model::class)
+                      <li class="nav-item">
+                        <router-link class="nav-link" to='/RegTarifa'>
+                          <i class="nav-icon fas fa-calendar"></i>
+                          <p>TARIFAS</p>
+                        </router-link>
+                      </li>
+                      @endcan
                     </ul>
                   </li>  
                 @endcan

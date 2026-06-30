@@ -92,6 +92,37 @@ Route::post('/pagarSaldoEvento','EventosController@PagarSaldoEvento');
 Route::post('/buscarPredio','PrediosController@BuscarPredio');
 Route::post('/buscarClasificacion','TipoPrediosController@BuscarTipoPredio');
 Route::post('/listarTipoPredio','TipoPrediosController@ListarTipoPredio');
+Route::post('/registrarClasificacion','TipoPrediosController@CrearTipoPredio');
+Route::post('/editarClasificacion','TipoPrediosController@EditarTipoPredio');
+Route::post('/cambiarEstadoClasificacion','TipoPrediosController@CambiarEstadoTipoPredio');
+Route::post('/registrarPredio','PrediosController@CrearPredio');
+Route::post('/mostrarPredio','PrediosController@MostrarPredio');
+Route::post('/editarPredio','PrediosController@EditarPredio');
+Route::post('/cambiarEstadoPredio','PrediosController@CambiarEstadoPredio');
+Route::post('/buscarTipoEvento','TipoEventosController@BuscarTipoEvento');
+Route::post('/registrarTipoEvento','TipoEventosController@CrearTipoEvento');
+Route::post('/mostrarTipoEvento','TipoEventosController@MostrarTipoEvento');
+Route::post('/editarTipoEvento','TipoEventosController@EditarTipoEvento');
+Route::post('/cambiarEstadoTipoEvento','TipoEventosController@CambiarEstadoTipoEvento');
+Route::post('/buscarTarifa','TarifasController@BuscarTarifa');
+Route::post('/registrarTarifa','TarifasController@CrearTarifa');
+Route::post('/mostrarTarifa','TarifasController@MostrarTarifa');
+Route::post('/editarTarifa','TarifasController@EditarTarifa');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

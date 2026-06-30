@@ -10,12 +10,6 @@
               CLASIFICACIÓN
             </h1>
           </div>
-          <!-- <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Modals & Alerts</li>
-            </ol>
-          </div> -->
         </div>
       </div>
       <!-- /.container-fluid -->
@@ -47,9 +41,6 @@
         </div>
         <!-- ./row -->
 
-
-
-
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary card-outline">
@@ -68,38 +59,37 @@
                         <tr>
                           <th style="width: 5%" class="text-center">#</th>
                           <th style="width: 30%" class="text-center">OPCIONES</th>
-                          <th style="width: 65%" class="text-center">CLASIFICACIÓN</th>
-                          <!-- <th style="width: 40%" class="text-center">TIPO</th> -->
+                          <th style="width: 30%" class="text-center">CLASIFICACIÓN</th>
+                          <th style="width: 35%" class="text-center">DETALLE</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(a, index) in ArrayClasificacion">
-                          <td class="text-center">{{index + 1}}</td>
+                          <td class="text-center" style="vertical-align: middle">{{index + 1}}</td>
                             <td class="text-center" style="vertical-align: middle">
                                 <button  type="button" class="btn btn-primary btn-sm" @click="Datos(a.id)">
-                                    <i class="fas fa-edit"></i> EDITAR
+                                    <i class="fas fa-edit"></i>&nbsp;EDITAR
                                 </button>
                                 <!-- <button type="button" class="btn btn-success btn-sm">
                                     <i class="fas fa-eye"></i> VER
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash"></i> ELIMINAR
                                 </button> -->
+                                <template v-if="a.estado == 1">
+                                    <button type="button" class="btn btn-danger btn-sm" @click="CambiarEstado(a.id, a.estado)" :disabled="procesando">
+                                        <i class="fas fa-toggle-off"></i>&nbsp;{{ procesando ? 'Procesando...' : 'DESHABILITAR' }}
+                                    </button>
+                                </template>
+                                <template v-else>
+                                    <button type="button" class="btn btn-success btn-sm" @click="CambiarEstado(a.id, a.estado)" :disabled="procesando">
+                                        <i class="fas fa-toggle-on"></i>&nbsp;{{ procesando ? 'Procesando...' : 'HABILITAR' }}
+                                    </button>
+                                </template>
                             </td>                            
                             <td class="text-center" style="vertical-align: middle">{{a.clasificacion}}</td>
-                            <!-- <td class="text-center" style="vertical-align: middle">{{a.precio}}</td> -->
-                            <!-- <td class="text-center" style="vertical-align: middle;">
-                                <div v-if="u.estado === 1">
-                                <span class="badge badge-success">Habilitado</span>
-                                </div>
-                                <div v-else>
-                                <span class="badge badge-danger">Desabilitado</span>                                            
-                                </div>                            
-                            </td>  -->
+                            <td class="text-justify" style="vertical-align: middle">{{a.observacion}}</td>
                         </tr>
                     </tbody>
                     
-                </table> 
+                </table><br>
                 <nav>
                     <ul class="pagination">
                         <li class="page-item" v-if="pagination.current_page > 1">
@@ -114,11 +104,6 @@
                         </li>
                     </ul>
                 </nav>
-
-
-
-
-
               </div>
               <!-- /.card -->
             </div>
@@ -148,7 +133,7 @@
                         <template v-if="modal == 0">
                             <div class="col-md-12">
                                 <label class="form-control-label" for="text-input">CLASIFICACIÓN:</label>
-                                <input type="text" class="form-control" v-model="clasificacion" :class="{ 'is-invalid' : $v.clasificacion.$error, 'is-valid':!$v.clasificacion.$invalid }">
+                                <input type="text" class="form-control" v-model="clasificacion" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.clasificacion.$error, 'is-valid':!$v.clasificacion.$invalid }">
                                 <div class="invalid-feedback">
                                     <span v-if="!$v.clasificacion.required">Este campo es Requerido</span>
                                 </div>
@@ -161,7 +146,7 @@
                         <template v-else>
                             <div class="col-md-12">
                                 <label class="form-control-label" for="text-input">CLASIFICACIÓN:</label>
-                                <input type="text" class="form-control" v-model="clasificacionE" :class="{ 'is-invalid' : $v.clasificacionE.$error, 'is-valid':!$v.clasificacionE.$invalid }">
+                                <input type="text" class="form-control" v-model="clasificacionE" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.clasificacionE.$error, 'is-valid':!$v.clasificacionE.$invalid }">
                                 <div class="invalid-feedback">
                                     <span v-if="!$v.clasificacionE.required">Este campo es Requerido</span>
                                 </div>
@@ -174,9 +159,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" @click="Cerrar()">CANCELAR</button>
-                <button v-if="modal == 0" type="button" class="btn btn-primary" @click="Guardar()">GUARDAR</button>
-                <button v-else type="button" class="btn btn-primary" @click="Editar()">EDITAR</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" @click="Cerrar()">CANCELAR</button>
+                    <button v-if="modal == 0" type="button" class="btn btn-primary" @click="Guardar()" :disabled="procesando">{{ procesando ? 'Procesando...' : 'GUARDAR' }}</button>
+                    <button v-else type="button" class="btn btn-primary" @click="Editar()" :disabled="procesando">{{ procesando ? 'Procesando...' : 'EDITAR' }}</button>
                 </div>
 
             </div>
@@ -228,25 +213,21 @@ export default {
 
           buscar: '',
           setTiemoutBuscador: '',
+
+          procesando: false,
         }
     },
 
     validations: { 
-        // modulo: { required },
         clasificacion: { required },
         clasificacionE: { required },
-        // detalle: { required },
 
         validationsGroupReg: [
             'clasificacion',
-            // 'detalle',
-            // 'modulo',
         ],
 
         validationsGroupMod: [
             'clasificacionE',
-            // 'detalle',
-            // 'modulo',
         ],
     },
 
@@ -257,7 +238,7 @@ export default {
         isActived: function(){
             return this.pagination.current_page;
         },
-        //Calcuar los elementos de la paginacion
+        //Calcular los elementos de la paginacion
         pagesNumber: function() {
         if(!this.pagination.to){
             return [];
@@ -344,7 +325,229 @@ export default {
         },
 
         Cerrar(){
-            
+            this.clasificacion = '';
+            this.detalle = '';
+            this.modal = '';
+            this.idE = '';
+            this.clasificacionE = '';
+            this.detalleE = '';
+        },
+
+        Guardar() {
+            if (this.procesando) {
+                return;
+            }
+            if (!this.$v.validationsGroupReg.$invalid) {
+                swal.fire({
+                    title: '¿Desea registrar esta clasificacion?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: 'info',
+                    cancelButtonColor: '#868077',
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Cancelar',
+                    buttonsStyling: true,
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        this.procesando = true;
+                        axios.post('/registrarClasificacion', {
+                            clasificacion: this.clasificacion.toUpperCase(),
+                            observacion: this.detalle
+                                ? this.detalle.toUpperCase()
+                                : ''
+                        })
+                        .then((response) => {
+                            this.procesando = false;
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'CORRECTO',
+                                    text: response.data.mensaje
+                                });
+                                $('#ModalClasificacion').modal('hide');
+                                this.Cerrar();
+                                this.ListarClasificacion();
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'ADVERTENCIA',
+                                    text: response.data.mensaje
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            this.procesando = false;
+                            console.log(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ERROR',
+                                text: 'Ocurrió un error inesperado'
+                            });
+                        });
+                    } else {
+                        swal.fire(
+                            'Información',
+                            'Solicitud cancelada.',
+                            'info'
+                        );
+                        $('#ModalClasificacion').modal('hide');
+                        this.Cerrar();
+                    }
+                });
+            } else {
+                this.$v.validationsGroupReg.$touch();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ingrese todos los datos requeridos',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        },
+
+        Editar(){
+            if (this.procesando) {
+                return;
+            }
+            if(!this.$v.validationsGroupMod.$invalid){
+                swal.fire({
+                    title: '¿Desea editar esta clasificación?', // TITULO 
+                    icon: 'question', //ICONO (success, warnning, error, info, question)
+                    showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
+                    confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
+                    cancelButtonColor: '#868077', // CLOR DEL BOTON CANCELAR
+                    confirmButtonText: 'Confirmar', //TITULO DEL BOTON CONFIRMAR
+                    cancelButtonText: 'Cancelar', //TIUTLO DEL BOTON CANCELAR
+                    buttonsStyling: true,
+                    reverseButtons: true
+                    }).then((result) => {
+                    if (result.value) {
+                        let me = this;
+                        this.procesando = true;
+                        axios.post('/editarClasificacion', {
+                            id_clasificacion: this.idE,
+                            clasificacion: this.clasificacionE.toUpperCase(),
+                            observacion: this.detalleE
+                                ? this.detalleE.toUpperCase()
+                                : ''
+                        })
+                        .then((response) => {
+                            if(response.data.success){
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'CORRECTO',
+                                    text: response.data.mensaje
+                                });
+                                $('#ModalClasificacion').modal('hide');
+                                this.Cerrar();
+                                this.ListarClasificacion();
+                            }else{
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'ADVERTENCIA',
+                                    text: response.data.mensaje
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ERROR',
+                                text: 'Ocurrió un error inesperado'
+                            });
+                        })
+                        .finally(() => {
+                            this.procesando = false;
+                        });
+                    }else{
+                        let me = this;
+                        swal.fire(
+                            "Informacion", //TITULO
+                            "Solicitud cancelada.", //TEXTO DE MENSAJE
+                            "info" // TIPO DE MODAL (success, warnning, error, info)
+                        );
+                        $('#ModalClasificacion').modal('hide');
+                        me.Cerrar();
+                    }
+                })
+            }else{
+                this.$v.validationsGroupMod.$touch();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ingrese todos los datos requeridos',
+                    showConfirmButton: false,
+                    timer: 2000
+                }) 
+            }
+        },
+
+        CambiarEstado(id, estado){
+            if (this.procesando) {
+                return;
+            }
+            if (estado == 1) {
+                var titulo = '¿Desea deshabilitar esta clasificación?';
+                // var titulo2 = 'Usuario deshabilitado correctamente';
+            } else {
+                var titulo = '¿Desea habilitar esta clasificación?';
+                // var titulo2 = 'Usuario habilitado correctamente';
+            }
+            swal.fire({
+                title: titulo, // TITULO 
+                icon: 'question', //ICONO (success, warnning, error, info, question)
+                showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
+                confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
+                cancelButtonColor: '#868077', // CLOR DEL BOTON CANCELAR
+                confirmButtonText: 'Confirmar', //TITULO DEL BOTON CONFIRMAR
+                cancelButtonText: 'Cancelar', //TIUTLO DEL BOTON CANCELAR
+                buttonsStyling: true,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+                    this.procesando = true;
+                    axios.post('/cambiarEstadoClasificacion', {
+                        id_clasificacion: id,
+                        estado: estado
+                    })
+                    .then((response) => {
+                        if(response.data.success){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'CORRECTO',
+                                text: response.data.mensaje
+                            });
+                            this.ListarClasificacion();
+                        }else{
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'ADVERTENCIA',
+                                text: response.data.mensaje
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ERROR',
+                            text: 'Ocurrió un error inesperado'
+                        });
+                    })
+                    .finally(() => {
+                        this.procesando = false;
+                    });
+                }else{
+                    let me = this;
+                    swal.fire(
+                        "Informacion", //TITULO
+                        "Solicitud cancelada.", //TEXTO DE MENSAJE
+                        "info" // TIPO DE MODAL (success, warnning, error, info)
+                    );
+                }
+            })
         }
     },
 };

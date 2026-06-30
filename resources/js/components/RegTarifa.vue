@@ -7,7 +7,7 @@
           <div class="col-sm-6">            
             <h1>
               <i class="fas fa-user-tag"></i> &nbsp;
-                PREDIO
+                TARIFA
             </h1>
           </div>
         </div>
@@ -24,13 +24,13 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="fas fa-list-ol"></i> &nbsp;
-                  BUSCAR PREDIO
+                  BUSCAR TARIFA
                 </h3>
               </div>
               <div class="card-body">                  
                     <div class="row d-flex justify-content-center"> 
                         <div class="col-md-4">
-                            <input type="text" class="form-control" @keyup="BuscarPredio()" v-model="buscar">
+                            <input type="text" class="form-control" @keyup="BuscarTarifa()" v-model="buscar">
                         </div>
                     </div>
               </div>
@@ -47,7 +47,7 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="fas fa-list-ol"></i> &nbsp;
-                  LISTA DE PREDIOS &nbsp;&nbsp;
+                  LISTA DE TARIFAS &nbsp;&nbsp;
                     <button type="button" class="btn btn-success btn-sm" @click="Nuevo()">
                         <i class="fas fa-plus"></i> NUEVO
                     </button> 
@@ -59,13 +59,13 @@
                         <tr>
                           <th style="" class="text-center">#</th>
                           <th style="" class="text-center">OPCIONES</th>
-                          <th style="" class="text-center">CLASIFICACIÓN</th>
-                          <th style="" class="text-center">PREDIO</th>
-                          <th style="" class="text-center">COLOR</th>
+                          <th style="" class="text-center">TARIFA</th>
+                          <th style="" class="text-center">% DESCUENTO</th>
+                          <th style="" class="text-center">DETALLE</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(a, index) in ArrayPredio">
+                        <tr v-for="(a, index) in ArrayTarifa">
                           <td class="text-center" style="vertical-align: middle">{{index + 1}}</td>
                             <td class="text-center" style="vertical-align: middle">
                                 <button  type="button" class="btn btn-primary btn-sm" @click="Datos(a.id)">
@@ -85,20 +85,9 @@
                                     </button>
                                 </template>
                             </td>                            
-                            <td class="text-center" style="vertical-align: middle">{{a.clasificacion}}</td>
-                            <td class="text-justify" style="vertical-align: middle">{{a.nombre}}</td>
-                            <td class="text-center" style="vertical-align: middle">
-                                <span
-                                    :style="{
-                                        backgroundColor: a.color,
-                                        display: 'inline-block',
-                                        width: '20px',
-                                        height: '20px',
-                                        borderRadius: '50%',
-                                        border: '1px solid #666'
-                                    }"
-                                ></span>
-                            </td>
+                            <td class="text-center" style="vertical-align: middle">{{a.tarifa}}</td>
+                            <td class="text-center" style="vertical-align: middle">{{a.porcentaje}}</td>
+                            <td class="text-justify" style="vertical-align: middle">{{a.observacion}}</td>
                         </tr>
                     </tbody>
                     
@@ -127,15 +116,15 @@
       </div>
       <!-- /.container-fluid -->
 
-        <div class="modal fade"  data-backdrop="static" id="ModalPredio">
+        <div class="modal fade"  data-backdrop="static" id="ModalTarifa">
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <template v-if="modal == 0">
-                        <h4 class="modal-title">NUEVO PREDIO</h4>
+                        <h4 class="modal-title">NUEVO TARIFA</h4>
                     </template>
                     <template v-else>
-                        <h4 class="modal-title">EDITAR PREDIO</h4>
+                        <h4 class="modal-title">EDITAR TARIFA</h4>
                     </template>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="Cerrar()">
                     <span aria-hidden="true">&times;</span>
@@ -145,63 +134,22 @@
                     <template v-if="modal == 0">
                         <div class="row mt-2">
                             <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">PREDIO:</label>
-                                <input type="text" class="form-control" v-model="predio" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.predio.$error, 'is-valid':!$v.predio.$invalid }">
+                                <label class="form-control-label" for="text-input">TARIFA:</label>
+                                <input type="text" class="form-control" v-model="tarifa" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.tarifa.$error, 'is-valid':!$v.tarifa.$invalid }">
                                 <div class="invalid-feedback">
-                                    <span v-if="!$v.predio.required">Este campo es Requerido</span>
+                                    <span v-if="!$v.tarifa.required">Este campo es Requerido</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">ABREVIATURA:</label>
-                                <input type="text" class="form-control" v-model="abreviatura" style="text-transform:uppercase;">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <label>TIPO PREDIO:</label>
-                                <select
-                                    class="form-control"
-                                    v-model="tipo_predio"
-                                    :class="{
-                                        'is-invalid': $v.tipo_predio.$error,
-                                        'is-valid': !$v.tipo_predio.$invalid
-                                    }"
-                                >
-                                    <option value="">SELECCIONE...</option>
-                                    <option
-                                        v-for="item in arrayTipoPredios"
-                                        :key="item.id"
-                                        :value="item"
-                                    >
-                                        {{ item.clasificacion }}
-                                    </option>
-                                </select>
+                                <label class="form-control-label" for="text-input">DESCUENTO (%):</label>
+                                <input type="number" step="0.01" min="0" max="100" class="form-control" v-model.number="porcentaje" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.porcentaje.$error, 'is-valid':!$v.porcentaje.$invalid }">
                                 <div class="invalid-feedback">
-                                    <span v-if="!$v.tipo_predio.required">
-                                        Este campo es requerido
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">COLOR:</label>
-                                <input type="color" class="form-control" v-model="color" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.color.$error, 'is-valid':!$v.color.$invalid }">
-                                <div class="invalid-feedback">
-                                    <span v-if="!$v.color.required">Este campo es Requerido</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <label class="form-control-label">
-                                    PRECIO (Bs.):
-                                </label>
-                                <input type="number" step="0.01" min="0" class="form-control" v-model.number="precio" :class="{'is-invalid' : $v.precio.$error, 'is-valid': !$v.precio.$invalid}">
-                                <div class="invalid-feedback">
-                                    <span v-if="!$v.precio.required">
-                                        Este campo es requerido
-                                    </span>
-                                    <span v-if="$v.precio.required && !$v.precio.decimalDos">
+                                    <span v-if="!$v.porcentaje.required">Este campo es Requerido</span>
+                                    <span v-if="$v.porcentaje.required && !$v.porcentaje.decimalDos">
                                         Debe ingresar un precio válido con máximo 2 decimales
+                                    </span>
+                                    <span v-else-if="!$v.porcentaje.montoMaximo">
+                                        El descuento no puede ser mayor a 100%.
                                     </span>
                                 </div>
                             </div>
@@ -216,47 +164,22 @@
                     <template v-else>
                         <div class="row mt-2">
                             <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">PREDIO:</label>
-                                <input type="text" class="form-control" v-model="predioE" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.predioE.$error, 'is-valid':!$v.predioE.$invalid }">
+                                <label class="form-control-label" for="text-input">TARIFA:</label>
+                                <input type="text" class="form-control" v-model="tarifaE" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.tarifaE.$error, 'is-valid':!$v.tarifaE.$invalid }">
                                 <div class="invalid-feedback">
-                                    <span v-if="!$v.predioE.required">Este campo es Requerido</span>
+                                    <span v-if="!$v.tarifaE.required">Este campo es Requerido</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">ABREVIATURA:</label>
-                                <input type="text" class="form-control" v-model="abreviaturaE" style="text-transform:uppercase;">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <label>TIPO PREDIO:</label>
-                                <input type="text" class="form-control" v-model="tipo_predioE" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.tipo_predioE.$error, 'is-valid':!$v.tipo_predioE.$invalid }" disabled>
+                                <label class="form-control-label" for="text-input">DESCUENTO (%):</label>
+                                <input type="number" step="0.01" min="0" max="100" class="form-control" v-model.number="porcentajeE" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.porcentajeE.$error, 'is-valid':!$v.porcentajeE.$invalid }">
                                 <div class="invalid-feedback">
-                                    <span v-if="!$v.tipo_predioE.required">
-                                        Este campo es requerido
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">COLOR:</label>
-                                <input type="color" class="form-control" v-model="colorE" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.colorE.$error, 'is-valid':!$v.colorE.$invalid }">
-                                <div class="invalid-feedback">
-                                    <span v-if="!$v.colorE.required">Este campo es Requerido</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <label class="form-control-label">
-                                    PRECIO (Bs.):
-                                </label>
-                                <input type="number" step="0.01" min="0" class="form-control" v-model.number="precioE" :class="{'is-invalid' : $v.precioE.$error, 'is-valid': !$v.precioE.$invalid}">
-                                <div class="invalid-feedback">
-                                    <span v-if="!$v.precioE.required">
-                                        Este campo es requerido
-                                    </span>
-                                    <span v-if="$v.precioE.required && !$v.precioE.decimalDos">
+                                    <span v-if="!$v.porcentajeE.required">Este campo es Requerido</span>
+                                    <span v-if="$v.porcentajeE.required && !$v.porcentajeE.decimalDos">
                                         Debe ingresar un precio válido con máximo 2 decimales
+                                    </span>
+                                    <span v-else-if="!$v.porcentajeE.montoMaximo">
+                                        El descuento no puede ser mayor a 100%.
                                     </span>
                                 </div>
                             </div>
@@ -295,6 +218,17 @@ const decimalDos = value => {
     return /^\d+(\.\d{1,2})?$/.test(value);
 };
 
+const montoMaximo = value => {
+
+    if (!value) return true;
+
+    // if (!this.situacion || this.situacion.id != 1) {
+    //     return true;
+    // }
+
+    return Number(value) <= 100;
+};
+
 export default {
     data() {
         return {
@@ -302,23 +236,16 @@ export default {
            * Variables de recepcion 
            */
           modal: '',
-          predio: '',
-          abreviatura: '',
-          tipo_predio: '',
-          color: '',
-          precio: '',
+          tarifa: '',
+          porcentaje: '',
           observacion: '',
 
-          ArrayPredio: [],
-          ArrayMostrarPredio: [],
-          arrayTipoPredios: [],
+          ArrayTarifa: [],
+          ArrayMostrarTarifa: [],
 
           idE: '',
-          predioE: '',
-          abreviaturaE: '',
-          tipo_predioE: '',
-          colorE: '',
-          precioE: '',
+          tarifaE: '',
+          porcentajeE: '',
           observacionE: '',
 
           /**
@@ -346,34 +273,25 @@ export default {
     },
 
     validations: { 
-        predio: { required },
-        tipo_predio: { required },
-        color: { required },
-        precio: { required, decimalDos },
+        tarifa: { required },
+        porcentaje: { required, decimalDos, montoMaximo },
 
-        predioE: { required },
-        tipo_predioE: { required },
-        colorE: { required },
-        precioE: { required, decimalDos },
+        tarifaE: { required },
+        porcentajeE: { required, decimalDos, montoMaximo },
 
         validationsGroupReg: [
-            'predio',
-            'tipo_predio',
-            'color',
-            'precio',
+            'tarifa',
+            'porcentaje',
         ],
 
         validationsGroupMod: [
-            'predioE',
-            'tipo_predioE',
-            'colorE',
-            'precioE',
+            'tarifaE',
+            'porcentajeE',
         ],
     },
 
     mounted() {
-      this.ListarPredio(1);
-      this.ListarTipoPredio();
+      this.ListarTarifa(1);
     },
     computed:{
         isActived: function(){
@@ -404,32 +322,32 @@ export default {
         cambiarPagina(page){
             let me = this;
             me.pagination.current_page = page;
-            me.ListarPredio(page);
+            me.ListarTarifa(page);
         },
 
-        ListarTipoPredio() {
-            let me = this;
-            axios
-            .post("/listarTipoPredio", {
-            })
-            .then(function (response) {
-            me.arrayTipoPredios = response.data.tipo_predios
-            })
-            .catch(function (error) {
-            // handle error
-            console.log(error);
-            })
-        },
+        // ListarTipoPredio() {
+        //     let me = this;
+        //     axios
+        //     .post("/listarTipoPredio", {
+        //     })
+        //     .then(function (response) {
+        //     me.arrayTipoPredios = response.data.tipo_predios
+        //     })
+        //     .catch(function (error) {
+        //     // handle error
+        //     console.log(error);
+        //     })
+        // },
 
-        ListarPredio(page){
+        ListarTarifa(page){
             let me = this;
             axios
-            .post("/buscarPredio", {
+            .post("/buscarTarifa", {
                 buscar: me.buscar.toUpperCase(),
                 page: page
             })
             .then(function (response) {
-                me.ArrayPredio = response.data.predios.data;
+                me.ArrayTarifa = response.data.tarifas.data;
                 me.pagination = response.data.pagination;
             })
             .catch(function (error) {
@@ -438,10 +356,10 @@ export default {
             })
         },
 
-        BuscarPredio(){
+        BuscarTarifa(){
             clearTimeout(this.setTiemoutBuscador);
             this.setTiemoutBuscador = setTimeout(() => {
-                this.ListarPredio(1)
+                this.ListarTarifa(1)
             }, 360)
         },
 
@@ -449,7 +367,7 @@ export default {
             this.$v.validationsGroupReg.$reset(),
             this.modal = 0;
             // this.ListarModulos();
-            $('#ModalPredio').modal('show');
+            $('#ModalTarifa').modal('show');
             $(".modal-header").css("background-color", "#007bff");
             $(".modal-header").css("color", "white" );
         },
@@ -460,42 +378,33 @@ export default {
             me.modal = 1;
             // me.ListarModulos();
             axios
-                .post("/mostrarPredio", {
+                .post("/mostrarTarifa", {
                     id: id
                 })
                 .then((response) => {
-                    me.ArrayMostrarPredio = response.data.predios;
-                    me.idE = me.ArrayMostrarPredio.id;
-                    me.predioE = me.ArrayMostrarPredio.nombre;
-                    me.abreviaturaE = me.ArrayMostrarPredio.abreviatura;
-                    me.tipo_predioE = me.ArrayMostrarPredio.clasificacion;
-                    me.colorE = me.ArrayMostrarPredio.color;
-                    me.precioE = me.ArrayMostrarPredio.precio;
-                    me.observacionE = me.ArrayMostrarPredio.observacion;
+                    me.ArrayMostrarTarifa = response.data.tarifas;
+                    me.idE = me.ArrayMostrarTarifa.id;
+                    me.tarifaE = me.ArrayMostrarTarifa.tarifa;
+                    me.porcentajeE = me.ArrayMostrarTarifa.porcentaje;
+                    me.observacionE = me.ArrayMostrarTarifa.observacion;
                 })
                 .catch(function (error) {
                     // handle error
                     console.log(error);
                 })
-            $('#ModalPredio').modal('show');
+            $('#ModalTarifa').modal('show');
             $(".modal-header").css("background-color", "#007bff");
             $(".modal-header").css("color", "white" );
         },
 
         Cerrar(){
-            this.predio = '';
-            this.abreviatura = '';
-            this.tipo_predio = '';
-            this.color = '';
-            this.precio = '';
+            this.tarifa = '';
+            this.porcentaje = '';
             this.observacion = '';
 
             this.idE = '';
-            this.predioE = '';
-            this.abreviaturaE = '';
-            this.tipo_predioE = '';
-            this.colorE = '';
-            this.precioE = '';
+            this.tarifaE = '';
+            this.porcentajeE = '';
             this.observacionE = '';
         },
 
@@ -505,7 +414,7 @@ export default {
             }
             if (!this.$v.validationsGroupReg.$invalid) {
                 swal.fire({
-                    title: '¿Desea registrar este predio?',
+                    title: '¿Desea registrar esta tarifa?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: 'info',
@@ -517,14 +426,9 @@ export default {
                 }).then((result) => {
                     if (result.value) {
                         this.procesando = true;
-                        axios.post('/registrarPredio', {
-                            predio: this.predio.toUpperCase(),
-                            abreviatura: this.abreviatura
-                                ? this.abreviatura.toUpperCase()
-                                : '',
-                            tipo_predio: this.tipo_predio.id,
-                            color: this.color,
-                            precio: this.precio,
+                        axios.post('/registrarTarifa', {
+                            tarifa: this.tarifa.toUpperCase(),
+                            porcentaje: this.porcentaje,
                             observacion: this.observacion
                                 ? this.observacion.toUpperCase()
                                 : ''
@@ -537,9 +441,9 @@ export default {
                                     title: 'CORRECTO',
                                     text: response.data.mensaje
                                 });
-                                $('#ModalPredio').modal('hide');
+                                $('#ModalTarifa').modal('hide');
                                 this.Cerrar();
-                                this.ListarPredio();
+                                this.ListarTarifa();
                             } else {
                                 Swal.fire({
                                     icon: 'warning',
@@ -563,7 +467,7 @@ export default {
                             'Solicitud cancelada.',
                             'info'
                         );
-                        $('#ModalPredio').modal('hide');
+                        $('#ModalTarifa').modal('hide');
                         this.Cerrar();
                     }
                 });
@@ -584,7 +488,7 @@ export default {
             }
             if(!this.$v.validationsGroupMod.$invalid){
                 swal.fire({
-                    title: '¿Desea editar este predio?', // TITULO 
+                    title: '¿Desea editar esta tarifa?', // TITULO 
                     icon: 'question', //ICONO (success, warnning, error, info, question)
                     showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
                     confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
@@ -597,14 +501,10 @@ export default {
                     if (result.value) {
                         let me = this;
                         this.procesando = true;
-                        axios.post('/editarPredio', {
-                            id_predio: this.idE,
-                            predio: this.predioE.toUpperCase(),
-                            abreviatura: this.abreviaturaE
-                                ? this.abreviaturaE.toUpperCase()
-                                : '',
-                            color: this.colorE,
-                            precio: this.precioE,
+                        axios.post('/editarTarifa', {
+                            id_tarifa: this.idE,
+                            tarifa: this.tarifaE.toUpperCase(),
+                            porcentaje: this.porcentajeE,
                             observacion: this.observacionE
                                 ? this.observacionE.toUpperCase()
                                 : ''
@@ -616,9 +516,9 @@ export default {
                                     title: 'CORRECTO',
                                     text: response.data.mensaje
                                 });
-                                $('#ModalPredio').modal('hide');
+                                $('#ModalTarifa').modal('hide');
                                 this.Cerrar();
-                                this.ListarPredio();
+                                this.ListarTarifa();
                             }else{
                                 Swal.fire({
                                     icon: 'warning',
@@ -645,7 +545,7 @@ export default {
                             "Solicitud cancelada.", //TEXTO DE MENSAJE
                             "info" // TIPO DE MODAL (success, warnning, error, info)
                         );
-                        $('#ModalPredio').modal('hide');
+                        $('#ModalTarifa').modal('hide');
                         me.Cerrar();
                     }
                 })
@@ -665,10 +565,10 @@ export default {
                 return;
             }
             if (estado == 1) {
-                var titulo = '¿Desea deshabilitar este predio?';
+                var titulo = '¿Desea deshabilitar este evento?';
                 // var titulo2 = 'Usuario deshabilitado correctamente';
             } else {
-                var titulo = '¿Desea habilitar este predio?';
+                var titulo = '¿Desea habilitar este evento?';
                 // var titulo2 = 'Usuario habilitado correctamente';
             }
             swal.fire({
@@ -685,8 +585,8 @@ export default {
                 if (result.value) {
                     let me = this;
                     this.procesando = true;
-                    axios.post('/cambiarEstadoPredio', {
-                        id_predio: id,
+                    axios.post('/cambiarEstadoTipoEvento', {
+                        id_tipo_evento: id,
                         estado: estado
                     })
                     .then((response) => {
@@ -696,7 +596,7 @@ export default {
                                 title: 'CORRECTO',
                                 text: response.data.mensaje
                             });
-                            this.ListarPredio();
+                            this.ListarTipoEvento();
                         }else{
                             Swal.fire({
                                 icon: 'warning',

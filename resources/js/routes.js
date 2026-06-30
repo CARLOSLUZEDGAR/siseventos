@@ -66,6 +66,20 @@ export default new Router ({
         },
 
         {
+            path: '/RegClasificacion',
+            name: 'RegClasificacion',
+            component: require('./components/RegClasificacion.vue').default,
+            beforeEnter: (to, from, next) => {
+                let per = window.user.permissions.map(permission=>permission.name);
+                if (per.includes('view-reg-clasificacion')) {
+                    next();
+                } else {
+                    next(from.path);
+                }
+            }
+        },
+
+        {
             path: '/RegPredio',
             name: 'RegPredio',
             component: require('./components/RegPredio.vue').default,
@@ -80,12 +94,26 @@ export default new Router ({
         },
 
         {
-            path: '/RegClasificacion',
-            name: 'RegClasificacion',
-            component: require('./components/RegClasificacion.vue').default,
+            path: '/RegEvento',
+            name: 'RegEvento',
+            component: require('./components/RegEvento.vue').default,
             beforeEnter: (to, from, next) => {
                 let per = window.user.permissions.map(permission=>permission.name);
-                if (per.includes('view-reg-clasificacion')) {
+                if (per.includes('view-reg-evento')) {
+                    next();
+                } else {
+                    next(from.path);
+                }
+            }
+        },
+
+        {
+            path: '/RegTarifa',
+            name: 'RegTarifa',
+            component: require('./components/RegTarifa.vue').default,
+            beforeEnter: (to, from, next) => {
+                let per = window.user.permissions.map(permission=>permission.name);
+                if (per.includes('view-reg-tarifa')) {
                     next();
                 } else {
                     next(from.path);
