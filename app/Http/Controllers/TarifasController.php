@@ -78,14 +78,14 @@ class TarifasController extends Controller
 
                 return response()->json([
                     'success'       => true,
-                    'mensaje'       => 'Tarifa registrada correctamente',
+                    'mensaje'       => 'Tarifa registrada correctamente.',
                     'tarifa'   => $tarifa
                 ], 200);
             } catch (\Exception $e) {
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
-                    'mensaje' => 'Ocurrió un error al registrar la tarifa',
+                    'mensaje' => 'Ocurrió un error al registrar la tarifa.',
                     'error'   => $e->getMessage()
                 ], 500);
             }
