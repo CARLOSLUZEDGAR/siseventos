@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\TarifaPorcentajes;
 use App\Tarifas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class TarifasController extends Controller
                 // VERIFICAR SI LA TARIFA YA EXISTE
                 $existeTarifa = DB::table('tarifas')
                     ->where('tarifa', $request->tarifa)
-                    ->where('estado', 1)
+                    // ->where('estado', 1)
                     ->exists();
 
                 if ($existeTarifa) {
@@ -32,23 +33,39 @@ class TarifasController extends Controller
                 }
 
                 // VERIFICAR SI EL PORCENTAJE YA EXISTE
-                $existePorcentaje = DB::table('tarifas')
-                    ->where('porcentaje', $request->porcentaje)
-                    ->where('estado', 1)
-                    ->exists();
+                // $existePorcentaje = DB::table('tarifas')
+                //     ->where('porcentaje', $request->porcentaje)
+                //     ->where('estado', 1)
+                //     ->exists();
 
-                if ($existePorcentaje) {
-                    return response()->json([
-                        'success' => false,
-                        'mensaje' => 'El porcentaje seleccionado ya está asignado a otra tarifa. Seleccione un porcentaje diferente.'
-                    ], 200);
-                }
+                // if ($existePorcentaje) {
+                //     return response()->json([
+                //         'success' => false,
+                //         'mensaje' => 'El porcentaje seleccionado ya está asignado a otra tarifa. Seleccione un porcentaje diferente.'
+                //     ], 200);
+                // }
                 
                 // INICIAR TRANSACCIÓN
                 DB::beginTransaction();
                 // REGISTRAR TARIFA
+                // $tarifa = Tarifas::create([
+                //     'tarifa'        => $request->tarifa,
+                //     'porcentaje'    => $request->porcentaje,
+                //     'vigencia'      => 1,
+                //     'observacion'   => $request->observacion,
+                //     'estado'        => 1,
+                //     'sysuser'       => Auth::user()->id
+                // ]);
+
                 $tarifa = Tarifas::create([
                     'tarifa'        => $request->tarifa,
+                    'observacion'   => $request->observacion,
+                    'estado'        => 1,
+                    'sysuser'       => Auth::user()->id
+                ]);
+
+                TarifaPorcentajes::create([
+                    'tarifa_id'     => $tarifa->id,
                     'porcentaje'    => $request->porcentaje,
                     'vigencia'      => 1,
                     'observacion'   => $request->observacion,
@@ -173,10 +190,22 @@ class TarifasController extends Controller
 
     public function ListarTarifa(Request $request)
     {
-        $tarifa = Tarifas::select('id', 'tarifa', 'porcentaje', 'vigencia', 'estado')
-                        ->where('estado', 1)
-                        ->orderBy('id', 'asc')
-                        ->get();
+        // $tarifa = Tarifas::select('id', 'tarifa', 'porcentaje', 'vigencia', 'estado')
+        //                 ->where('estado', 1)
+        //                 ->orderBy('id', 'asc')
+        //                 ->get();
+        $tarifa = DB::table('tarifas as t')
+                    ->join('tarifas_porcentajes as tp', 't.id', 'tp.tarifa_id')
+                    ->select('t.id',
+                            't.tarifa',
+                            'tp.porcentaje',
+                            'tp.vogencia',
+                            't.estado')
+                    ->where('t.estado', 1)
+                    ->where('tp.estado', 1)
+                    ->where('tp.vigencia', 1)
+                    ->orderBy('t.id', 'asc')
+                    ->get();
 
         return ['tarifas' => $tarifa];
     }
@@ -184,24 +213,37 @@ class TarifasController extends Controller
     public function BuscarTarifa(Request $request)
     {
         if ($request->buscar == '') {
-            $tarifa = DB::table('tarifas')
-                    ->select('id', 
-                            'tarifa',  
-                            'estado',
-                            'porcentaje',
-                            'observacion')
-                    ->orderBy('id', 'asc')
-                    ->paginate(10);
+            // $tarifa = DB::table('tarifas')
+            //         ->select('id', 
+            //                 'tarifa',  
+            //                 'estado',
+            //                 'porcentaje',
+            //                 'observacion')
+            //         ->orderBy('id', 'asc')
+            $tarifa = DB::table('tarifas as t')
+                        ->join('tarifas_porcentajes as tp', 't.id', 'tp.tarifa_id')  
+                        ->select('t.id', 
+                                't.tarifa',  
+                                't.estado',
+                                'tp.porcentaje',
+                                't.observacion')
+                        ->where('tp.estado', 1)
+                        ->where('tp.vigencia', 1)
+                        ->orderBy('t.id', 'asc')
+                        ->paginate(10);
         } else {
-             $tarifa = DB::table('tarifas')
-                    ->select('id', 
-                            'tarifa',  
-                            'estado',
-                            'porcentaje',
-                            'observacion')
-                    ->where('tarifa','LIKE','%'.$request->buscar.'%')
-                    ->orderBy('id', 'asc')
-                    ->paginate(10);
+            $tarifa = DB::table('tarifas as t')
+                        ->join('tarifas_porcentajes as tp', 't.id', 'tp.tarifa_id')  
+                        ->select('t.id', 
+                                't.tarifa',  
+                                't.estado',
+                                'tp.porcentaje',
+                                't.observacion')
+                        ->where('t.tarifa','LIKE','%'.$request->buscar.'%')
+                        ->where('tp.estado', 1)
+                        ->where('tp.vigencia', 1)
+                        ->orderBy('t.id', 'asc')
+                        ->paginate(10);
         }
         
         return response()->json([
@@ -220,13 +262,23 @@ class TarifasController extends Controller
 
     public function MostrarTarifa(Request $request)
     {
-        $tarifa = DB::table('tarifas')
-                        ->select('id', 
-                                'tarifa',
-                                'porcentaje',
-                                'observacion')
-                        ->where('id', $request->id)
-                        ->first();
+        // $tarifa = DB::table('tarifas')
+        //             ->select('id', 
+        //                     'tarifa',
+        //                     'porcentaje',
+        //                     'observacion')
+        //             ->where('id', $request->id)
+        //             ->first();
+        $tarifa = DB::table('tarifas as t')
+                    ->join('tarifas_porcentajes as tp', 't.id', 'tp.tarifa_id')  
+                    ->select('t.id', 
+                            't.tarifa',
+                            'tp.porcentaje',
+                            't.observacion')
+                    ->where('t.id', $request->id)
+                    ->where('tp.estado', 1)
+                    ->where('tp.vigencia', 1)
+                    ->first();
 
         return ['tarifas' => $tarifa];
     }
