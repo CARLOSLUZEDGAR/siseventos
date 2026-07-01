@@ -11,7 +11,7 @@ class TarifaPorcentajes extends Model
     protected $fillable = [
         'id', 
         'tarifa_id',
-        'prcentaje',
+        'porcentaje',
         'vigencia',
         'observacion', 
         'estado', 

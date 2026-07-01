@@ -78,14 +78,14 @@ class TarifasController extends Controller
 
                 return response()->json([
                     'success'       => true,
-                    'mensaje'       => 'Tarifa registrada correctamente.',
-                    'tarifa'   => $tarifa
+                    'mensaje'       => 'Tarifa registrada correctamente',
+                    'tarifa'        => $tarifa
                 ], 200);
             } catch (\Exception $e) {
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
-                    'mensaje' => 'Ocurrió un error al registrar la tarifa.',
+                    'mensaje' => 'Ocurrió un error al registrar la tarifa',
                     'error'   => $e->getMessage()
                 ], 500);
             }
@@ -107,7 +107,7 @@ class TarifasController extends Controller
             $existeNombre = DB::table('tarifas')
                 ->where('tarifa', $request->tarifa)
                 ->where('id', '!=', $request->id_tarifa)
-                ->where('estado', 1)
+                // ->where('estado', 1)
                 ->exists();
 
             if ($existeNombre) {
@@ -118,29 +118,52 @@ class TarifasController extends Controller
             }
 
             // VERIFICAR SI EL PORCENTAJE YA EXISTE
-            $existePorcentaje = DB::table('tarifas')
-                ->where('porcentaje', $request->porcentaje)
-                ->where('id', '!=', $request->id_tarifa)
-                ->where('estado', 1)
-                ->exists();
+            // $existePorcentaje = DB::table('tarifas')
+            //     ->where('porcentaje', $request->porcentaje)
+            //     ->where('id', '!=', $request->id_tarifa)
+            //     ->where('estado', 1)
+            //     ->exists();
 
-            if ($existePorcentaje) {
-                return response()->json([
-                    'success' => false,
-                    'mensaje' => 'El porcentaje seleccionado ya está asignado a otra tarifa. Seleccione un porcentaje diferente.'
-                ], 200);
-            }
+            // if ($existePorcentaje) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'mensaje' => 'El porcentaje seleccionado ya está asignado a otra tarifa. Seleccione un porcentaje diferente.'
+            //     ], 200);
+            // }
 
             // OBTENER EL REGISTRO ACTUAL
-            $tarifaActual = Tarifas::findOrFail($request->id_tarifa);
+            // $tarifaActual = Tarifas::findOrFail($request->id_tarifa);
+            $tarifaActual = DB::table('tarifas as t')
+                            ->join('tarifa_porcentaje as tp', 't.id', 'tp.tarifa_id')
+                            ->select('t.id as idtarifa',
+                                    't.tarifa',
+                                    't.estado',
+                                    'tp.id as idtarifaporcentajes',
+                                    'tp.tarifa_id',
+                                    'tp.porcentaje',
+                                    'tp.estado',
+                                    'tp.vigencia')
+                            ->where('t.id', $request->id_tarifa)
+                            ->where('t.estado', 1)
+                            ->where('tp.estado', 1)
+                            ->where('tp.vigencia', 1)
+                            ->first();
 
             // INICIAR TRANSACCIÓN
             DB::beginTransaction();
 
             // SI EL PORCENTAJE NO CAMBIÓ SOLO SE ACTUALIZA EL REGISTRO
             if ($tarifaActual->porcentaje == $request->porcentaje) {
+                // $tarifaActual->update([
+                //     'tarifa'      => $request->tarifa,
+                //     'observacion' => $request->observacion,
+                //     'sysuser'     => Auth::user()->id,
+                //     'updated_at'  => now()
+                // ]);
 
-                $tarifaActual->update([
+                DB::table('tarifas')
+                    ->where('id', $request->id_tarifa)
+                    ->update([
                     'tarifa'      => $request->tarifa,
                     'observacion' => $request->observacion,
                     'sysuser'     => Auth::user()->id,
@@ -148,24 +171,51 @@ class TarifasController extends Controller
                 ]);
 
             } else {
-
                 // CAMBIAR VIGENCIA DEL REGISTRO ACTUAL
-                $tarifaActual->update([
+                // $tarifaActual->update([
+                //     'vigencia'    => 0,
+                //     'observacion' => 'CAMBIO DE VIGENCIA',
+                //     'sysuser'     => Auth::user()->id,
+                //     'updated_at'  => now()
+                // ]);
+                DB::table('tarifa_porcentajes')
+                    ->where('id', $tarifaActual->idtarifaporcentajes)
+                    ->update([
                     'vigencia'    => 0,
                     'observacion' => 'CAMBIO DE VIGENCIA',
                     'sysuser'     => Auth::user()->id,
                     'updated_at'  => now()
                 ]);
 
-                // CREAR NUEVA TARIFA
-                Tarifas::create([
+                DB::table('tarifas')
+                    ->where('id', $request->id_tarifa)
+                    ->update([
                     'tarifa'      => $request->tarifa,
-                    'porcentaje'  => $request->porcentaje,
-                    'vigencia'    => 1,
                     'observacion' => $request->observacion,
-                    'estado'      => 1,
-                    'sysuser'     => Auth::user()->id
+                    'sysuser'     => Auth::user()->id,
+                    'updated_at'  => now()
                 ]);
+
+                TarifaPorcentajes::create([
+                    'tarifa_id'     => $request->id_tarifa,
+                    'porcentaje'    => $request->porcentaje,
+                    'vigencia'      => 1,
+                    'observacion'   => $request->observacion,
+                    'estado'        => 1,
+                    'sysuser'       => Auth::user()->id
+                ]);
+
+                
+
+                // CREAR NUEVA TARIFA
+                // Tarifas::create([
+                //     'tarifa'      => $request->tarifa,
+                //     'porcentaje'  => $request->porcentaje,
+                //     'vigencia'    => 1,
+                //     'observacion' => $request->observacion,
+                //     'estado'      => 1,
+                //     'sysuser'     => Auth::user()->id
+                // ]);
             }
 
             // CONFIRMAR TRANSACCIÓN
@@ -195,11 +245,11 @@ class TarifasController extends Controller
         //                 ->orderBy('id', 'asc')
         //                 ->get();
         $tarifa = DB::table('tarifas as t')
-                    ->join('tarifas_porcentajes as tp', 't.id', 'tp.tarifa_id')
+                    ->join('tarifa_porcentajes as tp', 't.id', 'tp.tarifa_id')
                     ->select('t.id',
                             't.tarifa',
                             'tp.porcentaje',
-                            'tp.vogencia',
+                            'tp.vigencia',
                             't.estado')
                     ->where('t.estado', 1)
                     ->where('tp.estado', 1)
@@ -221,7 +271,7 @@ class TarifasController extends Controller
             //                 'observacion')
             //         ->orderBy('id', 'asc')
             $tarifa = DB::table('tarifas as t')
-                        ->join('tarifas_porcentajes as tp', 't.id', 'tp.tarifa_id')  
+                        ->join('tarifa_porcentajes as tp', 't.id', 'tp.tarifa_id')  
                         ->select('t.id', 
                                 't.tarifa',  
                                 't.estado',
@@ -233,7 +283,7 @@ class TarifasController extends Controller
                         ->paginate(10);
         } else {
             $tarifa = DB::table('tarifas as t')
-                        ->join('tarifas_porcentajes as tp', 't.id', 'tp.tarifa_id')  
+                        ->join('tarifa_porcentajes as tp', 't.id', 'tp.tarifa_id')  
                         ->select('t.id', 
                                 't.tarifa',  
                                 't.estado',
@@ -270,7 +320,7 @@ class TarifasController extends Controller
         //             ->where('id', $request->id)
         //             ->first();
         $tarifa = DB::table('tarifas as t')
-                    ->join('tarifas_porcentajes as tp', 't.id', 'tp.tarifa_id')  
+                    ->join('tarifa_porcentajes as tp', 't.id', 'tp.tarifa_id')  
                     ->select('t.id', 
                             't.tarifa',
                             'tp.porcentaje',
