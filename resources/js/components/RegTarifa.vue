@@ -68,9 +68,11 @@
                         <tr v-for="(a, index) in ArrayTarifa">
                           <td class="text-center" style="vertical-align: middle">{{index + 1}}</td>
                             <td class="text-center" style="vertical-align: middle">
-                                <button  type="button" class="btn btn-primary btn-sm" @click="Datos(a.id)">
-                                    <i class="fas fa-edit"></i>&nbsp;EDITAR
-                                </button>
+                                <template v-if="a.estado == 1">
+                                    <button  type="button" class="btn btn-primary btn-sm" @click="Datos(a.id)">
+                                        <i class="fas fa-edit"></i>&nbsp;EDITAR
+                                    </button>
+                                </template>
                                 <!-- <button type="button" class="btn btn-success btn-sm">
                                     <i class="fas fa-eye"></i> VER
                                 </button> -->
@@ -565,10 +567,10 @@ export default {
                 return;
             }
             if (estado == 1) {
-                var titulo = '¿Desea deshabilitar este evento?';
+                var titulo = '¿Desea deshabilitar esta tarifa?';
                 // var titulo2 = 'Usuario deshabilitado correctamente';
             } else {
-                var titulo = '¿Desea habilitar este evento?';
+                var titulo = '¿Desea habilitar esta tarifa?';
                 // var titulo2 = 'Usuario habilitado correctamente';
             }
             swal.fire({
@@ -585,8 +587,8 @@ export default {
                 if (result.value) {
                     let me = this;
                     this.procesando = true;
-                    axios.post('/cambiarEstadoTipoEvento', {
-                        id_tipo_evento: id,
+                    axios.post('/cambiarEstadoTarifa', {
+                        id_tarifa: id,
                         estado: estado
                     })
                     .then((response) => {
@@ -596,7 +598,7 @@ export default {
                                 title: 'CORRECTO',
                                 text: response.data.mensaje
                             });
-                            this.ListarTipoEvento();
+                            this.ListarTarifa();
                         }else{
                             Swal.fire({
                                 icon: 'warning',

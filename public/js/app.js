@@ -8093,6 +8093,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 var decimalDos = function decimalDos(value) {
@@ -8442,9 +8444,9 @@ var montoMaximo = function montoMaximo(value) {
       }
 
       if (estado == 1) {
-        var titulo = '¿Desea deshabilitar este evento?'; // var titulo2 = 'Usuario deshabilitado correctamente';
+        var titulo = '¿Desea deshabilitar esta tarifa?'; // var titulo2 = 'Usuario deshabilitado correctamente';
       } else {
-        var titulo = '¿Desea habilitar este evento?'; // var titulo2 = 'Usuario habilitado correctamente';
+        var titulo = '¿Desea habilitar esta tarifa?'; // var titulo2 = 'Usuario habilitado correctamente';
       }
 
       swal.fire({
@@ -8468,8 +8470,8 @@ var montoMaximo = function montoMaximo(value) {
         if (result.value) {
           var me = _this4;
           _this4.procesando = true;
-          axios.post('/cambiarEstadoTipoEvento', {
-            id_tipo_evento: id,
+          axios.post('/cambiarEstadoTarifa', {
+            id_tarifa: id,
             estado: estado
           }).then(function (response) {
             if (response.data.success) {
@@ -8479,7 +8481,7 @@ var montoMaximo = function montoMaximo(value) {
                 text: response.data.mensaje
               });
 
-              _this4.ListarTipoEvento();
+              _this4.ListarTarifa();
             } else {
               Swal.fire({
                 icon: 'warning',
@@ -119726,24 +119728,28 @@ var render = function() {
                               staticStyle: { "vertical-align": "middle" }
                             },
                             [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-primary btn-sm",
-                                  attrs: { type: "button" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.Datos(a.id)
-                                    }
-                                  }
-                                },
-                                [
-                                  _c("i", { staticClass: "fas fa-edit" }),
-                                  _vm._v(
-                                    " EDITAR\n                              "
-                                  )
-                                ]
-                              ),
+                              a.estado == 1
+                                ? [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-primary btn-sm",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.Datos(a.id)
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c("i", { staticClass: "fas fa-edit" }),
+                                        _vm._v(
+                                          " EDITAR\n                                  "
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                : _vm._e(),
                               _vm._v(" "),
                               a.estado == 1
                                 ? [

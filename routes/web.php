@@ -108,6 +108,8 @@ Route::post('/buscarTarifa','TarifasController@BuscarTarifa');
 Route::post('/registrarTarifa','TarifasController@CrearTarifa');
 Route::post('/mostrarTarifa','TarifasController@MostrarTarifa');
 Route::post('/editarTarifa','TarifasController@EditarTarifa');
+Route::post('/cambiarEstadoTarifa','TarifasController@CambiarEstadoTarifa');
+
 
 
 
