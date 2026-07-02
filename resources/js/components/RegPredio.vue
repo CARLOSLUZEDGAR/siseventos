@@ -30,7 +30,7 @@
               <div class="card-body">                  
                     <div class="row d-flex justify-content-center"> 
                         <div class="col-md-4">
-                            <input type="text" class="form-control" @keyup="BuscarPredio()" v-model="buscar">
+                            <input type="text" class="form-control" style="text-transform:uppercase;" @keyup="BuscarPredio()" v-model="buscar">
                         </div>
                     </div>
               </div>
@@ -57,23 +57,23 @@
                 <table class="table table-bordered table-striped table-sm">
                     <thead>
                         <tr>
-                          <th style="" class="text-center">#</th>
-                          <th style="" class="text-center">OPCIONES</th>
-                          <th style="" class="text-center">CLASIFICACIÓN</th>
-                          <th style="" class="text-center">PREDIO</th>
-                          <th style="" class="text-center">COLOR</th>
+                          <th style="width: 5%" class="text-center">#</th>
+                          <th class="text-center">OPCIONES</th>
+                          <th class="text-center">CLASIFICACIÓN</th>
+                          <th class="text-center">PREDIO</th>
+                          <th class="text-center">COLOR</th>
+                          <th class="text-center">ALQUILER (Bs.)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(a, index) in ArrayPredio">
                           <td class="text-center" style="vertical-align: middle">{{index + 1}}</td>
                             <td class="text-center" style="vertical-align: middle">
-                                <button  type="button" class="btn btn-primary btn-sm" @click="Datos(a.id)">
-                                    <i class="fas fa-edit"></i>&nbsp;EDITAR
-                                </button>
-                                <!-- <button type="button" class="btn btn-success btn-sm">
-                                    <i class="fas fa-eye"></i> VER
-                                </button> -->
+                                <template v-if="a.estado == 1">
+                                    <button  type="button" class="btn btn-primary btn-sm" @click="Datos(a.id)">
+                                        <i class="fas fa-edit"></i>&nbsp;EDITAR
+                                    </button>
+                                </template>
                                 <template v-if="a.estado == 1">
                                     <button type="button" class="btn btn-danger btn-sm" @click="CambiarEstado(a.id, a.estado)" :disabled="procesando">
                                         <i class="fas fa-toggle-off"></i>&nbsp;{{ procesando ? 'Procesando...' : 'DESHABILITAR' }}
@@ -99,6 +99,7 @@
                                     }"
                                 ></span>
                             </td>
+                            <td class="text-center" style="vertical-align: middle">{{a.precio}}</td>
                         </tr>
                     </tbody>
                     

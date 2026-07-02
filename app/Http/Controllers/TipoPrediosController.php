@@ -19,7 +19,6 @@ class TipoPrediosController extends Controller
             // VERIFICAR SI EXISTE
             $existe = DB::table('tipo_predios')
                 ->where('clasificacion', $request->clasificacion)
-                ->where('estado', 1)
                 ->exists();
 
             if ($existe) {
@@ -64,18 +63,18 @@ class TipoPrediosController extends Controller
                 'id_clasificacion'  => 'required',
                 'clasificacion'     => 'required',
             ]);
-            // VERIFICAR SI EXISTE
-            // $existe = DB::table('tipo_predios')
-            //     ->where('clasificacion', $request->clasificacion)
-            //     ->where('estado', 1)
-            //     ->exists();
+            //VERIFICAR SI EXISTE
+            $existe = DB::table('tipo_predios')
+                ->where('clasificacion', $request->clasificacion)
+                ->where('id', '!=', $request->id_clasificacion)
+                ->exists();
 
-            // if ($existe) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'mensaje' => 'La clasificación ya se encuentra registrada'
-            //     ], 200);
-            // }
+            if ($existe) {
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'La clasificación ya se encuentra registrada'
+                ], 200);
+            }
             // INICIAR TRANSACCIÓN
             DB::beginTransaction();
             // EDITAR CLASIFICACION

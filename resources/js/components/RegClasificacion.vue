@@ -30,7 +30,7 @@
               <div class="card-body">                  
                     <div class="row d-flex justify-content-center"> 
                         <div class="col-md-4">
-                            <input type="text" class="form-control" @keyup="BuscarClasificacion()" v-model="buscar">
+                            <input type="text" class="form-control" style="text-transform:uppercase;" @keyup="BuscarClasificacion()" v-model="buscar">
                         </div>
                     </div>
               </div>
@@ -58,21 +58,20 @@
                     <thead>
                         <tr>
                           <th style="width: 5%" class="text-center">#</th>
-                          <th style="width: 30%" class="text-center">OPCIONES</th>
-                          <th style="width: 30%" class="text-center">CLASIFICACIÓN</th>
-                          <th style="width: 35%" class="text-center">DETALLE</th>
+                          <th class="text-center">OPCIONES</th>
+                          <th class="text-center">CLASIFICACIÓN</th>
+                          <th class="text-center">DETALLE</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(a, index) in ArrayClasificacion">
                           <td class="text-center" style="vertical-align: middle">{{index + 1}}</td>
                             <td class="text-center" style="vertical-align: middle">
-                                <button  type="button" class="btn btn-primary btn-sm" @click="Datos(a.id)">
-                                    <i class="fas fa-edit"></i>&nbsp;EDITAR
-                                </button>
-                                <!-- <button type="button" class="btn btn-success btn-sm">
-                                    <i class="fas fa-eye"></i> VER
-                                </button> -->
+                                <template v-if="a.estado == 1">
+                                    <button  type="button" class="btn btn-primary btn-sm" @click="Datos(a.id)">
+                                        <i class="fas fa-edit"></i>&nbsp;EDITAR
+                                    </button>
+                                </template>
                                 <template v-if="a.estado == 1">
                                     <button type="button" class="btn btn-danger btn-sm" @click="CambiarEstado(a.id, a.estado)" :disabled="procesando">
                                         <i class="fas fa-toggle-off"></i>&nbsp;{{ procesando ? 'Procesando...' : 'DESHABILITAR' }}

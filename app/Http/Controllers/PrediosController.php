@@ -23,7 +23,6 @@ class PrediosController extends Controller
             // VERIFICAR SI EL NOMBRE YA EXISTE
             $existeNombre = DB::table('predios')
                 ->where('nombre', $request->predio)
-                ->where('estado', 1)
                 ->exists();
 
             if ($existeNombre) {
@@ -36,7 +35,6 @@ class PrediosController extends Controller
             // VERIFICAR SI EL COLOR YA EXISTE
             $existeColor = DB::table('predios')
                 ->where('color', $request->color)
-                ->where('estado', 1)
                 ->exists();
 
             if ($existeColor) {
@@ -63,7 +61,7 @@ class PrediosController extends Controller
                 'predio_id'      => $predio->id,
                 'precio'         => $request->precio,
                 'vigencia'       => 1,
-                'observacion'    => 'ALQUILER INICIAL',
+                'observacion'    => $request->observacion.'(ALQUILER INICIAL)',
                 'estado'         => 1,
                 'sysuser'        => Auth::user()->id
             ]);
@@ -99,7 +97,6 @@ class PrediosController extends Controller
             $existeNombre = DB::table('predios')
                 ->where('nombre', $request->predio)
                 ->where('id', '!=', $request->id_predio)
-                ->where('estado', 1)
                 ->exists();
 
             if ($existeNombre) {
@@ -113,7 +110,6 @@ class PrediosController extends Controller
             $existeColor = DB::table('predios')
                 ->where('color', $request->color)
                 ->where('id', '!=', $request->id_predio)
-                ->where('estado', 1)
                 ->exists();
 
             if ($existeColor) {
@@ -123,9 +119,18 @@ class PrediosController extends Controller
                 ], 200);
             }
 
-            $predio_costo_ultimo = PredioCostos::select('precio')
-                                    ->where('predio_id', $request->id_predio)
-                                    ->where('vigencia', 1)
+            $predio_costo_ultimo = DB::table('predios as p')
+                                    ->join('predio_costos as pc', 'p.id', 'pc.predio_id')
+                                    ->select('p.id',
+                                            'p.nombre',
+                                            'pc.id as idpreciocosto',
+                                            'pc.predio_id',
+                                            'pc.precio',
+                                            'pc.vigencia')
+                                    ->where('p.id', $request->id_predio)
+                                    ->where('pc.vigencia', 1)
+                                    ->where('pc.estado', 1)
+                                    ->where('p.estado', 1)
                                     ->first();
 
             // INICIAR TRANSACCIÓN
@@ -144,12 +149,10 @@ class PrediosController extends Controller
 
             if ($predio_costo_ultimo->precio != $request->precio) {
                 DB::table('predio_costos')
-                    ->where('predio_id', $request->id_predio)
+                    ->where('id', $predio_costo_ultimo->idpreciocosto)
                     ->update([
                         'vigencia'      => 0,
-                        'observacion'   => 'CAMBIO DE VIGENCIA',
                         'sysuser'       => Auth::user()->id,
-                        // 'updated_at'    => now()
                     ]);
 
                 $predio_costos = PredioCostos::create([
@@ -249,6 +252,7 @@ class PrediosController extends Controller
                     ->where('p.estado', 1)
                     ->where('pc.estado', 1)
                     ->where('tp.estado', 1)
+                    ->where('pc.vigencia', 1)
                     ->where('p.clasificacion', $request->tipo_predio_id)
                     ->orderBy('p.id', 'asc')
                     ->get();

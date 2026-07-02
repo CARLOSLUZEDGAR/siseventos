@@ -394,7 +394,7 @@
                                             <label class="form-control-label">
                                                 MONTO (Bs.):
                                             </label>
-                                            <input type="number" step="0.01" min="0" :max="tarifa ? tarifa.porcentaje : null" class="form-control" v-model.number="monto" :class="{'is-invalid' : $v.monto.$error, 'is-valid': !$v.monto.$invalid}">
+                                            <input type="number" step="0.01" min="0" :max="predio && tarifa ? Number(((predio.precio * (100 - tarifa.porcentaje)) / 100).toFixed(2)) : null" class="form-control" v-model.number="monto" :class="{'is-invalid' : $v.monto.$error, 'is-valid': !$v.monto.$invalid}">
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.monto.required">
                                                     Este campo es requerido
@@ -403,7 +403,7 @@
                                                     Debe ingresar un monto válido con máximo 2 decimales
                                                 </span>
                                                 <span v-else-if="!$v.monto.montoMaximo">
-                                                    El monto no puede ser mayor a {{ (predio.precio * tarifa.porcentaje)/100 }} Bs.
+                                                    El monto no puede ser mayor a {{ (predio.precio * (100 - tarifa.porcentaje))/100 }} Bs.
                                                 </span>
                                             </div>
                                         </div>
@@ -615,7 +615,7 @@
                                                     <tr>
                                                         <td style="text-align: left; vertical-align: middle;">SALDO</td>
                                                         <td style="text-align: right; vertical-align: middle;">
-                                                            {{ (((Number(precio) * Number(porcentaje))/100) - Number(montoE)).toFixed(2) }}
+                                                            {{ (((Number(precio) * (100 - Number(porcentaje)))/100) - Number(montoE)).toFixed(2) }}
                                                         </td>
                                                         <td>
                                                             <div class="col-md-12">
@@ -648,7 +648,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td style="text-align: left; vertical-align: middle;">TOTAL</td>
-                                                        <td style="text-align: right; vertical-align: middle;">{{ ((Number(precio) * Number(porcentaje))/100).toFixed(2) }}</td>
+                                                        <td style="text-align: right; vertical-align: middle;">{{ ((Number(precio) * (100 - Number(porcentaje)))/100).toFixed(2) }}</td>
                                                     </tr>
                                                 </tbody>
                                                 <tbody v-else>
@@ -658,7 +658,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td style="text-align: left; vertical-align: middle;">TOTAL</td>
-                                                        <td style="text-align: right; vertical-align: middle;">{{ ((Number(precio) * Number(porcentaje))/100).toFixed(2) }}</td>
+                                                        <td style="text-align: right; vertical-align: middle;">{{ ((Number(precio) * (100 - Number(porcentaje)))/100).toFixed(2) }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -705,7 +705,7 @@ const montoMaximo = function(value) {
         return true;
     }
 
-    return Number(value) <= Number(((this.predio.precio * this.tarifa.porcentaje)/100));
+    return Number(value) <= Number(((this.predio.precio * (100 - this.tarifa.porcentaje))/100));
 };
 
 export default {

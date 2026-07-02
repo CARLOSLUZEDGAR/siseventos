@@ -109,6 +109,16 @@ Route::post('/registrarTarifa','TarifasController@CrearTarifa');
 Route::post('/mostrarTarifa','TarifasController@MostrarTarifa');
 Route::post('/editarTarifa','TarifasController@EditarTarifa');
 Route::post('/cambiarEstadoTarifa','TarifasController@CambiarEstadoTarifa');
+Route::post('/buscarSituacion','SituacionesController@BuscarSituacion');
+Route::post('/registrarSituacion','SituacionesController@CrearSituacion');
+Route::post('/mostrarSituacion','SituacionesController@MostrarSituacion');
+Route::post('/editarSituacion','SituacionesController@EditarSituacion');
+Route::post('/cambiarEstadoSituacion','SituacionesController@CambiarEstadoSituacion');
+
+
+
+
+
 
 
 

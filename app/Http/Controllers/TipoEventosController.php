@@ -21,7 +21,6 @@ class TipoEventosController extends Controller
                 // VERIFICAR SI EL NOMBRE YA EXISTE
                 $existeNombre = DB::table('tipo_eventos')
                     ->where('evento', $request->tipo_evento)
-                    ->where('estado', 1)
                     ->exists();
 
                 if ($existeNombre) {
@@ -73,7 +72,6 @@ class TipoEventosController extends Controller
             $existeNombre = DB::table('tipo_eventos')
                 ->where('evento', $request->tipo_evento)
                 ->where('id', '!=', $request->id_tipo_evento)
-                ->where('estado', 1)
                 ->exists();
 
             if ($existeNombre) {
@@ -120,18 +118,7 @@ class TipoEventosController extends Controller
                 'id_tipo_evento'  => 'required',
                 'estado'          => 'required',
             ]);
-            // VERIFICAR SI EXISTE
-            // $existe = DB::table('tipo_predios')
-            //     ->where('clasificacion', $request->clasificacion)
-            //     ->where('estado', 1)
-            //     ->exists();
-
-            // if ($existe) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'mensaje' => 'La clasificación ya se encuentra registrada'
-            //     ], 200);
-            // }
+            
             $estado = 1 - $request->estado;
             // INICIAR TRANSACCIÓN
             DB::beginTransaction();

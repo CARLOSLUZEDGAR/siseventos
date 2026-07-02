@@ -7,7 +7,7 @@
           <div class="col-sm-6">            
             <h1>
               <i class="fas fa-user-tag"></i> &nbsp;
-                TARIFA
+                SITUACIÓN
             </h1>
           </div>
         </div>
@@ -24,13 +24,13 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="fas fa-list-ol"></i> &nbsp;
-                  BUSCAR TARIFA
+                  BUSCAR SITUACIÓN
                 </h3>
               </div>
               <div class="card-body">                  
                     <div class="row d-flex justify-content-center"> 
                         <div class="col-md-4">
-                            <input type="text" class="form-control" style="text-transform:uppercase;" @keyup="BuscarTarifa()" v-model="buscar">
+                            <input type="text" class="form-control" style="text-transform:uppercase;" @keyup="BuscarSituacion()" v-model="buscar">
                         </div>
                     </div>
               </div>
@@ -47,7 +47,7 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="fas fa-list-ol"></i> &nbsp;
-                  LISTA DE TARIFAS &nbsp;&nbsp;
+                  LISTA DE SITUACIONES &nbsp;&nbsp;
                     <button type="button" class="btn btn-success btn-sm" @click="Nuevo()">
                         <i class="fas fa-plus"></i> NUEVO
                     </button> 
@@ -57,15 +57,15 @@
                 <table class="table table-bordered table-striped table-sm">
                     <thead>
                         <tr>
-                          <th style="width: 5%" class="text-center">#</th>
-                          <th class="text-center">OPCIONES</th>
-                          <th class="text-center">TARIFA</th>
-                          <th class="text-center">DESCUENTO (%)</th>
-                          <th class="text-center">DETALLE</th>
+                          <th style="" class="text-center">#</th>
+                          <th style="" class="text-center">OPCIONES</th>
+                          <th style="" class="text-center">SITUACIÓN</th>
+                          <!-- <th style="" class="text-center">% DESCUENTO</th> -->
+                          <th style="" class="text-center">DETALLE</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(a, index) in ArrayTarifa">
+                        <tr v-for="(a, index) in ArraySituacion">
                           <td class="text-center" style="vertical-align: middle">{{index + 1}}</td>
                             <td class="text-center" style="vertical-align: middle">
                                 <template v-if="a.estado == 1">
@@ -87,8 +87,7 @@
                                     </button>
                                 </template>
                             </td>                            
-                            <td class="text-center" style="vertical-align: middle">{{a.tarifa}}</td>
-                            <td class="text-center" style="vertical-align: middle">{{a.porcentaje}}</td>
+                            <td class="text-center" style="vertical-align: middle">{{a.situacion}}</td>
                             <td class="text-justify" style="vertical-align: middle">{{a.observacion}}</td>
                         </tr>
                     </tbody>
@@ -118,15 +117,15 @@
       </div>
       <!-- /.container-fluid -->
 
-        <div class="modal fade"  data-backdrop="static" id="ModalTarifa">
+        <div class="modal fade"  data-backdrop="static" id="ModalSituacion">
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <template v-if="modal == 0">
-                        <h4 class="modal-title">NUEVO TARIFA</h4>
+                        <h4 class="modal-title">NUEVA SITUACIÓN</h4>
                     </template>
                     <template v-else>
-                        <h4 class="modal-title">EDITAR TARIFA</h4>
+                        <h4 class="modal-title">EDITAR SITUACIÓN</h4>
                     </template>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="Cerrar()">
                     <span aria-hidden="true">&times;</span>
@@ -135,24 +134,11 @@
                 <div class="modal-body">
                     <template v-if="modal == 0">
                         <div class="row mt-2">
-                            <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">TARIFA:</label>
-                                <input type="text" class="form-control" v-model="tarifa" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.tarifa.$error, 'is-valid':!$v.tarifa.$invalid }">
+                            <div class="col-md-12">
+                                <label class="form-control-label" for="text-input">SITUACIÓN:</label>
+                                <input type="text" class="form-control" v-model="situacion" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.situacion.$error, 'is-valid':!$v.situacion.$invalid }">
                                 <div class="invalid-feedback">
-                                    <span v-if="!$v.tarifa.required">Este campo es Requerido</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">DESCUENTO (%):</label>
-                                <input type="number" step="0.01" min="0" max="100" class="form-control" v-model.number="porcentaje" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.porcentaje.$error, 'is-valid':!$v.porcentaje.$invalid }">
-                                <div class="invalid-feedback">
-                                    <span v-if="!$v.porcentaje.required">Este campo es Requerido</span>
-                                    <span v-if="$v.porcentaje.required && !$v.porcentaje.decimalDos">
-                                        Debe ingresar un precio válido con máximo 2 decimales
-                                    </span>
-                                    <span v-else-if="!$v.porcentaje.montoMaximo">
-                                        El descuento no puede ser mayor a 100%.
-                                    </span>
+                                    <span v-if="!$v.situacion.required">Este campo es Requerido</span>
                                 </div>
                             </div>
                         </div>
@@ -165,24 +151,11 @@
                     </template>
                     <template v-else>
                         <div class="row mt-2">
-                            <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">TARIFA:</label>
-                                <input type="text" class="form-control" v-model="tarifaE" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.tarifaE.$error, 'is-valid':!$v.tarifaE.$invalid }">
+                            <div class="col-md-12">
+                                <label class="form-control-label" for="text-input">SITUACIÓN:</label>
+                                <input type="text" class="form-control" v-model="situacionE" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.situacionE.$error, 'is-valid':!$v.situacionE.$invalid }">
                                 <div class="invalid-feedback">
-                                    <span v-if="!$v.tarifaE.required">Este campo es Requerido</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-control-label" for="text-input">DESCUENTO (%):</label>
-                                <input type="number" step="0.01" min="0" max="100" class="form-control" v-model.number="porcentajeE" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.porcentajeE.$error, 'is-valid':!$v.porcentajeE.$invalid }">
-                                <div class="invalid-feedback">
-                                    <span v-if="!$v.porcentajeE.required">Este campo es Requerido</span>
-                                    <span v-if="$v.porcentajeE.required && !$v.porcentajeE.decimalDos">
-                                        Debe ingresar un precio válido con máximo 2 decimales
-                                    </span>
-                                    <span v-else-if="!$v.porcentajeE.montoMaximo">
-                                        El descuento no puede ser mayor a 100%.
-                                    </span>
+                                    <span v-if="!$v.situacionE.required">Este campo es Requerido</span>
                                 </div>
                             </div>
                         </div>
@@ -238,16 +211,14 @@ export default {
            * Variables de recepcion 
            */
           modal: '',
-          tarifa: '',
-          porcentaje: '',
+          situacion: '',
           observacion: '',
 
-          ArrayTarifa: [],
-          ArrayMostrarTarifa: [],
+          ArraySituacion: [],
+          ArrayMostrarSituacion: [],
 
           idE: '',
-          tarifaE: '',
-          porcentajeE: '',
+          situacionE: '',
           observacionE: '',
 
           /**
@@ -275,25 +246,21 @@ export default {
     },
 
     validations: { 
-        tarifa: { required },
-        porcentaje: { required, decimalDos, montoMaximo },
+        situacion: { required },
 
-        tarifaE: { required },
-        porcentajeE: { required, decimalDos, montoMaximo },
+        situacionE: { required },
 
         validationsGroupReg: [
-            'tarifa',
-            'porcentaje',
+            'situacion'
         ],
 
         validationsGroupMod: [
-            'tarifaE',
-            'porcentajeE',
+            'situacionE'
         ],
     },
 
     mounted() {
-      this.ListarTarifa(1);
+      this.ListarSituacion(1);
     },
     computed:{
         isActived: function(){
@@ -324,7 +291,7 @@ export default {
         cambiarPagina(page){
             let me = this;
             me.pagination.current_page = page;
-            me.ListarTarifa(page);
+            me.ListarSituacion(page);
         },
 
         // ListarTipoPredio() {
@@ -341,15 +308,15 @@ export default {
         //     })
         // },
 
-        ListarTarifa(page){
+        ListarSituacion(page){
             let me = this;
             axios
-            .post("/buscarTarifa", {
+            .post("/buscarSituacion", {
                 buscar: me.buscar.toUpperCase(),
                 page: page
             })
             .then(function (response) {
-                me.ArrayTarifa = response.data.tarifas.data;
+                me.ArraySituacion = response.data.situaciones.data;
                 me.pagination = response.data.pagination;
             })
             .catch(function (error) {
@@ -358,10 +325,10 @@ export default {
             })
         },
 
-        BuscarTarifa(){
+        BuscarSituacion(){
             clearTimeout(this.setTiemoutBuscador);
             this.setTiemoutBuscador = setTimeout(() => {
-                this.ListarTarifa(1)
+                this.ListarSituacion(1)
             }, 360)
         },
 
@@ -369,7 +336,7 @@ export default {
             this.$v.validationsGroupReg.$reset(),
             this.modal = 0;
             // this.ListarModulos();
-            $('#ModalTarifa').modal('show');
+            $('#ModalSituacion').modal('show');
             $(".modal-header").css("background-color", "#007bff");
             $(".modal-header").css("color", "white" );
         },
@@ -380,33 +347,30 @@ export default {
             me.modal = 1;
             // me.ListarModulos();
             axios
-                .post("/mostrarTarifa", {
+                .post("/mostrarSituacion", {
                     id: id
                 })
                 .then((response) => {
-                    me.ArrayMostrarTarifa = response.data.tarifas;
-                    me.idE = me.ArrayMostrarTarifa.id;
-                    me.tarifaE = me.ArrayMostrarTarifa.tarifa;
-                    me.porcentajeE = me.ArrayMostrarTarifa.porcentaje;
-                    me.observacionE = me.ArrayMostrarTarifa.observacion;
+                    me.ArrayMostrarSituacion = response.data.situaciones;
+                    me.idE = me.ArrayMostrarSituacion.id;
+                    me.situacionE = me.ArrayMostrarSituacion.situacion;
+                    me.observacionE = me.ArrayMostrarSituacion.observacion;
                 })
                 .catch(function (error) {
                     // handle error
                     console.log(error);
                 })
-            $('#ModalTarifa').modal('show');
+            $('#ModalSituacion').modal('show');
             $(".modal-header").css("background-color", "#007bff");
             $(".modal-header").css("color", "white" );
         },
 
         Cerrar(){
-            this.tarifa = '';
-            this.porcentaje = '';
+            this.situacion = '';
             this.observacion = '';
 
             this.idE = '';
-            this.tarifaE = '';
-            this.porcentajeE = '';
+            this.situacionE = '';
             this.observacionE = '';
         },
 
@@ -416,7 +380,7 @@ export default {
             }
             if (!this.$v.validationsGroupReg.$invalid) {
                 swal.fire({
-                    title: '¿Desea registrar esta tarifa?',
+                    title: '¿Desea registrar esta situación?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: 'info',
@@ -428,9 +392,8 @@ export default {
                 }).then((result) => {
                     if (result.value) {
                         this.procesando = true;
-                        axios.post('/registrarTarifa', {
-                            tarifa: this.tarifa.toUpperCase(),
-                            porcentaje: this.porcentaje,
+                        axios.post('/registrarSituacion', {
+                            situacion: this.situacion.toUpperCase(),
                             observacion: this.observacion
                                 ? this.observacion.toUpperCase()
                                 : ''
@@ -443,9 +406,9 @@ export default {
                                     title: 'CORRECTO',
                                     text: response.data.mensaje
                                 });
-                                $('#ModalTarifa').modal('hide');
+                                $('#ModalSituacion').modal('hide');
                                 this.Cerrar();
-                                this.ListarTarifa();
+                                this.ListarSituacion();
                             } else {
                                 Swal.fire({
                                     icon: 'warning',
@@ -469,7 +432,7 @@ export default {
                             'Solicitud cancelada.',
                             'info'
                         );
-                        $('#ModalTarifa').modal('hide');
+                        $('#ModalSituacion').modal('hide');
                         this.Cerrar();
                     }
                 });
@@ -490,7 +453,7 @@ export default {
             }
             if(!this.$v.validationsGroupMod.$invalid){
                 swal.fire({
-                    title: '¿Desea editar esta tarifa?', // TITULO 
+                    title: '¿Desea editar esta situación?', // TITULO 
                     icon: 'question', //ICONO (success, warnning, error, info, question)
                     showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
                     confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
@@ -503,10 +466,9 @@ export default {
                     if (result.value) {
                         let me = this;
                         this.procesando = true;
-                        axios.post('/editarTarifa', {
-                            id_tarifa: this.idE,
-                            tarifa: this.tarifaE.toUpperCase(),
-                            porcentaje: this.porcentajeE,
+                        axios.post('/editarSituacion', {
+                            id_situacion: this.idE,
+                            situacion: this.situacionE.toUpperCase(),
                             observacion: this.observacionE
                                 ? this.observacionE.toUpperCase()
                                 : ''
@@ -518,9 +480,9 @@ export default {
                                     title: 'CORRECTO',
                                     text: response.data.mensaje
                                 });
-                                $('#ModalTarifa').modal('hide');
+                                $('#ModalSituacion').modal('hide');
                                 this.Cerrar();
-                                this.ListarTarifa();
+                                this.ListarSituacion();
                             }else{
                                 Swal.fire({
                                     icon: 'warning',
@@ -547,7 +509,7 @@ export default {
                             "Solicitud cancelada.", //TEXTO DE MENSAJE
                             "info" // TIPO DE MODAL (success, warnning, error, info)
                         );
-                        $('#ModalTarifa').modal('hide');
+                        $('#Modalsituacion').modal('hide');
                         me.Cerrar();
                     }
                 })
@@ -567,10 +529,10 @@ export default {
                 return;
             }
             if (estado == 1) {
-                var titulo = '¿Desea deshabilitar esta tarifa?';
+                var titulo = '¿Desea deshabilitar esta situación?';
                 // var titulo2 = 'Usuario deshabilitado correctamente';
             } else {
-                var titulo = '¿Desea habilitar esta tarifa?';
+                var titulo = '¿Desea habilitar esta situación?';
                 // var titulo2 = 'Usuario habilitado correctamente';
             }
             swal.fire({
@@ -587,8 +549,8 @@ export default {
                 if (result.value) {
                     let me = this;
                     this.procesando = true;
-                    axios.post('/cambiarEstadoTarifa', {
-                        id_tarifa: id,
+                    axios.post('/cambiarEstadoSituacion', {
+                        id_situacion: id,
                         estado: estado
                     })
                     .then((response) => {
@@ -598,7 +560,7 @@ export default {
                                 title: 'CORRECTO',
                                 text: response.data.mensaje
                             });
-                            this.ListarTarifa();
+                            this.ListarSituacion();
                         }else{
                             Swal.fire({
                                 icon: 'warning',

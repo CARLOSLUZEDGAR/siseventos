@@ -256,6 +256,7 @@ class EventosController extends Controller
                     ->join('predios as p', 'e.predio_id', 'p.id')
                     ->join('tipo_eventos as te', 'e.tipo_evento_id', 'te.id')
                     ->join('tarifas as t', 'e.tarifa_id', 't.id')
+                    ->join('tarifa_porcentajes as tpor', 't.id', 'tpor.tarifa_id')
                     ->join('situacion_eventos as se', 'e.id', 'se.evento_id')
                     ->join('situaciones as s', 'se.situacion_id', 's.id')
                     ->join('predio_costos as pc', 'e.predio_id', 'pc.predio_id')
@@ -273,7 +274,7 @@ class EventosController extends Controller
                             'te.evento',
                             'e.tarifa_id',
                             't.tarifa',
-                            't.porcentaje',
+                            'tpor.porcentaje',
                             'e.fecha_evento',
                             'e.fecha_evento_fin',
                             'e.hora_inicio',
@@ -287,9 +288,12 @@ class EventosController extends Controller
                     ->where('p.estado', 1)
                     ->where('te.estado', 1)
                     ->where('t.estado', 1)
+                    ->where('tpor.estado', 1)
+                    ->where('tpor.vigencia', 1)
                     ->where('se.estado', 1)
                     ->where('s.estado', 1)
                     ->where('pc.estado', 1)
+                    ->where('pc.vigencia', 1)
                     ->where('e.id', $request->evento_id)
                     ->orderBy('se.created_at', 'desc')
                     ->first();

@@ -18,6 +18,7 @@ class ReporteController extends Controller
                     ->join('predios as p', 'e.predio_id', 'p.id')
                     ->join('tipo_eventos as te', 'e.tipo_evento_id', 'te.id')
                     ->join('tarifas as t', 'e.tarifa_id', 't.id')
+                    ->join('tarifa_porcentajes as tpor', 't.id', 'tpor.tarifa_id')
                     ->join('predio_costos as pc', 'e.predio_id', 'pc.predio_id')
                     ->join('tipo_predios as tp', 'e.tipo_predio_id', 'tp.id')
                     ->select('e.id',
@@ -28,7 +29,7 @@ class ReporteController extends Controller
                         'p.nombre',
                         'te.evento',
                         't.tarifa',
-                        't.porcentaje',
+                        'tpor.porcentaje',
                         'e.fecha_evento',
                         'e.fecha_evento_fin',
                         'e.hora_inicio',

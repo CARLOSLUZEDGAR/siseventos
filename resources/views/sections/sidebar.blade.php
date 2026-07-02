@@ -93,6 +93,14 @@
                         </router-link>
                       </li>
                       @endcan
+                      @can('view-reg-situacion', Model::class)
+                      <li class="nav-item">
+                        <router-link class="nav-link" to='/RegSituacion'>
+                          <i class="nav-icon fas fa-calendar"></i>
+                          <p>SITUACIONES</p>
+                        </router-link>
+                      </li>
+                      @endcan
                     </ul>
                   </li>  
                 @endcan
