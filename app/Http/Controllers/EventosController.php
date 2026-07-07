@@ -121,6 +121,7 @@ class EventosController extends Controller
             $finNuevo    = $request->fecha_evento_fin . ' ' . $request->hora_fin;
             $existe = DB::table('eventos')
                 ->where('predio_id', $request->predio_id)
+                ->where('id', '!=', $request->id_evento)
                 ->where('estado', 1)
                 ->where(function ($query) use ($inicioNuevo, $finNuevo) {
                     $query->whereRaw(
@@ -146,7 +147,7 @@ class EventosController extends Controller
             DB::table('eventos')
                 ->where('id', $request->id_evento)
                 ->update([
-                    'predio_id'        => $request->predio_id,
+                    // 'predio_id'        => $request->predio_id,
                     'fecha_evento'     => $request->fecha_evento,
                     'hora_inicio'      => $request->hora_inicio,
                     'fecha_evento_fin' => $request->fecha_evento_fin,
@@ -238,9 +239,9 @@ class EventosController extends Controller
                             'e.hora_inicio',
                             'e.hora_fin')
                     ->where('e.estado', 1)
-                    ->where('p.estado', 1)
-                    ->where('te.estado', 1)
-                    ->where('t.estado', 1)
+                    // ->where('p.estado', 1)
+                    // ->where('te.estado', 1)
+                    // ->where('t.estado', 1)
                     ->whereYear('e.fecha_evento', $request->anio)
                     ->whereMonth('e.fecha_evento', $request->mes)
                     ->orderBy('e.fecha_evento', 'asc')
@@ -285,13 +286,13 @@ class EventosController extends Controller
                             'se.monto',
                             'pc.precio')
                     ->where('e.estado', 1)
-                    ->where('p.estado', 1)
-                    ->where('te.estado', 1)
-                    ->where('t.estado', 1)
+                    // ->where('p.estado', 1)
+                    // ->where('te.estado', 1)
+                    // ->where('t.estado', 1)
                     ->where('tpor.estado', 1)
                     ->where('tpor.vigencia', 1)
                     ->where('se.estado', 1)
-                    ->where('s.estado', 1)
+                    // ->where('s.estado', 1)
                     ->where('pc.estado', 1)
                     ->where('pc.vigencia', 1)
                     ->where('e.id', $request->evento_id)

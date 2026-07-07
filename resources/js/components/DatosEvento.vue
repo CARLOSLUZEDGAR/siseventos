@@ -266,6 +266,7 @@
                                             <select
                                                 class="form-control"
                                                 v-model="predio"
+                                                @change="verificarSeleccion(1)"
                                                 :class="{
                                                     'is-invalid': $v.predio.$error,
                                                     'is-valid': !$v.predio.$invalid
@@ -279,6 +280,7 @@
                                                 >
                                                     {{ item.nombre }}
                                                 </option>
+                                                <option value="agregar_predio">+ Añadir Predio</option>
                                             </select>
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.predio.required">
@@ -291,6 +293,7 @@
                                             <select
                                                 class="form-control"
                                                 v-model="tipo_evento"
+                                                @change="verificarSeleccion(2)"
                                                 :class="{
                                                     'is-invalid': $v.tipo_evento.$error,
                                                     'is-valid': !$v.tipo_evento.$invalid
@@ -304,6 +307,7 @@
                                                 >
                                                     {{ item.evento }}
                                                 </option>
+                                                <option value="agregar_tipo_evento">+ Añadir Evento</option>
                                             </select>
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.tipo_evento.required">
@@ -318,6 +322,7 @@
                                             <select
                                                 class="form-control"
                                                 v-model="tarifa"
+                                                @change="verificarSeleccion(3)"
                                                 :class="{
                                                     'is-invalid': $v.tarifa.$error,
                                                     'is-valid': !$v.tarifa.$invalid
@@ -331,6 +336,7 @@
                                                 >
                                                     {{ item.tarifa }}
                                                 </option>
+                                                <option value="agregar_tarifa">+ Añadir Tarifa</option>
                                             </select>
                                             <div class="invalid-feedback">
                                                 <span v-if="!$v.tarifa.required">
@@ -338,7 +344,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" v-if="tarifa && tarifa.id != 1">                                   
                                             <label>SITUACIÓN:</label>
                                             <select
                                                 class="form-control"
@@ -363,7 +369,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" v-if="tarifa && tarifa.id != 1">
                                             <label>FORMA DE PAGO:</label>
                                             <select
                                                 class="form-control"
@@ -685,6 +691,157 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade"  data-backdrop="static" id="ModalPredio">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">NUEVO PREDIO</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="Cerrar(3)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="form-control-label" for="text-input">PREDIO:</label>
+                            <input type="text" class="form-control" v-model="predioRegPredio" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.predioRegPredio.$error, 'is-valid':!$v.predioRegPredio.$invalid }">
+                            <div class="invalid-feedback">
+                                <span v-if="!$v.predioRegPredio.required">Este campo es Requerido</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-control-label" for="text-input">ABREVIATURA:</label>
+                            <input type="text" class="form-control" v-model="abreviaturaRegPredio" style="text-transform:uppercase;">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="form-control-label" for="text-input">COLOR:</label>
+                            <input type="color" class="form-control" v-model="colorRegPredio" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.colorRegPredio.$error, 'is-valid':!$v.colorRegPredio.$invalid }">
+                            <div class="invalid-feedback">
+                                <span v-if="!$v.colorRegPredio.required">Este campo es Requerido</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-control-label">
+                                PRECIO (Bs.):
+                            </label>
+                            <input type="number" step="0.01" min="0" class="form-control" v-model.number="precioRegPredio" :class="{'is-invalid' : $v.precioRegPredio.$error, 'is-valid': !$v.precioRegPredio.$invalid}">
+                            <div class="invalid-feedback">
+                                <span v-if="!$v.precioRegPredio.required">
+                                    Este campo es requerido
+                                </span>
+                                <span v-if="$v.precioRegPredio.required && !$v.precioRegPredio.decimalDos">
+                                    Debe ingresar un precio válido con máximo 2 decimales
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <label for="">OBSERVACIÓN:</label>
+                            <textarea class="form-control" v-model="observacionRegPredio" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" @click="Cerrar(3)">CANCELAR</button>
+                    <button type="button" class="btn btn-primary" @click="GuardarPredio()" :disabled="procesando">{{ procesando ? 'Procesando...' : 'GUARDAR' }}</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade"  data-backdrop="static" id="ModalTipoEvento">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">NUEVO EVENTO</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="Cerrar(4)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <label class="form-control-label" for="text-input">EVENTO:</label>
+                            <input type="text" class="form-control" v-model="tipo_eventoRegTipoEvento" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.tipo_eventoRegTipoEvento.$error, 'is-valid':!$v.tipo_eventoRegTipoEvento.$invalid }">
+                            <div class="invalid-feedback">
+                                <span v-if="!$v.tipo_eventoRegTipoEvento.required">Este campo es Requerido</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <label for="">OBSERVACIÓN:</label>
+                            <textarea class="form-control" v-model="observacionRegTipoEvento" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" @click="Cerrar(4)">CANCELAR</button>
+                    <button type="button" class="btn btn-primary" @click="GuardarTipoEvento()" :disabled="procesando">{{ procesando ? 'Procesando...' : 'GUARDAR' }}</button>
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade"  data-backdrop="static" id="ModalTarifa">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">NUEVO TARIFA</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="Cerrar(5)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="form-control-label" for="text-input">TARIFA:</label>
+                            <input type="text" class="form-control" v-model="tarifaRegTarifa" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.tarifaRegTarifa.$error, 'is-valid':!$v.tarifaRegTarifa.$invalid }">
+                            <div class="invalid-feedback">
+                                <span v-if="!$v.tarifaRegTarifa.required">Este campo es Requerido</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-control-label" for="text-input">DESCUENTO (%):</label>
+                            <input type="number" step="0.01" min="0" max="100" class="form-control" v-model.number="porcentajeRegTarifa" style="text-transform:uppercase;" :class="{ 'is-invalid' : $v.porcentajeRegTarifa.$error, 'is-valid':!$v.porcentajeRegTarifa.$invalid }">
+                            <div class="invalid-feedback">
+                                <span v-if="!$v.porcentajeRegTarifa.required">Este campo es Requerido</span>
+                                <span v-if="$v.porcentajeRegTarifa.required && !$v.porcentajeRegTarifa.decimalDos">
+                                    Debe ingresar un precio válido con máximo 2 decimales
+                                </span>
+                                <span v-else-if="!$v.porcentajeRegTarifa.montoMaximo">
+                                    El descuento no puede ser mayor a 100%.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <label for="">OBSERVACIÓN:</label>
+                            <textarea class="form-control" v-model="observacionRegTarifa" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" @click="Cerrar(5)">CANCELAR</button>
+                    <button type="button" class="btn btn-primary" @click="GuardarTarifa()" :disabled="procesando">{{ procesando ? 'Procesando...' : 'GUARDAR' }}</button>
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        
     </div>
 </template>
 
@@ -801,6 +958,20 @@ export default {
             arraySituacionEvento: [],
             prediosDisponiblesEditar: [],
 
+            predioRegPredio: '',
+            abreviaturaRegPredio: '',
+            // tipo_predioRegPredio: '',
+            colorRegPredio: '',
+            precioRegPredio: '',
+            observacionRegPredio: '',
+
+            tipo_eventoRegTipoEvento: '',
+            observacionRegTipoEvento: '',
+
+            tarifaRegTarifa: '',
+            porcentajeRegTarifa: '',
+            observacionRegTarifa: '',
+            
             procesando: false,
         }
     },
@@ -817,8 +988,14 @@ export default {
         predio: { required },
         tipo_evento: { required },
         tarifa: { required },
-        situacion: { required },
-        forma_pago: { required },
+        // situacion: { required },
+        situacion: { required: requiredIf(function () {
+            return this.tarifa && this.tarifa.id != 1;
+        })},
+        // forma_pago: { required },
+        forma_pago: { required: requiredIf(function () {
+            return this.tarifa && this.tarifa.id != 1;
+        })},
         monto: { required: requiredIf(function () {
             return this.situacion && this.situacion.id == 1;
         }),
@@ -838,9 +1015,16 @@ export default {
         tarifaE: { required },
         situacionE: { required },
         montoE: { required },
-
         forma_pagoE: { required },
 
+        predioRegPredio: { required },
+        colorRegPredio: { required },
+        precioRegPredio: { required, decimalDos },
+
+        tipo_eventoRegTipoEvento: { required },
+
+        tarifaRegTarifa: { required },
+        porcentajeRegTarifa: { required, decimalDos, montoMaximo },
 
         validationsGroupReg: [
             'responsable',
@@ -878,6 +1062,21 @@ export default {
 
         validationGroupPagoSaldo: [
             'forma_pagoE'
+        ],
+
+        validationsGroupRegPredio: [
+            'predioRegPredio',
+            'colorRegPredio',
+            'precioRegPredio'
+        ],
+
+        validationsGroupRegTipoEvento: [
+            'tipo_eventoRegTipoEvento'
+        ],
+
+        validationsGroupRegTarifa: [
+            'tarifaRegTarifa',
+            'porcentajeRegTarifa'
         ]
     },
 
@@ -886,6 +1085,15 @@ export default {
             if (!valor || valor.id != 1) {
                 this.monto = null;
                 this.$v.monto.$reset();
+            }
+        },
+
+        tarifa(valor) {
+            if (!valor || valor.id == 1) {
+                this.situacion = null;
+                this.forma_pago = null;
+                this.$v.situacion.$reset();
+                this.$v.forma_pago.$reset();
             }
         },
 
@@ -970,6 +1178,308 @@ export default {
     },
 
     methods: {
+
+        verificarSeleccion(opcion) {
+            switch (opcion) {
+            case 1:
+                if (this.predio === 'agregar_predio') {
+                // this.ModalNewNacionalidad = true;
+                this.Agregar(1);
+                this.predio = ''; // Limpiar selección
+                } else {
+                    // this.listarEntidad(this.per_nacionalidad)
+                    // this.listarLicencia(this.per_entidad,this.per_categoria);
+                }
+                break;
+
+            case 2:
+                if (this.tipo_evento === 'agregar_tipo_evento') {
+                // this.ModalNewEntidad = true;
+                this.Agregar(2);
+                this.tipo_evento = ''; // Limpiar selección
+                } else {
+                    // this.listarGrado(this.per_entidad);
+                    // this.listarLicencia(this.per_entidad, this.per_categoria)
+                }
+                break;
+
+            case 3:
+                if (this.tarifa === 'agregar_tarifa') {
+                // this.ModalNewEntidad = true;
+                this.Agregar(3);
+                this.tarifa = ''; // Limpiar selección
+                } else {
+                    // this.listarGrado(this.per_entidad);
+                    // this.listarLicencia(this.per_entidad, this.per_categoria)
+                }
+                break;
+            
+            default:
+                break;
+            }  
+        },
+
+        Agregar(valor) {
+            switch (valor) {
+                case 1:
+                    this.$v.validationsGroupRegPredio.$reset(),
+                    // this.modal = 0;
+                    // this.ListarModulos();
+                    $('#ModalPredio').modal('show');
+                    $(".modal-header").css("background-color", "#007bff");
+                    $(".modal-header").css("color", "white" );
+                    break;
+
+                case 2:
+                    this.$v.validationsGroupRegTipoEvento.$reset(),
+                    // this.modal = 0;
+                    // this.ListarModulos();
+                    $('#ModalTipoEvento').modal('show');
+                    $(".modal-header").css("background-color", "#007bff");
+                    $(".modal-header").css("color", "white" );
+                    break;
+
+                case 3:
+                    this.$v.validationsGroupRegTarifa.$reset(),
+                    // this.modal = 0;
+                    // this.ListarModulos();
+                    $('#ModalTarifa').modal('show');
+                    $(".modal-header").css("background-color", "#007bff");
+                    $(".modal-header").css("color", "white" );
+                    break;
+            
+                default:
+                    break;
+            }
+        },
+
+        GuardarPredio() {
+            if (this.procesando) {
+                return;
+            }
+            if (!this.$v.validationsGroupRegPredio.$invalid) {
+                swal.fire({
+                    title: '¿Desea registrar este predio?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: 'info',
+                    cancelButtonColor: '#868077',
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Cancelar',
+                    buttonsStyling: true,
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        this.procesando = true;
+                        axios.post('/registrarPredio', {
+                            predio: this.predioRegPredio.toUpperCase(),
+                            abreviatura: this.abreviaturaRegPredio
+                                ? this.abreviaturaRegPredio.toUpperCase()
+                                : '',
+                            tipo_predio: this.tipo_predio.id,
+                            color: this.colorRegPredio,
+                            precio: this.precioRegPredio,
+                            observacion: this.observacionRegPredio
+                                ? this.observacionRegPredio.toUpperCase()
+                                : ''
+                        })
+                        .then((response) => {
+                            this.procesando = false;
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'CORRECTO',
+                                    text: response.data.mensaje
+                                });
+                                $('#ModalPredio').modal('hide');
+                                this.Cerrar(3);
+                                this.ListarPredio(this.tipo_predio.id);
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'ADVERTENCIA',
+                                    text: response.data.mensaje
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            this.procesando = false;
+                            console.log(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ERROR',
+                                text: 'Ocurrió un error inesperado'
+                            });
+                        });
+                    } else {
+                        swal.fire(
+                            'Información',
+                            'Solicitud cancelada.',
+                            'info'
+                        );
+                        $('#ModalPredio').modal('hide');
+                        this.Cerrar(3);
+                    }
+                });
+            } else {
+                this.$v.validationsGroupRegPredio.$touch();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ingrese todos los datos requeridos',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        },
+
+        GuardarTipoEvento() {
+            if (this.procesando) {
+                return;
+            }
+            if (!this.$v.validationsGroupRegTipoEvento.$invalid) {
+                swal.fire({
+                    title: '¿Desea registrar este evento?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: 'info',
+                    cancelButtonColor: '#868077',
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Cancelar',
+                    buttonsStyling: true,
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        this.procesando = true;
+                        axios.post('/registrarTipoEvento', {
+                            tipo_evento: this.tipo_eventoRegTipoEvento.toUpperCase(),
+                            tipo_predio: this.tipo_predio.id,
+                            observacion: this.observacionRegTipoEvento
+                                ? this.observacionRegTipoEvento.toUpperCase()
+                                : ''
+                        })
+                        .then((response) => {
+                            this.procesando = false;
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'CORRECTO',
+                                    text: response.data.mensaje
+                                });
+                                $('#ModalTipoEvento').modal('hide');
+                                this.Cerrar(4);
+                                this.ListarTipoEvento(this.tipo_predio.id);
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'ADVERTENCIA',
+                                    text: response.data.mensaje
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            this.procesando = false;
+                            console.log(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ERROR',
+                                text: 'Ocurrió un error inesperado'
+                            });
+                        });
+                    } else {
+                        swal.fire(
+                            'Información',
+                            'Solicitud cancelada.',
+                            'info'
+                        );
+                        $('#ModalTipoEvento').modal('hide');
+                        this.Cerrar(4);
+                    }
+                });
+            } else {
+                this.$v.validationsGroupRegTipoEvento.$touch();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ingrese todos los datos requeridos',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        },
+
+        GuardarTarifa() {
+            if (this.procesando) {
+                return;
+            }
+            if (!this.$v.validationsGroupRegTarifa.$invalid) {
+                swal.fire({
+                    title: '¿Desea registrar esta tarifa?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: 'info',
+                    cancelButtonColor: '#868077',
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Cancelar',
+                    buttonsStyling: true,
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        this.procesando = true;
+                        axios.post('/registrarTarifa', {
+                            tarifa: this.tarifaRegTarifa.toUpperCase(),
+                            porcentaje: this.porcentajeRegTarifa,
+                            observacion: this.observacionRegTarifa
+                                ? this.observacionRegTarifa.toUpperCase()
+                                : ''
+                        })
+                        .then((response) => {
+                            this.procesando = false;
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'CORRECTO',
+                                    text: response.data.mensaje
+                                });
+                                $('#ModalTarifa').modal('hide');
+                                this.Cerrar(5);
+                                this.ListarTarifa();
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'ADVERTENCIA',
+                                    text: response.data.mensaje
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            this.procesando = false;
+                            console.log(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ERROR',
+                                text: 'Ocurrió un error inesperado'
+                            });
+                        });
+                    } else {
+                        swal.fire(
+                            'Información',
+                            'Solicitud cancelada.',
+                            'info'
+                        );
+                        $('#ModalTarifa').modal('hide');
+                        this.Cerrar(5);
+                    }
+                });
+            } else {
+                this.$v.validationsGroupRegTarifa.$touch();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ingrese todos los datos requeridos',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        },
+
         generarCalendario() {
             this.calendario = [];
             let primerDia = new Date(this.anio, this.mes, 1);
@@ -1129,6 +1639,15 @@ export default {
                     this.porcentaje = '',
                     this.forma_pagoE = ''
                     break; 
+                case 3:
+                    this.precioRegPredio = '',
+                    this.abreviaturaRegPredio = '',
+                    this.colorRegPredio = '',
+                    this.precioRegPredio = ''
+                    break;
+                case 4:
+                    this.tipo_eventoRegTipoEvento = ''
+                    break;
             
                 default:
                     break;
@@ -1296,11 +1815,17 @@ export default {
                             celular: this.celular,
                             tipo_evento_id: this.tipo_evento.id,
                             tarifa_id: this.tarifa.id,
-                            situacion_id: this.situacion.id,
-                            forma_pago: this.forma_pago,
+                            situacion_id: this.tarifa.id != 1
+                                ? this.situacion.id
+                                : 2,
+                            // situacion_id: this.situacion.id,
+                            forma_pago: this.tarifa.id != 1
+                                ? this.forma_pago
+                                : 'SIN FORMA DE PAGO',
+                            // forma_pago: this.forma_pago,
                             monto: this.situacion.id == 1
                                 ? this.monto
-                                : (this.predio.precio * this.tarifa.porcentaje)/100,
+                                : (this.predio.precio * (100 - this.tarifa.porcentaje))/100,
                             observacion: this.observacion
                                 ? this.observacion.toUpperCase()
                                 : ''

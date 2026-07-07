@@ -37,6 +37,10 @@ class ReporteController extends Controller
                         'pc.precio')
                     ->where('e.id', $request->idE)
                     ->where('e.estado', 1)
+                    ->where('tpor.estado', 1)
+                    ->where('tpor.vigencia', 1)
+                    ->where('pc.estado', 1)
+                    ->where('pc.vigencia', 1)
                     ->first();
 
         $situacion_evento = DB::table('situacion_eventos as se')

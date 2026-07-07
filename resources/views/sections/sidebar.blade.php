@@ -54,7 +54,7 @@
                   <li class="nav-header" style="padding-left: 1px;">REGISTRO</li>
                   <li class="nav-item">{{-- REGISTRO --}}
                     <a href="#" class="nav-link">
-                      <i class="nav-icon fas fa-building"></i>
+                      <i class="nav-icon fas fa-registered"></i>
                       <p>
                         REGISTRO
                         <i class="fas fa-angle-left right"></i>
@@ -64,16 +64,16 @@
                       @can('view-reg-clasificacion', Model::class)
                       <li class="nav-item">
                         <router-link class="nav-link" to='/RegClasificacion'>
-                          <i class="nav-icon fas fa-calendar"></i>
-                          <p>CLASIFICACIÓN</p>
+                          <i class="nav-icon fas fa-layer-group"></i>
+                          <p>Clasificación</p>
                         </router-link>
                       </li>
                       @endcan
                       @can('view-reg-predio', Model::class)
                       <li class="nav-item">
                         <router-link class="nav-link" to='/RegPredio'>
-                          <i class="nav-icon fas fa-calendar"></i>
-                          <p>PREDIOS</p>
+                          <i class="nav-icon fas fa-hotel"></i>
+                          <p>Predio</p>
                         </router-link>
                       </li>
                       @endcan
@@ -81,23 +81,23 @@
                       <li class="nav-item">
                         <router-link class="nav-link" to='/RegEvento'>
                           <i class="nav-icon fas fa-calendar"></i>
-                          <p>EVENTOS</p>
+                          <p>Evento</p>
                         </router-link>
                       </li>
                       @endcan
                       @can('view-reg-tarifa', Model::class)
                       <li class="nav-item">
                         <router-link class="nav-link" to='/RegTarifa'>
-                          <i class="nav-icon fas fa-calendar"></i>
-                          <p>TARIFAS</p>
+                          <i class="nav-icon fas fa-percent"></i>
+                          <p>Tarifa</p>
                         </router-link>
                       </li>
                       @endcan
                       @can('view-reg-situacion', Model::class)
                       <li class="nav-item">
                         <router-link class="nav-link" to='/RegSituacion'>
-                          <i class="nav-icon fas fa-calendar"></i>
-                          <p>SITUACIONES</p>
+                          <i class="nav-icon fas fa-dollar-sign"></i>
+                          <p>Situación</p>
                         </router-link>
                       </li>
                       @endcan

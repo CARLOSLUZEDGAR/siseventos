@@ -143,19 +143,19 @@
             </div>
 
             <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
-                <p style="margin: 1px">En la ciudad de <span style="font-weight: bold;">La Paz</span>, a los <span style="font-weight: bold;">{{ $fecha_det}}</span>, se deja expresa constancia del <span style="font-weight: bold;">{{$situacion_evento->situacion}}</span> por el uso del <span style="font-weight: bold;">{{ $evento->nombre }}</span>, conforme al siguiente detalle:</p>
+                <p style="margin: 1px">En la ciudad de <span style="font-weight: bold;">La Paz</span>, a los <span style="font-weight: bold;">{{ $fecha_det}}</span>, se deja expresa constancia del <span style="font-weight: bold;">{{$situacion_evento->situacion}}</span> por el uso del <span style="font-weight: bold;">{{$evento->clasificacion}} "{{ $evento->nombre }}"</span>, conforme al siguiente detalle:</p>
             </div>
 
             <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
                 <p style="margin: 1px"><span style="font-weight: bold;">NOMBRE COMPLETO:</span> {{$evento->contratante}}</p>
                 <p style="margin: 1px"><span style="font-weight: bold;">CEDULA DE IDENTIDAD:</span> {{$evento->ci}}</p>
-                <p style="margin: 1px"><span style="font-weight: bold;">AMBIENTE RESERVADO:</span> {{$evento->nombre}}</p>
+                <p style="margin: 1px"><span style="font-weight: bold;">AMBIENTE RESERVADO:</span> {{$evento->clasificacion}} "{{$evento->nombre}}"</p>
                 <?php
                     $date = date_create($evento->fecha_evento);
                     $fechaevento = date_format($date,"d/m/Y");
                 ?>
-                <p style="margin: 1px"><span style="font-weight: bold;">FECHA INICIO EVENTO:</span> {{$fecha_evento_inicio}} <span style="font-weight: bold;">HORA INICIO:</span> {{$evento->hora_inicio}}</p>
-                <p style="margin: 1px"><span style="font-weight: bold;">FECHA FIN EVENTO:</span> {{$fecha_evento_final}} <span style="font-weight: bold;">HORA FINAL:</span> {{$evento->hora_fin}}</p>
+                <p style="margin: 1px"><span style="font-weight: bold;">INICIO EVENTO:</span> {{$fecha_evento_inicio}} <span style="font-weight: bold;">HORA:</span> {{ substr($evento->hora_inicio, 0, 5) }}</p>
+                <p style="margin: 1px"><span style="font-weight: bold;">FIN EVENTO:</span> {{$fecha_evento_final}} <span style="font-weight: bold;">HORA:</span> {{ substr($evento->hora_fin, 0, 5) }}</p>
                 <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE EVENTO:</span> {{$evento->evento}}</p>
                 <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE TARIFA:</span> {{$evento->tarifa}}</p>
                 <!-- <p style="margin: 1px"><span style="font-weight: bold;">MONTO DEPOSITADO: Bs. {{$situacion_evento->monto}}</span></p> -->
@@ -179,7 +179,7 @@
                                     <p style="margin: 1px"><span style="font-weight: normal;">{{$row->situacion}}</span></p>
                                 </td>
                                 <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                    <p style="margin: 1px"><span style="font-weight: normal;">{{$row->monto}}</span></p>                            
+                                    <p style="margin: 1px"><span style="font-weight: normal;">{{ number_format($row->monto, 2, ',', '.')}}</span></p>                            
                                 </td>
                             </tr>
                         @endforeach

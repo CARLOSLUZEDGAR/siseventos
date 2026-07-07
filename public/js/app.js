@@ -4398,6 +4398,163 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var decimalDos = function decimalDos(value) {
@@ -4476,6 +4633,17 @@ var montoMaximo = function montoMaximo(value) {
       observacionE: '',
       arraySituacionEvento: [],
       prediosDisponiblesEditar: [],
+      predioRegPredio: '',
+      abreviaturaRegPredio: '',
+      // tipo_predioRegPredio: '',
+      colorRegPredio: '',
+      precioRegPredio: '',
+      observacionRegPredio: '',
+      tipo_eventoRegTipoEvento: '',
+      observacionRegTipoEvento: '',
+      tarifaRegTarifa: '',
+      porcentajeRegTarifa: '',
+      observacionRegTarifa: '',
       procesando: false
     };
   },
@@ -4517,11 +4685,17 @@ var montoMaximo = function montoMaximo(value) {
     tarifa: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
+    // situacion: { required },
     situacion: {
-      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function () {
+        return this.tarifa && this.tarifa.id != 1;
+      })
     },
+    // forma_pago: { required },
     forma_pago: {
-      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function () {
+        return this.tarifa && this.tarifa.id != 1;
+      })
     },
     monto: {
       required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function () {
@@ -4573,16 +4747,48 @@ var montoMaximo = function montoMaximo(value) {
     forma_pagoE: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
+    predioRegPredio: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    colorRegPredio: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    precioRegPredio: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
+      decimalDos: decimalDos
+    },
+    tipo_eventoRegTipoEvento: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    tarifaRegTarifa: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+    },
+    porcentajeRegTarifa: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
+      decimalDos: decimalDos,
+      montoMaximo: montoMaximo
+    },
     validationsGroupReg: ['responsable', 'ci', 'celular', 'fecha_evento', 'fecha_evento_fin', 'hora_inicio', 'hora_fin', 'tipo_predio', 'predio', 'tipo_evento', 'tarifa', 'situacion', 'forma_pago', 'monto'],
     validationsGroupMod: ['fecha_eventoE', 'fecha_evento_finE', 'hora_inicioE', 'hora_finE', 'responsableE', 'ciE', 'celularE', // 'predio_idE',
     'tipo_predioE', 'predioE', 'tipo_eventoE', 'tarifaE', 'situacionE', 'montoE'],
-    validationGroupPagoSaldo: ['forma_pagoE']
+    validationGroupPagoSaldo: ['forma_pagoE'],
+    validationsGroupRegPredio: ['predioRegPredio', 'colorRegPredio', 'precioRegPredio'],
+    validationsGroupRegTipoEvento: ['tipo_eventoRegTipoEvento'],
+    validationsGroupRegTarifa: ['tarifaRegTarifa', 'porcentajeRegTarifa']
   },
   watch: {
     situacion: function situacion(valor) {
       if (!valor || valor.id != 1) {
         this.monto = null;
         this.$v.monto.$reset();
+      }
+    },
+    tarifa: function tarifa(valor) {
+      if (!valor || valor.id == 1) {
+        this.situacion = null;
+        this.forma_pago = null;
+        this.$v.situacion.$reset();
+        this.$v.forma_pago.$reset();
       }
     },
     fecha_evento_fin: function fecha_evento_fin(valor) {
@@ -4654,6 +4860,294 @@ var montoMaximo = function montoMaximo(value) {
     }
   },
   methods: {
+    verificarSeleccion: function verificarSeleccion(opcion) {
+      switch (opcion) {
+        case 1:
+          if (this.predio === 'agregar_predio') {
+            // this.ModalNewNacionalidad = true;
+            this.Agregar(1);
+            this.predio = ''; // Limpiar selección
+          } else {// this.listarEntidad(this.per_nacionalidad)
+              // this.listarLicencia(this.per_entidad,this.per_categoria);
+            }
+
+          break;
+
+        case 2:
+          if (this.tipo_evento === 'agregar_tipo_evento') {
+            // this.ModalNewEntidad = true;
+            this.Agregar(2);
+            this.tipo_evento = ''; // Limpiar selección
+          } else {// this.listarGrado(this.per_entidad);
+              // this.listarLicencia(this.per_entidad, this.per_categoria)
+            }
+
+          break;
+
+        case 3:
+          if (this.tarifa === 'agregar_tarifa') {
+            // this.ModalNewEntidad = true;
+            this.Agregar(3);
+            this.tarifa = ''; // Limpiar selección
+          } else {// this.listarGrado(this.per_entidad);
+              // this.listarLicencia(this.per_entidad, this.per_categoria)
+            }
+
+          break;
+
+        default:
+          break;
+      }
+    },
+    Agregar: function Agregar(valor) {
+      switch (valor) {
+        case 1:
+          this.$v.validationsGroupRegPredio.$reset(), // this.modal = 0;
+          // this.ListarModulos();
+          $('#ModalPredio').modal('show');
+          $(".modal-header").css("background-color", "#007bff");
+          $(".modal-header").css("color", "white");
+          break;
+
+        case 2:
+          this.$v.validationsGroupRegTipoEvento.$reset(), // this.modal = 0;
+          // this.ListarModulos();
+          $('#ModalTipoEvento').modal('show');
+          $(".modal-header").css("background-color", "#007bff");
+          $(".modal-header").css("color", "white");
+          break;
+
+        case 3:
+          this.$v.validationsGroupRegTarifa.$reset(), // this.modal = 0;
+          // this.ListarModulos();
+          $('#ModalTarifa').modal('show');
+          $(".modal-header").css("background-color", "#007bff");
+          $(".modal-header").css("color", "white");
+          break;
+
+        default:
+          break;
+      }
+    },
+    GuardarPredio: function GuardarPredio() {
+      var _this = this;
+
+      if (this.procesando) {
+        return;
+      }
+
+      if (!this.$v.validationsGroupRegPredio.$invalid) {
+        swal.fire({
+          title: '¿Desea registrar este predio?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: 'info',
+          cancelButtonColor: '#868077',
+          confirmButtonText: 'Confirmar',
+          cancelButtonText: 'Cancelar',
+          buttonsStyling: true,
+          reverseButtons: true
+        }).then(function (result) {
+          if (result.value) {
+            _this.procesando = true;
+            axios.post('/registrarPredio', {
+              predio: _this.predioRegPredio.toUpperCase(),
+              abreviatura: _this.abreviaturaRegPredio ? _this.abreviaturaRegPredio.toUpperCase() : '',
+              tipo_predio: _this.tipo_predio.id,
+              color: _this.colorRegPredio,
+              precio: _this.precioRegPredio,
+              observacion: _this.observacionRegPredio ? _this.observacionRegPredio.toUpperCase() : ''
+            }).then(function (response) {
+              _this.procesando = false;
+
+              if (response.data.success) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'CORRECTO',
+                  text: response.data.mensaje
+                });
+                $('#ModalPredio').modal('hide');
+
+                _this.Cerrar(3);
+
+                _this.ListarPredio(_this.tipo_predio.id);
+              } else {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'ADVERTENCIA',
+                  text: response.data.mensaje
+                });
+              }
+            })["catch"](function (error) {
+              _this.procesando = false;
+              console.log(error);
+              Swal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: 'Ocurrió un error inesperado'
+              });
+            });
+          } else {
+            swal.fire('Información', 'Solicitud cancelada.', 'info');
+            $('#ModalPredio').modal('hide');
+
+            _this.Cerrar(3);
+          }
+        });
+      } else {
+        this.$v.validationsGroupRegPredio.$touch();
+        Swal.fire({
+          icon: 'warning',
+          title: 'Ingrese todos los datos requeridos',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    },
+    GuardarTipoEvento: function GuardarTipoEvento() {
+      var _this2 = this;
+
+      if (this.procesando) {
+        return;
+      }
+
+      if (!this.$v.validationsGroupRegTipoEvento.$invalid) {
+        swal.fire({
+          title: '¿Desea registrar este evento?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: 'info',
+          cancelButtonColor: '#868077',
+          confirmButtonText: 'Confirmar',
+          cancelButtonText: 'Cancelar',
+          buttonsStyling: true,
+          reverseButtons: true
+        }).then(function (result) {
+          if (result.value) {
+            _this2.procesando = true;
+            axios.post('/registrarTipoEvento', {
+              tipo_evento: _this2.tipo_eventoRegTipoEvento.toUpperCase(),
+              tipo_predio: _this2.tipo_predio.id,
+              observacion: _this2.observacionRegTipoEvento ? _this2.observacionRegTipoEvento.toUpperCase() : ''
+            }).then(function (response) {
+              _this2.procesando = false;
+
+              if (response.data.success) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'CORRECTO',
+                  text: response.data.mensaje
+                });
+                $('#ModalTipoEvento').modal('hide');
+
+                _this2.Cerrar(4);
+
+                _this2.ListarTipoEvento(_this2.tipo_predio.id);
+              } else {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'ADVERTENCIA',
+                  text: response.data.mensaje
+                });
+              }
+            })["catch"](function (error) {
+              _this2.procesando = false;
+              console.log(error);
+              Swal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: 'Ocurrió un error inesperado'
+              });
+            });
+          } else {
+            swal.fire('Información', 'Solicitud cancelada.', 'info');
+            $('#ModalTipoEvento').modal('hide');
+
+            _this2.Cerrar(4);
+          }
+        });
+      } else {
+        this.$v.validationsGroupRegTipoEvento.$touch();
+        Swal.fire({
+          icon: 'warning',
+          title: 'Ingrese todos los datos requeridos',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    },
+    GuardarTarifa: function GuardarTarifa() {
+      var _this3 = this;
+
+      if (this.procesando) {
+        return;
+      }
+
+      if (!this.$v.validationsGroupRegTarifa.$invalid) {
+        swal.fire({
+          title: '¿Desea registrar esta tarifa?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: 'info',
+          cancelButtonColor: '#868077',
+          confirmButtonText: 'Confirmar',
+          cancelButtonText: 'Cancelar',
+          buttonsStyling: true,
+          reverseButtons: true
+        }).then(function (result) {
+          if (result.value) {
+            _this3.procesando = true;
+            axios.post('/registrarTarifa', {
+              tarifa: _this3.tarifaRegTarifa.toUpperCase(),
+              porcentaje: _this3.porcentajeRegTarifa,
+              observacion: _this3.observacionRegTarifa ? _this3.observacionRegTarifa.toUpperCase() : ''
+            }).then(function (response) {
+              _this3.procesando = false;
+
+              if (response.data.success) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'CORRECTO',
+                  text: response.data.mensaje
+                });
+                $('#ModalTarifa').modal('hide');
+
+                _this3.Cerrar(5);
+
+                _this3.ListarTarifa();
+              } else {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'ADVERTENCIA',
+                  text: response.data.mensaje
+                });
+              }
+            })["catch"](function (error) {
+              _this3.procesando = false;
+              console.log(error);
+              Swal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: 'Ocurrió un error inesperado'
+              });
+            });
+          } else {
+            swal.fire('Información', 'Solicitud cancelada.', 'info');
+            $('#ModalTarifa').modal('hide');
+
+            _this3.Cerrar(5);
+          }
+        });
+      } else {
+        this.$v.validationsGroupRegTarifa.$touch();
+        Swal.fire({
+          icon: 'warning',
+          title: 'Ingrese todos los datos requeridos',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    },
     generarCalendario: function generarCalendario() {
       this.calendario = [];
       var primerDia = new Date(this.anio, this.mes, 1);
@@ -4697,7 +5191,7 @@ var montoMaximo = function montoMaximo(value) {
       $(".modal-header").css("color", "white");
     },
     editarEventoDia: function editarEventoDia(evento_id) {
-      var _this = this;
+      var _this4 = this;
 
       axios.post('/mostrarEvento', {
         evento_id: evento_id
@@ -4705,40 +5199,40 @@ var montoMaximo = function montoMaximo(value) {
         // =========================================
         // DATOS DEL EVENTO
         // =========================================
-        _this.arrayMostrarEvento = response.data.eventos;
-        _this.arraySituacionEvento = response.data.situacion_evento;
+        _this4.arrayMostrarEvento = response.data.eventos;
+        _this4.arraySituacionEvento = response.data.situacion_evento;
 
-        _this.$v.validationsGroupMod.$reset();
+        _this4.$v.validationsGroupMod.$reset();
 
-        _this.id_eventoE = _this.arrayMostrarEvento.id;
-        _this.fecha_eventoE = _this.arrayMostrarEvento.fecha_evento;
-        _this.fecha_evento_finE = _this.arrayMostrarEvento.fecha_evento_fin;
-        _this.responsableE = _this.arrayMostrarEvento.contratante;
-        _this.ciE = _this.arrayMostrarEvento.ci;
-        _this.celularE = _this.arrayMostrarEvento.celular;
-        _this.predio_idE = _this.arrayMostrarEvento.predio_id;
-        _this.tipo_predioE = _this.arrayMostrarEvento.clasificacion;
-        _this.predioE = _this.arrayMostrarEvento.nombre;
-        _this.tipo_evento_idE = _this.arrayMostrarEvento.tipo_evento_id;
-        _this.tipo_eventoE = _this.arrayMostrarEvento.evento;
-        _this.hora_inicioE = _this.arrayMostrarEvento.hora_inicio.slice(0, 5);
-        _this.hora_finE = _this.arrayMostrarEvento.hora_fin.slice(0, 5);
-        _this.tarifa_idE = _this.arrayMostrarEvento.tarifa_id;
-        _this.tarifaE = _this.arrayMostrarEvento.tarifa;
-        _this.situacion_idE = _this.arrayMostrarEvento.situacion_id;
-        _this.situacionE = _this.arrayMostrarEvento.situacion;
-        _this.montoE = _this.arrayMostrarEvento.monto;
-        _this.observacionE = _this.arrayMostrarEvento.observacion;
-        _this.precio = _this.arrayMostrarEvento.precio;
-        _this.porcentaje = _this.arrayMostrarEvento.porcentaje; // =========================================
+        _this4.id_eventoE = _this4.arrayMostrarEvento.id;
+        _this4.fecha_eventoE = _this4.arrayMostrarEvento.fecha_evento;
+        _this4.fecha_evento_finE = _this4.arrayMostrarEvento.fecha_evento_fin;
+        _this4.responsableE = _this4.arrayMostrarEvento.contratante;
+        _this4.ciE = _this4.arrayMostrarEvento.ci;
+        _this4.celularE = _this4.arrayMostrarEvento.celular;
+        _this4.predio_idE = _this4.arrayMostrarEvento.predio_id;
+        _this4.tipo_predioE = _this4.arrayMostrarEvento.clasificacion;
+        _this4.predioE = _this4.arrayMostrarEvento.nombre;
+        _this4.tipo_evento_idE = _this4.arrayMostrarEvento.tipo_evento_id;
+        _this4.tipo_eventoE = _this4.arrayMostrarEvento.evento;
+        _this4.hora_inicioE = _this4.arrayMostrarEvento.hora_inicio.slice(0, 5);
+        _this4.hora_finE = _this4.arrayMostrarEvento.hora_fin.slice(0, 5);
+        _this4.tarifa_idE = _this4.arrayMostrarEvento.tarifa_id;
+        _this4.tarifaE = _this4.arrayMostrarEvento.tarifa;
+        _this4.situacion_idE = _this4.arrayMostrarEvento.situacion_id;
+        _this4.situacionE = _this4.arrayMostrarEvento.situacion;
+        _this4.montoE = _this4.arrayMostrarEvento.monto;
+        _this4.observacionE = _this4.arrayMostrarEvento.observacion;
+        _this4.precio = _this4.arrayMostrarEvento.precio;
+        _this4.porcentaje = _this4.arrayMostrarEvento.porcentaje; // =========================================
         // FECHA DEL EVENTO
         // =========================================
 
-        var fecha = _this.arrayMostrarEvento.fecha_evento; // =========================================
+        var fecha = _this4.arrayMostrarEvento.fecha_evento; // =========================================
         // OBTENER EVENTOS DE ESA FECHA
         // =========================================
 
-        var eventosDia = _this.arrayEvento.filter(function (evento) {
+        var eventosDia = _this4.arrayEvento.filter(function (evento) {
           return evento.fecha_evento == fecha;
         }); // =========================================
         // EXCLUIR EL EVENTO ACTUAL
@@ -4757,8 +5251,8 @@ var montoMaximo = function montoMaximo(value) {
         // FILTRAR PREDIOS DISPONIBLES
         // =========================================
 
-        _this.prediosDisponiblesEditar = _this.arrayPredios.filter(function (predio) {
-          return !prediosOcupados.includes(predio.id) || predio.id == _this.predioE;
+        _this4.prediosDisponiblesEditar = _this4.arrayPredios.filter(function (predio) {
+          return !prediosOcupados.includes(predio.id) || predio.id == _this4.predioE;
         }); // =========================================
         // MOSTRAR MODAL
         // =========================================
@@ -4778,6 +5272,14 @@ var montoMaximo = function montoMaximo(value) {
 
         case 2:
           this.fecha_eventoE = '', this.fecha_evento_finE = '', this.hora_inicioE = '', this.hora_finE = '', this.responsableE = '', this.ciE = '', this.celularE = '', this.tipo_predioE = '', this.predioE = '', this.tipo_eventoE = '', this.tarifaE = '', this.situacionE = '', this.observacionE = '', this.montoE = '', this.precio = '', this.porcentaje = '', this.forma_pagoE = '';
+          break;
+
+        case 3:
+          this.precioRegPredio = '', this.abreviaturaRegPredio = '', this.colorRegPredio = '', this.precioRegPredio = '';
+          break;
+
+        case 4:
+          this.tipo_eventoRegTipoEvento = '';
           break;
 
         default:
@@ -4873,7 +5375,7 @@ var montoMaximo = function montoMaximo(value) {
       }
     },
     Guardar: function Guardar() {
-      var _this2 = this;
+      var _this5 = this;
 
       if (this.procesando) {
         return;
@@ -4892,25 +5394,27 @@ var montoMaximo = function montoMaximo(value) {
           reverseButtons: true
         }).then(function (result) {
           if (result.value) {
-            _this2.procesando = true;
+            _this5.procesando = true;
             axios.post('/registrarEvento', {
-              fecha_evento: _this2.fecha_evento,
-              fecha_evento_fin: _this2.fecha_evento_fin,
-              hora_inicio: _this2.hora_inicio,
-              hora_fin: _this2.hora_fin,
-              tipo_predio_id: _this2.tipo_predio.id,
-              predio_id: _this2.predio.id,
-              responsable: _this2.responsable.toUpperCase(),
-              ci: _this2.ci,
-              celular: _this2.celular,
-              tipo_evento_id: _this2.tipo_evento.id,
-              tarifa_id: _this2.tarifa.id,
-              situacion_id: _this2.situacion.id,
-              forma_pago: _this2.forma_pago,
-              monto: _this2.situacion.id == 1 ? _this2.monto : _this2.predio.precio * _this2.tarifa.porcentaje / 100,
-              observacion: _this2.observacion ? _this2.observacion.toUpperCase() : ''
+              fecha_evento: _this5.fecha_evento,
+              fecha_evento_fin: _this5.fecha_evento_fin,
+              hora_inicio: _this5.hora_inicio,
+              hora_fin: _this5.hora_fin,
+              tipo_predio_id: _this5.tipo_predio.id,
+              predio_id: _this5.predio.id,
+              responsable: _this5.responsable.toUpperCase(),
+              ci: _this5.ci,
+              celular: _this5.celular,
+              tipo_evento_id: _this5.tipo_evento.id,
+              tarifa_id: _this5.tarifa.id,
+              situacion_id: _this5.tarifa.id != 1 ? _this5.situacion.id : 2,
+              // situacion_id: this.situacion.id,
+              forma_pago: _this5.tarifa.id != 1 ? _this5.forma_pago : 'SIN FORMA DE PAGO',
+              // forma_pago: this.forma_pago,
+              monto: _this5.situacion.id == 1 ? _this5.monto : _this5.predio.precio * (100 - _this5.tarifa.porcentaje) / 100,
+              observacion: _this5.observacion ? _this5.observacion.toUpperCase() : ''
             }).then(function (response) {
-              _this2.procesando = false;
+              _this5.procesando = false;
 
               if (response.data.success) {
                 Swal.fire({
@@ -4920,11 +5424,11 @@ var montoMaximo = function montoMaximo(value) {
                 });
                 $('#ModalEvento').modal('hide');
 
-                _this2.Cerrar(1);
+                _this5.Cerrar(1);
 
-                _this2.ListarEvento();
+                _this5.ListarEvento();
 
-                _this2.GenerarContrato(response.data.evento.id, response.data.situacion_evento.id);
+                _this5.GenerarContrato(response.data.evento.id, response.data.situacion_evento.id);
               } else {
                 Swal.fire({
                   icon: 'warning',
@@ -4933,7 +5437,7 @@ var montoMaximo = function montoMaximo(value) {
                 });
               }
             })["catch"](function (error) {
-              _this2.procesando = false;
+              _this5.procesando = false;
               console.log(error);
               Swal.fire({
                 icon: 'error',
@@ -4945,7 +5449,7 @@ var montoMaximo = function montoMaximo(value) {
             swal.fire('Información', 'Solicitud cancelada.', 'info');
             $('#ModalEvento').modal('hide');
 
-            _this2.Cerrar(1);
+            _this5.Cerrar(1);
           }
         });
       } else {
@@ -4959,7 +5463,7 @@ var montoMaximo = function montoMaximo(value) {
       }
     },
     Editar: function Editar() {
-      var _this3 = this;
+      var _this6 = this;
 
       if (this.procesando) {
         return;
@@ -4985,17 +5489,17 @@ var montoMaximo = function montoMaximo(value) {
           reverseButtons: true
         }).then(function (result) {
           if (result.value) {
-            var me = _this3;
-            _this3.procesando = true;
+            var me = _this6;
+            _this6.procesando = true;
             axios.post('/editarEvento', {
-              id_evento: _this3.id_eventoE,
-              fecha_evento: _this3.fecha_eventoE,
-              hora_inicio: _this3.hora_inicioE,
-              fecha_evento_fin: _this3.fecha_evento_finE,
-              hora_fin: _this3.hora_finE,
-              predio_id: _this3.predio_idE,
+              id_evento: _this6.id_eventoE,
+              fecha_evento: _this6.fecha_eventoE,
+              hora_inicio: _this6.hora_inicioE,
+              fecha_evento_fin: _this6.fecha_evento_finE,
+              hora_fin: _this6.hora_finE,
+              predio_id: _this6.predio_idE,
               // observacion: this.observacionE.toUpperCase()
-              observacion: _this3.observacionE ? _this3.observacionE.toUpperCase() : '' // responsable: this.responsableE
+              observacion: _this6.observacionE ? _this6.observacionE.toUpperCase() : '' // responsable: this.responsableE
 
             }).then(function (response) {
               if (response.data.success) {
@@ -5007,9 +5511,9 @@ var montoMaximo = function montoMaximo(value) {
                 $('#ModalEditar').modal('hide');
                 $('#ModalEvento').modal('hide');
 
-                _this3.Cerrar(2);
+                _this6.Cerrar(2);
 
-                _this3.ListarEvento();
+                _this6.ListarEvento();
               } else {
                 Swal.fire({
                   icon: 'warning',
@@ -5025,10 +5529,10 @@ var montoMaximo = function montoMaximo(value) {
                 text: 'Ocurrió un error inesperado'
               });
             })["finally"](function () {
-              _this3.procesando = false;
+              _this6.procesando = false;
             });
           } else {
-            var _me = _this3;
+            var _me = _this6;
             swal.fire("Informacion", //TITULO
             "Solicitud cancelada.", //TEXTO DE MENSAJE
             "info" // TIPO DE MODAL (success, warnning, error, info)
@@ -5049,7 +5553,7 @@ var montoMaximo = function montoMaximo(value) {
       }
     },
     PagarSaldo: function PagarSaldo(idEvento) {
-      var _this4 = this;
+      var _this7 = this;
 
       if (this.procesando) {
         return;
@@ -5075,13 +5579,13 @@ var montoMaximo = function montoMaximo(value) {
           reverseButtons: true
         }).then(function (result) {
           if (result.value) {
-            var me = _this4;
-            _this4.procesando = true;
+            var me = _this7;
+            _this7.procesando = true;
             axios.post('/pagarSaldoEvento', {
               id_evento: idEvento,
-              precio: _this4.precio * _this4.porcentaje / 100,
-              adelanto: _this4.montoE,
-              forma_pago: _this4.forma_pagoE // fecha_evento: this.fecha_eventoE,
+              precio: _this7.precio * _this7.porcentaje / 100,
+              adelanto: _this7.montoE,
+              forma_pago: _this7.forma_pagoE // fecha_evento: this.fecha_eventoE,
               // predio_id: this.predio_idE,
               // observacion: this.observacionE.toUpperCase()
               // responsable: this.responsableE
@@ -5095,11 +5599,11 @@ var montoMaximo = function montoMaximo(value) {
                 });
                 $('#ModalEditar').modal('hide'); // $('#ModalEvento').modal('hide');
 
-                _this4.Cerrar(2);
+                _this7.Cerrar(2);
 
-                _this4.ListarEvento();
+                _this7.ListarEvento();
 
-                _this4.GenerarContrato(response.data.situacion_evento.evento_id, response.data.situacion_evento.id);
+                _this7.GenerarContrato(response.data.situacion_evento.evento_id, response.data.situacion_evento.id);
               } else {
                 Swal.fire({
                   icon: 'warning',
@@ -5115,10 +5619,10 @@ var montoMaximo = function montoMaximo(value) {
                 text: 'Ocurrió un error inesperado'
               });
             })["finally"](function () {
-              _this4.procesando = false;
+              _this7.procesando = false;
             });
           } else {
-            var _me2 = _this4;
+            var _me2 = _this7;
             swal.fire("Informacion", //TITULO
             "Solicitud cancelada.", //TEXTO DE MENSAJE
             "info" // TIPO DE MODAL (success, warnning, error, info)
@@ -115162,19 +115666,25 @@ var render = function() {
                               "is-valid": !_vm.$v.predio.$invalid
                             },
                             on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.predio = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
+                              change: [
+                                function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.predio = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                },
+                                function($event) {
+                                  return _vm.verificarSeleccion(1)
+                                }
+                              ]
                             }
                           },
                           [
@@ -115194,7 +115704,13 @@ var render = function() {
                                   )
                                 ]
                               )
-                            })
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "agregar_predio" } },
+                              [_vm._v("+ Añadir Predio")]
+                            )
                           ],
                           2
                         ),
@@ -115230,19 +115746,25 @@ var render = function() {
                               "is-valid": !_vm.$v.tipo_evento.$invalid
                             },
                             on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.tipo_evento = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
+                              change: [
+                                function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.tipo_evento = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                },
+                                function($event) {
+                                  return _vm.verificarSeleccion(2)
+                                }
+                              ]
                             }
                           },
                           [
@@ -115262,7 +115784,13 @@ var render = function() {
                                   )
                                 ]
                               )
-                            })
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "agregar_tipo_evento" } },
+                              [_vm._v("+ Añadir Evento")]
+                            )
                           ],
                           2
                         ),
@@ -115300,19 +115828,25 @@ var render = function() {
                               "is-valid": !_vm.$v.tarifa.$invalid
                             },
                             on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.tarifa = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
+                              change: [
+                                function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.tarifa = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                },
+                                function($event) {
+                                  return _vm.verificarSeleccion(3)
+                                }
+                              ]
                             }
                           },
                           [
@@ -115332,7 +115866,13 @@ var render = function() {
                                   )
                                 ]
                               )
-                            })
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "agregar_tarifa" } },
+                              [_vm._v("+ Añadir Tarifa")]
+                            )
                           ],
                           2
                         ),
@@ -115348,141 +115888,150 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-4" }, [
-                        _c("label", [_vm._v("SITUACIÓN:")]),
-                        _vm._v(" "),
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.situacion,
-                                expression: "situacion"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            class: {
-                              "is-invalid": _vm.$v.situacion.$error,
-                              "is-valid": !_vm.$v.situacion.$invalid
-                            },
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.situacion = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "" } }, [
-                              _vm._v("SELECCIONE...")
-                            ]),
+                      _vm.tarifa && _vm.tarifa.id != 1
+                        ? _c("div", { staticClass: "col-md-4" }, [
+                            _c("label", [_vm._v("SITUACIÓN:")]),
                             _vm._v(" "),
-                            _vm._l(_vm.arraySituacion, function(item) {
-                              return _c(
-                                "option",
-                                { key: item.id, domProps: { value: item } },
-                                [
-                                  _vm._v(
-                                    "\n                                                " +
-                                      _vm._s(item.situacion) +
-                                      "\n                                            "
+                            _c(
+                              "select",
+                              {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.situacion,
+                                    expression: "situacion"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.$v.situacion.$error,
+                                  "is-valid": !_vm.$v.situacion.$invalid
+                                },
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.situacion = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
+                                }
+                              },
+                              [
+                                _c("option", { attrs: { value: "" } }, [
+                                  _vm._v("SELECCIONE...")
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(_vm.arraySituacion, function(item) {
+                                  return _c(
+                                    "option",
+                                    { key: item.id, domProps: { value: item } },
+                                    [
+                                      _vm._v(
+                                        "\n                                                " +
+                                          _vm._s(item.situacion) +
+                                          "\n                                            "
+                                      )
+                                    ]
                                   )
-                                ]
-                              )
-                            })
-                          ],
-                          2
-                        ),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "invalid-feedback" }, [
-                          !_vm.$v.situacion.required
-                            ? _c("span", [
-                                _vm._v(
-                                  "\n                                                Este campo es requerido\n                                            "
-                                )
-                              ])
-                            : _vm._e()
-                        ])
-                      ]),
+                                })
+                              ],
+                              2
+                            ),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "invalid-feedback" }, [
+                              !_vm.$v.situacion.required
+                                ? _c("span", [
+                                    _vm._v(
+                                      "\n                                                Este campo es requerido\n                                            "
+                                    )
+                                  ])
+                                : _vm._e()
+                            ])
+                          ])
+                        : _vm._e(),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-4" }, [
-                        _c("label", [_vm._v("FORMA DE PAGO:")]),
-                        _vm._v(" "),
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.forma_pago,
-                                expression: "forma_pago"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            class: {
-                              "is-invalid": _vm.$v.forma_pago.$error,
-                              "is-valid": !_vm.$v.forma_pago.$invalid
-                            },
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.forma_pago = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "" } }, [
-                              _vm._v("SELECCIONE...")
-                            ]),
+                      _vm.tarifa && _vm.tarifa.id != 1
+                        ? _c("div", { staticClass: "col-md-4" }, [
+                            _c("label", [_vm._v("FORMA DE PAGO:")]),
                             _vm._v(" "),
-                            _vm._l(_vm.arrayFormaPago, function(item, index) {
-                              return _c(
-                                "option",
-                                { key: index, domProps: { value: item } },
-                                [
-                                  _vm._v(
-                                    "\n                                                " +
-                                      _vm._s(item) +
-                                      "\n                                            "
+                            _c(
+                              "select",
+                              {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.forma_pago,
+                                    expression: "forma_pago"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.$v.forma_pago.$error,
+                                  "is-valid": !_vm.$v.forma_pago.$invalid
+                                },
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.forma_pago = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
+                                }
+                              },
+                              [
+                                _c("option", { attrs: { value: "" } }, [
+                                  _vm._v("SELECCIONE...")
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(_vm.arrayFormaPago, function(
+                                  item,
+                                  index
+                                ) {
+                                  return _c(
+                                    "option",
+                                    { key: index, domProps: { value: item } },
+                                    [
+                                      _vm._v(
+                                        "\n                                                " +
+                                          _vm._s(item) +
+                                          "\n                                            "
+                                      )
+                                    ]
                                   )
-                                ]
-                              )
-                            })
-                          ],
-                          2
-                        ),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "invalid-feedback" }, [
-                          !_vm.$v.forma_pago.required
-                            ? _c("span", [
-                                _vm._v(
-                                  "\n                                                Este campo es requerido\n                                            "
-                                )
-                              ])
-                            : _vm._e()
-                        ])
-                      ])
+                                })
+                              ],
+                              2
+                            ),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "invalid-feedback" }, [
+                              !_vm.$v.forma_pago.required
+                                ? _c("span", [
+                                    _vm._v(
+                                      "\n                                                Este campo es requerido\n                                            "
+                                    )
+                                  ])
+                                : _vm._e()
+                            ])
+                          ])
+                        : _vm._e()
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "row mt-2" }, [
@@ -116636,6 +117185,673 @@ var render = function() {
                     )
                   ])
                 ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: { "data-backdrop": "static", id: "ModalPredio" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog modal-lg modal-dialog-scrollable" },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("NUEVO PREDIO")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: {
+                      type: "button",
+                      "data-dismiss": "modal",
+                      "aria-label": "Close"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.Cerrar(3)
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row mt-2" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "form-control-label",
+                        attrs: { for: "text-input" }
+                      },
+                      [_vm._v("PREDIO:")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.predioRegPredio,
+                          expression: "predioRegPredio"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: {
+                        "is-invalid": _vm.$v.predioRegPredio.$error,
+                        "is-valid": !_vm.$v.predioRegPredio.$invalid
+                      },
+                      staticStyle: { "text-transform": "uppercase" },
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.predioRegPredio },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.predioRegPredio = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "invalid-feedback" }, [
+                      !_vm.$v.predioRegPredio.required
+                        ? _c("span", [_vm._v("Este campo es Requerido")])
+                        : _vm._e()
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "form-control-label",
+                        attrs: { for: "text-input" }
+                      },
+                      [_vm._v("ABREVIATURA:")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.abreviaturaRegPredio,
+                          expression: "abreviaturaRegPredio"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      staticStyle: { "text-transform": "uppercase" },
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.abreviaturaRegPredio },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.abreviaturaRegPredio = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row mt-2" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "form-control-label",
+                        attrs: { for: "text-input" }
+                      },
+                      [_vm._v("COLOR:")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.colorRegPredio,
+                          expression: "colorRegPredio"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: {
+                        "is-invalid": _vm.$v.colorRegPredio.$error,
+                        "is-valid": !_vm.$v.colorRegPredio.$invalid
+                      },
+                      staticStyle: { "text-transform": "uppercase" },
+                      attrs: { type: "color" },
+                      domProps: { value: _vm.colorRegPredio },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.colorRegPredio = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "invalid-feedback" }, [
+                      !_vm.$v.colorRegPredio.required
+                        ? _c("span", [_vm._v("Este campo es Requerido")])
+                        : _vm._e()
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("label", { staticClass: "form-control-label" }, [
+                      _vm._v(
+                        "\n                            PRECIO (Bs.):\n                        "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model.number",
+                          value: _vm.precioRegPredio,
+                          expression: "precioRegPredio",
+                          modifiers: { number: true }
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: {
+                        "is-invalid": _vm.$v.precioRegPredio.$error,
+                        "is-valid": !_vm.$v.precioRegPredio.$invalid
+                      },
+                      attrs: { type: "number", step: "0.01", min: "0" },
+                      domProps: { value: _vm.precioRegPredio },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.precioRegPredio = _vm._n($event.target.value)
+                        },
+                        blur: function($event) {
+                          return _vm.$forceUpdate()
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "invalid-feedback" }, [
+                      !_vm.$v.precioRegPredio.required
+                        ? _c("span", [
+                            _vm._v(
+                              "\n                                Este campo es requerido\n                            "
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.$v.precioRegPredio.required &&
+                      !_vm.$v.precioRegPredio.decimalDos
+                        ? _c("span", [
+                            _vm._v(
+                              "\n                                Debe ingresar un precio válido con máximo 2 decimales\n                            "
+                            )
+                          ])
+                        : _vm._e()
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row mt-2" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("label", { attrs: { for: "" } }, [
+                      _vm._v("OBSERVACIÓN:")
+                    ]),
+                    _vm._v(" "),
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.observacionRegPredio,
+                          expression: "observacionRegPredio"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      staticStyle: { "text-transform": "uppercase" },
+                      attrs: { cols: "30", rows: "2" },
+                      domProps: { value: _vm.observacionRegPredio },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.observacionRegPredio = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: {
+                      click: function($event) {
+                        return _vm.Cerrar(3)
+                      }
+                    }
+                  },
+                  [_vm._v("CANCELAR")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button", disabled: _vm.procesando },
+                    on: {
+                      click: function($event) {
+                        return _vm.GuardarPredio()
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.procesando ? "Procesando..." : "GUARDAR"))]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: { "data-backdrop": "static", id: "ModalTipoEvento" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog modal-lg modal-dialog-scrollable" },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("NUEVO EVENTO")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: {
+                      type: "button",
+                      "data-dismiss": "modal",
+                      "aria-label": "Close"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.Cerrar(4)
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row mt-2" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "form-control-label",
+                        attrs: { for: "text-input" }
+                      },
+                      [_vm._v("EVENTO:")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.tipo_eventoRegTipoEvento,
+                          expression: "tipo_eventoRegTipoEvento"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: {
+                        "is-invalid": _vm.$v.tipo_eventoRegTipoEvento.$error,
+                        "is-valid": !_vm.$v.tipo_eventoRegTipoEvento.$invalid
+                      },
+                      staticStyle: { "text-transform": "uppercase" },
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.tipo_eventoRegTipoEvento },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.tipo_eventoRegTipoEvento = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "invalid-feedback" }, [
+                      !_vm.$v.tipo_eventoRegTipoEvento.required
+                        ? _c("span", [_vm._v("Este campo es Requerido")])
+                        : _vm._e()
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row mt-2" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("label", { attrs: { for: "" } }, [
+                      _vm._v("OBSERVACIÓN:")
+                    ]),
+                    _vm._v(" "),
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.observacionRegTipoEvento,
+                          expression: "observacionRegTipoEvento"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      staticStyle: { "text-transform": "uppercase" },
+                      attrs: { cols: "30", rows: "2" },
+                      domProps: { value: _vm.observacionRegTipoEvento },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.observacionRegTipoEvento = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: {
+                      click: function($event) {
+                        return _vm.Cerrar(4)
+                      }
+                    }
+                  },
+                  [_vm._v("CANCELAR")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button", disabled: _vm.procesando },
+                    on: {
+                      click: function($event) {
+                        return _vm.GuardarTipoEvento()
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.procesando ? "Procesando..." : "GUARDAR"))]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: { "data-backdrop": "static", id: "ModalTarifa" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog modal-lg modal-dialog-scrollable" },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("NUEVO TARIFA")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: {
+                      type: "button",
+                      "data-dismiss": "modal",
+                      "aria-label": "Close"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.Cerrar(5)
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row mt-2" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "form-control-label",
+                        attrs: { for: "text-input" }
+                      },
+                      [_vm._v("TARIFA:")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.tarifaRegTarifa,
+                          expression: "tarifaRegTarifa"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: {
+                        "is-invalid": _vm.$v.tarifaRegTarifa.$error,
+                        "is-valid": !_vm.$v.tarifaRegTarifa.$invalid
+                      },
+                      staticStyle: { "text-transform": "uppercase" },
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.tarifaRegTarifa },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.tarifaRegTarifa = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "invalid-feedback" }, [
+                      !_vm.$v.tarifaRegTarifa.required
+                        ? _c("span", [_vm._v("Este campo es Requerido")])
+                        : _vm._e()
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "form-control-label",
+                        attrs: { for: "text-input" }
+                      },
+                      [_vm._v("DESCUENTO (%):")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model.number",
+                          value: _vm.porcentajeRegTarifa,
+                          expression: "porcentajeRegTarifa",
+                          modifiers: { number: true }
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: {
+                        "is-invalid": _vm.$v.porcentajeRegTarifa.$error,
+                        "is-valid": !_vm.$v.porcentajeRegTarifa.$invalid
+                      },
+                      staticStyle: { "text-transform": "uppercase" },
+                      attrs: {
+                        type: "number",
+                        step: "0.01",
+                        min: "0",
+                        max: "100"
+                      },
+                      domProps: { value: _vm.porcentajeRegTarifa },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.porcentajeRegTarifa = _vm._n($event.target.value)
+                        },
+                        blur: function($event) {
+                          return _vm.$forceUpdate()
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "invalid-feedback" }, [
+                      !_vm.$v.porcentajeRegTarifa.required
+                        ? _c("span", [_vm._v("Este campo es Requerido")])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.$v.porcentajeRegTarifa.required &&
+                      !_vm.$v.porcentajeRegTarifa.decimalDos
+                        ? _c("span", [
+                            _vm._v(
+                              "\n                                Debe ingresar un precio válido con máximo 2 decimales\n                            "
+                            )
+                          ])
+                        : !_vm.$v.porcentajeRegTarifa.montoMaximo
+                        ? _c("span", [
+                            _vm._v(
+                              "\n                                El descuento no puede ser mayor a 100%.\n                            "
+                            )
+                          ])
+                        : _vm._e()
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row mt-2" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("label", { attrs: { for: "" } }, [
+                      _vm._v("OBSERVACIÓN:")
+                    ]),
+                    _vm._v(" "),
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.observacionRegTarifa,
+                          expression: "observacionRegTarifa"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      staticStyle: { "text-transform": "uppercase" },
+                      attrs: { cols: "30", rows: "2" },
+                      domProps: { value: _vm.observacionRegTarifa },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.observacionRegTarifa = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: {
+                      click: function($event) {
+                        return _vm.Cerrar(5)
+                      }
+                    }
+                  },
+                  [_vm._v("CANCELAR")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button", disabled: _vm.procesando },
+                    on: {
+                      click: function($event) {
+                        return _vm.GuardarTarifa()
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.procesando ? "Procesando..." : "GUARDAR"))]
+                )
               ])
             ])
           ]
