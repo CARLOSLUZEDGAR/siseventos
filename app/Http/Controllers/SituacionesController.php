@@ -171,6 +171,44 @@ class SituacionesController extends Controller
         return ['situaciones' => $situacion];
     }
 
+    public function ListarSituacionEvento(Request $request)
+    {
+        $idevento = $request->idevento;
+        $idtarifa = $request->idtarifa;
+        // Extraer todas las situciones de un evento
+        $situacion_evento = DB::table('situacion_eventos')
+                        ->where('evento_id', $idevento)
+                        ->orderBy('situacion_id', 'asc')
+                        ->pluck('situacion_id');
+
+        // Si existe la situación id = 2, también excluir la situacion id = 1
+        if ($situacion_evento->contains(2)) {
+            $situacion_evento->push(1);
+        }
+
+        if ($idtarifa != 1) {
+            // Obtener las todo los tipos de situaciones excluyendo las situaciones que ya tiene un evento
+            $situacion = Situaciones::select('id', 'situacion', 'estado')
+                            ->where('estado', 1)
+                            ->whereNotIn('id', $situacion_evento)
+                            ->orderBy('id', 'asc')
+                            ->get();
+
+            $cantidad = $situacion->count();
+        } else {
+            $situacion = (object) [
+                'id' => null,
+                'situacion' => null,
+                'estado' => null
+            ];
+
+            $cantidad = 0;
+        }
+        
+
+        return ['situaciones' => $situacion, 'cantidadsituacion' => $cantidad];
+    }
+
     public function BuscarSituacion(Request $request)
     {
         if ($request->buscar == '') {

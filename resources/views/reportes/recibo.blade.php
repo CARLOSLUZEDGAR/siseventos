@@ -137,14 +137,25 @@
             <!-- <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: bold; /*border: 1px solid #C00;*/">
                 <p style="margin: 1px">EL DIRECTOR GENERAL DE AERONAVES DE ESTADO DE LA FUERZA AÉREA BOLIVIANA</p>
             </div> -->
+            @if ($situacion_evento->id == 3)
+                <div style="padding-top: 1cm; padding-bottom: 2px; text-align: center; font-size: 14pt; font-weight: bold; /*border: 1px solid #C00;*/">
+                    <p style="margin: 1px"><u>DEPÓSITO DE GARANTÍA</u></p>
+                </div>
+            @else
+                <div style="padding-top: 1cm; padding-bottom: 2px; text-align: center; font-size: 14pt; font-weight: bold; /*border: 1px solid #C00;*/">
+                    <p style="margin: 1px"><u>RECIBO</u></p>
+                </div>
+            @endif
 
-            <div style="padding-top: 1cm; padding-bottom: 2px; text-align: center; font-size: 14pt; font-weight: bold; /*border: 1px solid #C00;*/">
-                <p style="margin: 1px"><u>RECIBO</u></p>
-            </div>
-
-            <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
-                <p style="margin: 1px">En la ciudad de <span style="font-weight: bold;">La Paz</span>, a los <span style="font-weight: bold;">{{ $fecha_det}}</span>, se deja expresa constancia del <span style="font-weight: bold;">{{$situacion_evento->situacion}}</span> por el uso del <span style="font-weight: bold;">{{$evento->clasificacion}} "{{ $evento->nombre }}"</span>, conforme al siguiente detalle:</p>
-            </div>
+            @if ($situacion_evento->id == 3)
+                <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
+                    <p style="margin: 1px">En la ciudad de <span style="font-weight: bold;">La Paz</span>, a los <span style="font-weight: bold;">{{ $fecha_det}}</span>, se deja constancia del <span style="font-weight: bold;">{{$situacion_evento->situacion}}</span> realizado para la reserva del <span style="font-weight: bold;">{{$evento->clasificacion}} "{{ $evento->nombre }}"</span>, conforme al siguiente detalle:</p>
+                </div>
+            @else
+                <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
+                    <p style="margin: 1px">En la ciudad de <span style="font-weight: bold;">La Paz</span>, a los <span style="font-weight: bold;">{{ $fecha_det}}</span>, se deja expresa constancia del <span style="font-weight: bold;">{{$situacion_evento->situacion}}</span> por el uso del <span style="font-weight: bold;">{{$evento->clasificacion}} "{{ $evento->nombre }}"</span>, conforme al siguiente detalle:</p>
+                </div>
+            @endif
 
             <div style="padding-top: 2px; padding-bottom: 2px; text-align: justify; font-size: 12pt; font-weight: normal; /*border: 1px solid #C00;*/">
                 <p style="margin: 1px"><span style="font-weight: bold;">NOMBRE COMPLETO:</span> {{$evento->contratante}}</p>
@@ -158,63 +169,66 @@
                 <p style="margin: 1px"><span style="font-weight: bold;">FIN EVENTO:</span> {{$fecha_evento_final}} <span style="font-weight: bold;">HORA:</span> {{ substr($evento->hora_fin, 0, 5) }}</p>
                 <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE EVENTO:</span> {{$evento->evento}}</p>
                 <p style="margin: 1px"><span style="font-weight: bold;">TIPO DE TARIFA:</span> {{$evento->tarifa}}</p>
-                <!-- <p style="margin: 1px"><span style="font-weight: bold;">MONTO DEPOSITADO: Bs. {{$situacion_evento->monto}}</span></p> -->
+                @if ($situacion_evento->id == 3)
+                    <p style="margin: 1px"><span style="font-weight: bold;">MONTO DEPOSITADO: Bs. {{number_format($situacion_evento->monto, 2, ',', '.')}}</span></p>
+                @endif
             </div>
 
-            <div>
-                <table width="100%" style="border-collapse: collapse; border-spacing: 0; /*border: black 1px;*/ margin-bottom: 5px; font-size: 12pt" class="table table-bordered table-striped">
-                    <tbody class="table-striped">
-                        <tr>
-                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: bold;">SITUACIÓN</span></p>
-                            </td>
-                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: bold;">MONTO (Bs.)</span></p>                            
-                            </td>
-                        </tr>
-                    @if ($situacion_evento->id == 1)
-                        @foreach($listar_situacion_evento as $row)
+            @if ($evento->idtarifa != 1 && ($situacion_evento->id == 1 || $situacion_evento->id == 2))
+                <div>
+                    <table style="width: 80%; border-collapse: collapse; border-spacing: 0; /*border: black 1px;*/ margin:0 auto 5px auto; font-size: 12pt" class="table table-bordered table-striped">
+                        <tbody class="table-striped">
                             <tr>
                                 <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                    <p style="margin: 1px"><span style="font-weight: normal;">{{$row->situacion}}</span></p>
+                                    <p style="margin: 1px"><span style="font-weight: bold;">SITUACIÓN</span></p>
                                 </td>
                                 <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                    <p style="margin: 1px"><span style="font-weight: normal;">{{ number_format($row->monto, 2, ',', '.')}}</span></p>                            
+                                    <p style="margin: 1px"><span style="font-weight: bold;">MONTO (Bs.)</span></p>                            
                                 </td>
                             </tr>
-                        @endforeach
-                        <tr>
-                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: bold;">SALDO</span></p>
-                            </td>
-                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format(((($evento->precio * $evento->porcentaje)/100) - $situacion_evento->monto), 2, ',', '.')}}</span></p>                            
-                            </td>
-                        </tr>
-                    @else
-                        @foreach($listar_situacion_evento as $row)
+                        @if ($situacion_evento->id == 1)
+                            @foreach($listar_situacion_evento as $row)
+                                <tr>
+                                    <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: left;">
+                                        <p style="margin: 1px"><span style="font-weight: normal;">{{$row->situacion}}</span></p>
+                                    </td>
+                                    <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
+                                        <p style="margin: 1px"><span style="font-weight: normal;">{{ number_format($row->monto, 2, ',', '.')}}</span></p>                            
+                                    </td>
+                                </tr>
+                            @endforeach
                             <tr>
-                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                    <p style="margin: 1px"><span style="font-weight: normal;">{{$row->situacion}}</span></p>
+                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: left;">
+                                    <p style="margin: 1px"><span style="font-weight: bold;">SALDO</span></p>
                                 </td>
-                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                    <p style="margin: 1px"><span style="font-weight: normal;">{{ number_format($row->monto, 2, ',', '.')}}</span></p>                            
+                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
+                                    <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format(((($evento->precio * $evento->porcentaje)/100) - $situacion_evento->monto), 2, ',', '.')}}</span></p>                            
                                 </td>
                             </tr>
-                        @endforeach
-                        <tr>
-                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: bold;">TOTAL PAGADO</span></p>
-                            </td>
-                            <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: center;">
-                                <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format((($evento->precio * $evento->porcentaje) / 100), 2, ',', '.') }}</span></p>                            
-                            </td>
-                        </tr>
-                    @endif 
-                    </tbody>
-                </table>
-            </div>
-
+                        @else
+                            @foreach($listar_situacion_evento as $row)
+                                <tr>
+                                    <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: left;">
+                                        <p style="margin: 1px"><span style="font-weight: normal;">{{$row->situacion}}</span></p>
+                                    </td>
+                                    <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
+                                        <p style="margin: 1px"><span style="font-weight: normal;">{{ number_format($row->monto, 2, ',', '.')}}</span></p>                            
+                                    </td>
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: left;">
+                                    <p style="margin: 1px"><span style="font-weight: bold;">TOTAL PAGADO</span></p>
+                                </td>
+                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
+                                    <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format((($evento->precio * $evento->porcentaje) / 100), 2, ',', '.') }}</span></p>                            
+                                </td>
+                            </tr>
+                        @endif 
+                        </tbody>
+                    </table>
+                </div>
+            @endif
             <div style="padding-top: 2cm; padding-bottom: 2cm; text-align: center; font-size: 12pt; font-weight: bold; /*border: 1px solid #C00;*/">
                 <p style="margin: 1px"></p>
             </div>

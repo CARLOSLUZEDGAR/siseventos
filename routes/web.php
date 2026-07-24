@@ -114,6 +114,8 @@ Route::post('/registrarSituacion','SituacionesController@CrearSituacion');
 Route::post('/mostrarSituacion','SituacionesController@MostrarSituacion');
 Route::post('/editarSituacion','SituacionesController@EditarSituacion');
 Route::post('/cambiarEstadoSituacion','SituacionesController@CambiarEstadoSituacion');
+Route::post('/listarSituacionEvento','SituacionesController@ListarSituacionEvento');
+
 
 
 

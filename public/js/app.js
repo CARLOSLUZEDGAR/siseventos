@@ -4555,6 +4555,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var decimalDos = function decimalDos(value) {
@@ -4570,6 +4600,16 @@ var montoMaximo = function montoMaximo(value) {
   }
 
   return Number(value) <= Number(this.predio.precio * (100 - this.tarifa.porcentaje) / 100);
+};
+
+var montoMaximoE = function montoMaximoE(value) {
+  if (!value) return true;
+
+  if (!this.situacionE || this.situacionE.id != 1) {
+    return true;
+  }
+
+  return Number(value) <= Number(this.precio * (100 - this.porcentaje) / 100);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4627,11 +4667,15 @@ var montoMaximo = function montoMaximo(value) {
       tarifaE: '',
       precio: '',
       porcentaje: '',
+      cantSituacion: '',
       situacion_idE: '',
       situacionE: '',
       montoE: '',
+      montoAdelanto: '',
       observacionE: '',
+      arraySituacionE: [],
       arraySituacionEvento: [],
+      arraySituacionAdelanto: [],
       prediosDisponiblesEditar: [],
       predioRegPredio: '',
       abreviaturaRegPredio: '',
@@ -4699,7 +4743,7 @@ var montoMaximo = function montoMaximo(value) {
     },
     monto: {
       required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function () {
-        return this.situacion && this.situacion.id == 1;
+        return this.situacion && (this.situacion.id == 1 || this.situacion.id == 3);
       }),
       decimalDos: decimalDos,
       montoMaximo: montoMaximo
@@ -4742,7 +4786,11 @@ var montoMaximo = function montoMaximo(value) {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
     },
     montoE: {
-      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function () {
+        return this.situacionE && (this.situacionE.id == 1 || this.situacionE.id == 3);
+      }),
+      decimalDos: decimalDos,
+      montoMaximoE: montoMaximoE
     },
     forma_pagoE: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
@@ -4771,7 +4819,7 @@ var montoMaximo = function montoMaximo(value) {
     validationsGroupReg: ['responsable', 'ci', 'celular', 'fecha_evento', 'fecha_evento_fin', 'hora_inicio', 'hora_fin', 'tipo_predio', 'predio', 'tipo_evento', 'tarifa', 'situacion', 'forma_pago', 'monto'],
     validationsGroupMod: ['fecha_eventoE', 'fecha_evento_finE', 'hora_inicioE', 'hora_finE', 'responsableE', 'ciE', 'celularE', // 'predio_idE',
     'tipo_predioE', 'predioE', 'tipo_eventoE', 'tarifaE', 'situacionE', 'montoE'],
-    validationGroupPagoSaldo: ['forma_pagoE'],
+    validationGroupPagoSaldo: ['situacionE', 'forma_pagoE', 'montoE'],
     validationsGroupRegPredio: ['predioRegPredio', 'colorRegPredio', 'precioRegPredio'],
     validationsGroupRegTipoEvento: ['tipo_eventoRegTipoEvento'],
     validationsGroupRegTarifa: ['tarifaRegTarifa', 'porcentajeRegTarifa']
@@ -4857,6 +4905,16 @@ var montoMaximo = function montoMaximo(value) {
       if (!this.fecha_evento) return '';
       var partes = this.fecha_evento.split('-');
       return partes[2] + '/' + partes[1] + '/' + partes[0];
+    },
+    cantidadHoras: function cantidadHoras() {
+      if (!this.fecha_evento || !this.fecha_evento_fin || !this.hora_inicio || !this.hora_fin) {
+        return 0;
+      }
+
+      var inicio = new Date(this.fecha_evento + 'T' + this.hora_inicio);
+      var fin = new Date(this.fecha_evento_fin + 'T' + this.hora_fin);
+      var diferencia = fin - inicio;
+      return diferencia > 0 ? diferencia / (1000 * 60 * 60) : 0;
     }
   },
   methods: {
@@ -5201,6 +5259,7 @@ var montoMaximo = function montoMaximo(value) {
         // =========================================
         _this4.arrayMostrarEvento = response.data.eventos;
         _this4.arraySituacionEvento = response.data.situacion_evento;
+        _this4.arraySituacionAdelanto = response.data.situacion_adelanto;
 
         _this4.$v.validationsGroupMod.$reset();
 
@@ -5218,13 +5277,14 @@ var montoMaximo = function montoMaximo(value) {
         _this4.hora_inicioE = _this4.arrayMostrarEvento.hora_inicio.slice(0, 5);
         _this4.hora_finE = _this4.arrayMostrarEvento.hora_fin.slice(0, 5);
         _this4.tarifa_idE = _this4.arrayMostrarEvento.tarifa_id;
-        _this4.tarifaE = _this4.arrayMostrarEvento.tarifa;
-        _this4.situacion_idE = _this4.arrayMostrarEvento.situacion_id;
-        _this4.situacionE = _this4.arrayMostrarEvento.situacion;
-        _this4.montoE = _this4.arrayMostrarEvento.monto;
+        _this4.tarifaE = _this4.arrayMostrarEvento.tarifa; // this.situacion_idE = this.arrayMostrarEvento.situacion_id;
+        // this.situacionE = this.arrayMostrarEvento.situacion;
+        // this.montoE =   this.arrayMostrarEvento.monto;
+
         _this4.observacionE = _this4.arrayMostrarEvento.observacion;
         _this4.precio = _this4.arrayMostrarEvento.precio;
-        _this4.porcentaje = _this4.arrayMostrarEvento.porcentaje; // =========================================
+        _this4.porcentaje = _this4.arrayMostrarEvento.porcentaje;
+        _this4.montoAdelanto = _this4.arraySituacionAdelanto.monto; // =========================================
         // FECHA DEL EVENTO
         // =========================================
 
@@ -5260,6 +5320,8 @@ var montoMaximo = function montoMaximo(value) {
         $('#ModalEditar').modal('show');
         $(".modal-header").css("background-color", "#007bff");
         $(".modal-header").css("color", "white");
+
+        _this4.ListarSituacionE(_this4.id_eventoE, _this4.tarifa_idE);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -5339,6 +5401,19 @@ var montoMaximo = function montoMaximo(value) {
         console.log(error);
       });
     },
+    ListarSituacionE: function ListarSituacionE(id_evento, id_tarifa) {
+      var me = this;
+      axios.post("/listarSituacionEvento", {
+        idevento: id_evento,
+        idtarifa: id_tarifa
+      }).then(function (response) {
+        me.arraySituacionE = response.data.situaciones;
+        me.cantSituacion = response.data.cantidadsituacion;
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
+    },
     ListarEvento: function ListarEvento() {
       var me = this;
       axios.post('/listarEvento', {
@@ -5411,7 +5486,7 @@ var montoMaximo = function montoMaximo(value) {
               // situacion_id: this.situacion.id,
               forma_pago: _this5.tarifa.id != 1 ? _this5.forma_pago : 'SIN FORMA DE PAGO',
               // forma_pago: this.forma_pago,
-              monto: _this5.situacion.id == 1 ? _this5.monto : _this5.predio.precio * (100 - _this5.tarifa.porcentaje) / 100,
+              monto: _this5.situacion && (_this5.situacion.id == 1 || _this5.situacion.id == 3) ? _this5.monto : _this5.predio.precio * (100 - _this5.tarifa.porcentaje) / 100,
               observacion: _this5.observacion ? _this5.observacion.toUpperCase() : ''
             }).then(function (response) {
               _this5.procesando = false;
@@ -5561,7 +5636,7 @@ var montoMaximo = function montoMaximo(value) {
 
       if (!this.$v.validationGroupPagoSaldo.$invalid) {
         swal.fire({
-          title: '¿Desea pagar el saldo de este evento?',
+          title: '¿Desea pagar de este evento?',
           // TITULO 
           icon: 'question',
           //ICONO (success, warnning, error, info, question)
@@ -5583,13 +5658,11 @@ var montoMaximo = function montoMaximo(value) {
             _this7.procesando = true;
             axios.post('/pagarSaldoEvento', {
               id_evento: idEvento,
-              precio: _this7.precio * _this7.porcentaje / 100,
-              adelanto: _this7.montoE,
-              forma_pago: _this7.forma_pagoE // fecha_evento: this.fecha_eventoE,
-              // predio_id: this.predio_idE,
-              // observacion: this.observacionE.toUpperCase()
-              // responsable: this.responsableE
-
+              // precio: (this.precio * this.porcentaje)/100,
+              situacion: _this7.situacionE.id,
+              forma_pago: _this7.forma_pagoE,
+              pago: _this7.situacionE && (_this7.situacionE.id == 1 || _this7.situacionE.id == 3) ? _this7.montoE : _this7.precio * (100 - _this7.porcentaje) / 100 - (parseFloat(_this7.montoAdelanto) || 0),
+              observacion: _this7.observacionE ? _this7.observacionE.toUpperCase() : ''
             }).then(function (response) {
               if (response.data.success) {
                 Swal.fire({
@@ -115100,7 +115173,7 @@ var render = function() {
                       [
                         _c("h5", { staticClass: "mb-3" }, [
                           _vm._v(
-                            "\n                            SALONES OCUPADOS\n                        "
+                            "\n                            PREDIOS OCUPADOS\n                        "
                           )
                         ]),
                         _vm._v(" "),
@@ -115132,7 +115205,7 @@ var render = function() {
                               _c("div", { staticClass: "card-body" }, [
                                 _c("div", { staticClass: "row" }, [
                                   _c("div", { staticClass: "col-md-6" }, [
-                                    _c("strong", [_vm._v("RESPONSABLE:")]),
+                                    _c("strong", [_vm._v("ARRENDATARIO:")]),
                                     _vm._v(
                                       "\n                                        " +
                                         _vm._s(evento.contratante) +
@@ -116035,7 +116108,8 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "row mt-2" }, [
-                      _vm.situacion && _vm.situacion.id == 1
+                      _vm.situacion &&
+                      (_vm.situacion.id == 1 || _vm.situacion.id == 3)
                         ? _c("div", { staticClass: "col-md-4" }, [
                             _c("label", { staticClass: "form-control-label" }, [
                               _vm._v(
@@ -116094,15 +116168,16 @@ var render = function() {
                                       "\n                                                Este campo es requerido\n                                            "
                                     )
                                   ])
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.$v.monto.required && !_vm.$v.monto.decimalDos
+                                : _vm.$v.monto.required &&
+                                  !_vm.$v.monto.decimalDos
                                 ? _c("span", [
                                     _vm._v(
                                       "\n                                                Debe ingresar un monto válido con máximo 2 decimales\n                                            "
                                     )
                                   ])
-                                : !_vm.$v.monto.montoMaximo
+                                : _vm.situacion &&
+                                  _vm.situacion.id == 1 &&
+                                  !_vm.$v.monto.montoMaximo
                                 ? _c("span", [
                                     _vm._v(
                                       "\n                                                El monto no puede ser mayor a " +
@@ -116122,7 +116197,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("div", { staticClass: "row mt-2" }, [
                       _c("div", { staticClass: "col-sm-12" }, [
-                        _c("label", [_vm._v("OBSERVACIÓN:")]),
+                        _c("label", [_vm._v("NOTA:")]),
                         _vm._v(" "),
                         _c("textarea", {
                           directives: [
@@ -116405,7 +116480,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-3" }, [
                         _c("label", { staticClass: "form-control-label" }, [
                           _vm._v(
-                            "\n                                            FECHA INICO:\n                                        "
+                            "\n                                            FECHA INICIO:\n                                        "
                           )
                         ]),
                         _vm._v(" "),
@@ -116797,26 +116872,15 @@ var render = function() {
                                   }
                                 },
                                 [_vm._v("MONTO (Bs.)")]
-                              ),
-                              _vm._v(" "),
-                              _vm.situacion_idE == 1
-                                ? _c(
-                                    "th",
-                                    {
-                                      staticStyle: {
-                                        "text-align": "center",
-                                        "vertical-align": "middle"
-                                      }
-                                    },
-                                    [_vm._v("PAGO")]
-                                  )
-                                : _vm._e()
+                              )
                             ])
                           ]),
                           _vm._v(" "),
-                          _vm.situacion_idE == 1
-                            ? _c("tbody", [
-                                _c("tr", [
+                          _c(
+                            "tbody",
+                            [
+                              _vm._l(_vm.arraySituacionEvento, function(se) {
+                                return _c("tr", [
                                   _c(
                                     "td",
                                     {
@@ -116825,7 +116889,7 @@ var render = function() {
                                         "vertical-align": "middle"
                                       }
                                     },
-                                    [_vm._v(_vm._s(_vm.situacionE))]
+                                    [_vm._v(_vm._s(se.situacion))]
                                   ),
                                   _vm._v(" "),
                                   _c(
@@ -116838,282 +116902,352 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        _vm._s(Number(_vm.montoE).toFixed(2))
-                                      )
-                                    ]
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("tr", [
-                                  _c(
-                                    "td",
-                                    {
-                                      staticStyle: {
-                                        "text-align": "left",
-                                        "vertical-align": "middle"
-                                      }
-                                    },
-                                    [_vm._v("SALDO")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "td",
-                                    {
-                                      staticStyle: {
-                                        "text-align": "right",
-                                        "vertical-align": "middle"
-                                      }
-                                    },
-                                    [
-                                      _vm._v(
-                                        "\n                                                        " +
-                                          _vm._s(
-                                            (
-                                              (Number(_vm.precio) *
-                                                (100 -
-                                                  Number(_vm.porcentaje))) /
-                                                100 -
-                                              Number(_vm.montoE)
-                                            ).toFixed(2)
-                                          ) +
-                                          "\n                                                    "
-                                      )
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c("td", [
-                                    _c("div", { staticClass: "col-md-12" }, [
-                                      _c("label", [_vm._v("FORMA DE PAGO:")]),
-                                      _vm._v(" "),
-                                      _c(
-                                        "select",
-                                        {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.forma_pagoE,
-                                              expression: "forma_pagoE"
-                                            }
-                                          ],
-                                          staticClass: "form-control",
-                                          class: {
-                                            "is-invalid":
-                                              _vm.$v.forma_pagoE.$error,
-                                            "is-valid": !_vm.$v.forma_pagoE
-                                              .$invalid
-                                          },
-                                          on: {
-                                            change: function($event) {
-                                              var $$selectedVal = Array.prototype.filter
-                                                .call(
-                                                  $event.target.options,
-                                                  function(o) {
-                                                    return o.selected
-                                                  }
-                                                )
-                                                .map(function(o) {
-                                                  var val =
-                                                    "_value" in o
-                                                      ? o._value
-                                                      : o.value
-                                                  return val
-                                                })
-                                              _vm.forma_pagoE = $event.target
-                                                .multiple
-                                                ? $$selectedVal
-                                                : $$selectedVal[0]
-                                            }
-                                          }
-                                        },
-                                        [
-                                          _c(
-                                            "option",
-                                            { attrs: { value: "" } },
-                                            [_vm._v("SELECCIONE...")]
-                                          ),
-                                          _vm._v(" "),
-                                          _vm._l(_vm.arrayFormaPago, function(
-                                            item,
-                                            index
-                                          ) {
-                                            return _c(
-                                              "option",
-                                              {
-                                                key: index,
-                                                domProps: { value: item }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "\n                                                                    " +
-                                                    _vm._s(item) +
-                                                    "\n                                                                "
-                                                )
-                                              ]
-                                            )
-                                          })
-                                        ],
-                                        2
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "div",
-                                        { staticClass: "invalid-feedback" },
-                                        [
-                                          !_vm.$v.forma_pagoE.required
-                                            ? _c("span", [
-                                                _vm._v(
-                                                  "\n                                                                    Este campo es requerido\n                                                                "
-                                                )
-                                              ])
-                                            : _vm._e()
-                                        ]
-                                      )
-                                    ]),
-                                    _c("br"),
-                                    _vm._v(" "),
-                                    _c(
-                                      "button",
-                                      {
-                                        staticClass: "btn btn-danger mr-2",
-                                        attrs: {
-                                          type: "button",
-                                          disabled: _vm.procesando
-                                        },
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.PagarSaldo(
-                                              _vm.id_eventoE
-                                            )
-                                          }
-                                        }
-                                      },
-                                      [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.procesando
-                                              ? "Procesando..."
-                                              : "PAGAR SALDO"
-                                          )
-                                        )
-                                      ]
-                                    )
-                                  ])
-                                ]),
-                                _vm._v(" "),
-                                _c("tr", [
-                                  _c(
-                                    "td",
-                                    {
-                                      staticStyle: {
-                                        "text-align": "left",
-                                        "vertical-align": "middle"
-                                      }
-                                    },
-                                    [_vm._v("TOTAL")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "td",
-                                    {
-                                      staticStyle: {
-                                        "text-align": "right",
-                                        "vertical-align": "middle"
-                                      }
-                                    },
-                                    [
-                                      _vm._v(
-                                        _vm._s(
-                                          (
-                                            (Number(_vm.precio) *
-                                              (100 - Number(_vm.porcentaje))) /
-                                            100
-                                          ).toFixed(2)
-                                        )
+                                        _vm._s(Number(se.monto).toFixed(2))
                                       )
                                     ]
                                   )
                                 ])
-                              ])
-                            : _c(
-                                "tbody",
-                                [
-                                  _vm._l(_vm.arraySituacionEvento, function(
-                                    se
-                                  ) {
-                                    return _c("tr", [
-                                      _c(
-                                        "td",
-                                        {
-                                          staticStyle: {
-                                            "text-align": "left",
-                                            "vertical-align": "middle"
-                                          }
-                                        },
-                                        [_vm._v(_vm._s(se.situacion))]
-                                      ),
+                              }),
+                              _vm._v(" "),
+                              _vm.cantSituacion != 0
+                                ? _c("tr", [
+                                    _c("td", [
+                                      _c("div", { staticClass: "col-md-12" }, [
+                                        _c("label", [_vm._v("SITUACIÓN:")]),
+                                        _vm._v(" "),
+                                        _c(
+                                          "select",
+                                          {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.situacionE,
+                                                expression: "situacionE"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            class: {
+                                              "is-invalid":
+                                                _vm.$v.situacionE.$error,
+                                              "is-valid": !_vm.$v.situacionE
+                                                .$invalid
+                                            },
+                                            on: {
+                                              change: function($event) {
+                                                var $$selectedVal = Array.prototype.filter
+                                                  .call(
+                                                    $event.target.options,
+                                                    function(o) {
+                                                      return o.selected
+                                                    }
+                                                  )
+                                                  .map(function(o) {
+                                                    var val =
+                                                      "_value" in o
+                                                        ? o._value
+                                                        : o.value
+                                                    return val
+                                                  })
+                                                _vm.situacionE = $event.target
+                                                  .multiple
+                                                  ? $$selectedVal
+                                                  : $$selectedVal[0]
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c(
+                                              "option",
+                                              { attrs: { value: "" } },
+                                              [_vm._v("SELECCIONE...")]
+                                            ),
+                                            _vm._v(" "),
+                                            _vm._l(
+                                              _vm.arraySituacionE,
+                                              function(item) {
+                                                return _c(
+                                                  "option",
+                                                  {
+                                                    key: item.id,
+                                                    domProps: { value: item }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                                                    " +
+                                                        _vm._s(item.situacion) +
+                                                        "\n                                                                "
+                                                    )
+                                                  ]
+                                                )
+                                              }
+                                            )
+                                          ],
+                                          2
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          { staticClass: "invalid-feedback" },
+                                          [
+                                            !_vm.$v.situacionE.required
+                                              ? _c("span", [
+                                                  _vm._v(
+                                                    "\n                                                                    Este campo es requerido\n                                                                "
+                                                  )
+                                                ])
+                                              : _vm._e()
+                                          ]
+                                        )
+                                      ]),
+                                      _c("br"),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "col-md-12" }, [
+                                        _c("label", [_vm._v("FORMA DE PAGO:")]),
+                                        _vm._v(" "),
+                                        _c(
+                                          "select",
+                                          {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.forma_pagoE,
+                                                expression: "forma_pagoE"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            class: {
+                                              "is-invalid":
+                                                _vm.$v.forma_pagoE.$error,
+                                              "is-valid": !_vm.$v.forma_pagoE
+                                                .$invalid
+                                            },
+                                            on: {
+                                              change: function($event) {
+                                                var $$selectedVal = Array.prototype.filter
+                                                  .call(
+                                                    $event.target.options,
+                                                    function(o) {
+                                                      return o.selected
+                                                    }
+                                                  )
+                                                  .map(function(o) {
+                                                    var val =
+                                                      "_value" in o
+                                                        ? o._value
+                                                        : o.value
+                                                    return val
+                                                  })
+                                                _vm.forma_pagoE = $event.target
+                                                  .multiple
+                                                  ? $$selectedVal
+                                                  : $$selectedVal[0]
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c(
+                                              "option",
+                                              { attrs: { value: "" } },
+                                              [_vm._v("SELECCIONE...")]
+                                            ),
+                                            _vm._v(" "),
+                                            _vm._l(_vm.arrayFormaPago, function(
+                                              item,
+                                              index
+                                            ) {
+                                              return _c(
+                                                "option",
+                                                {
+                                                  key: index,
+                                                  domProps: { value: item }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    "\n                                                                    " +
+                                                      _vm._s(item) +
+                                                      "\n                                                                "
+                                                  )
+                                                ]
+                                              )
+                                            })
+                                          ],
+                                          2
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          { staticClass: "invalid-feedback" },
+                                          [
+                                            !_vm.$v.forma_pagoE.required
+                                              ? _c("span", [
+                                                  _vm._v(
+                                                    "\n                                                                    Este campo es requerido\n                                                                "
+                                                  )
+                                                ])
+                                              : _vm._e()
+                                          ]
+                                        )
+                                      ])
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm.situacionE &&
+                                      (_vm.situacionE.id == 1 ||
+                                        _vm.situacionE.id == 3)
+                                        ? _c(
+                                            "div",
+                                            { staticClass: "col-md-12" },
+                                            [
+                                              _c(
+                                                "label",
+                                                {
+                                                  staticClass:
+                                                    "form-control-label"
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    "\n                                                                MONTO (Bs.):\n                                                            "
+                                                  )
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c("input", {
+                                                directives: [
+                                                  {
+                                                    name: "model",
+                                                    rawName: "v-model.number",
+                                                    value: _vm.montoE,
+                                                    expression: "montoE",
+                                                    modifiers: { number: true }
+                                                  }
+                                                ],
+                                                staticClass: "form-control",
+                                                class: {
+                                                  "is-invalid":
+                                                    _vm.$v.montoE.$error,
+                                                  "is-valid": !_vm.$v.montoE
+                                                    .$invalid
+                                                },
+                                                attrs: {
+                                                  type: "number",
+                                                  step: "0.01",
+                                                  min: "0",
+                                                  max:
+                                                    _vm.predio && _vm.tarifa
+                                                      ? Number(
+                                                          (
+                                                            (_vm.predio.precio *
+                                                              (100 -
+                                                                _vm.tarifa
+                                                                  .porcentaje)) /
+                                                            100
+                                                          ).toFixed(2)
+                                                        )
+                                                      : null
+                                                },
+                                                domProps: { value: _vm.montoE },
+                                                on: {
+                                                  input: function($event) {
+                                                    if (
+                                                      $event.target.composing
+                                                    ) {
+                                                      return
+                                                    }
+                                                    _vm.montoE = _vm._n(
+                                                      $event.target.value
+                                                    )
+                                                  },
+                                                  blur: function($event) {
+                                                    return _vm.$forceUpdate()
+                                                  }
+                                                }
+                                              }),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "invalid-feedback"
+                                                },
+                                                [
+                                                  !_vm.$v.montoE.required
+                                                    ? _c("span", [
+                                                        _vm._v(
+                                                          "\n                                                                    Este campo es requerido\n                                                                "
+                                                        )
+                                                      ])
+                                                    : _vm.$v.montoE.required &&
+                                                      !_vm.$v.montoE.decimalDos
+                                                    ? _c("span", [
+                                                        _vm._v(
+                                                          "\n                                                                    Debe ingresar un monto válido con máximo 2 decimales\n                                                                "
+                                                        )
+                                                      ])
+                                                    : _vm.situacionE &&
+                                                      _vm.situacionE.id == 1 &&
+                                                      !_vm.$v.montoE
+                                                        .montoMaximoE
+                                                    ? _c("span", [
+                                                        _vm._v(
+                                                          "\n                                                                    El monto no puede ser mayor a " +
+                                                            _vm._s(
+                                                              (_vm.precio *
+                                                                (100 -
+                                                                  _vm.porcentaje)) /
+                                                                100
+                                                            ) +
+                                                            " Bs.\n                                                                "
+                                                        )
+                                                      ])
+                                                    : _vm._e()
+                                                ]
+                                              )
+                                            ]
+                                          )
+                                        : _vm._e(),
+                                      _c("br"),
                                       _vm._v(" "),
                                       _c(
-                                        "td",
+                                        "button",
                                         {
-                                          staticStyle: {
-                                            "text-align": "right",
-                                            "vertical-align": "middle"
+                                          staticClass: "btn btn-danger mr-2",
+                                          attrs: {
+                                            type: "button",
+                                            disabled: _vm.procesando
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.PagarSaldo(
+                                                _vm.id_eventoE
+                                              )
+                                            }
                                           }
                                         },
                                         [
                                           _vm._v(
-                                            _vm._s(Number(se.monto).toFixed(2))
+                                            _vm._s(
+                                              _vm.procesando
+                                                ? "Procesando..."
+                                                : "PAGAR"
+                                            )
                                           )
                                         ]
                                       )
                                     ])
-                                  }),
-                                  _vm._v(" "),
-                                  _c("tr", [
-                                    _c(
-                                      "td",
-                                      {
-                                        staticStyle: {
-                                          "text-align": "left",
-                                          "vertical-align": "middle"
-                                        }
-                                      },
-                                      [_vm._v("TOTAL")]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "td",
-                                      {
-                                        staticStyle: {
-                                          "text-align": "right",
-                                          "vertical-align": "middle"
-                                        }
-                                      },
-                                      [
-                                        _vm._v(
-                                          _vm._s(
-                                            (
-                                              (Number(_vm.precio) *
-                                                (100 -
-                                                  Number(_vm.porcentaje))) /
-                                              100
-                                            ).toFixed(2)
-                                          )
-                                        )
-                                      ]
-                                    )
                                   ])
-                                ],
-                                2
-                              )
+                                : _vm._e()
+                            ],
+                            2
+                          )
                         ])
                       ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "row mt-2" }, [
                       _c("div", { staticClass: "col-sm-12" }, [
-                        _c("label", [_vm._v("OBSERVACIÓN:")]),
+                        _c("label", [_vm._v("NOTA:")]),
                         _vm._v(" "),
                         _c("textarea", {
                           directives: [
@@ -117418,9 +117552,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "row mt-2" }, [
                   _c("div", { staticClass: "col-md-12" }, [
-                    _c("label", { attrs: { for: "" } }, [
-                      _vm._v("OBSERVACIÓN:")
-                    ]),
+                    _c("label", { attrs: { for: "" } }, [_vm._v("NOTA:")]),
                     _vm._v(" "),
                     _c("textarea", {
                       directives: [
@@ -117572,9 +117704,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "row mt-2" }, [
                   _c("div", { staticClass: "col-md-12" }, [
-                    _c("label", { attrs: { for: "" } }, [
-                      _vm._v("OBSERVACIÓN:")
-                    ]),
+                    _c("label", { attrs: { for: "" } }, [_vm._v("NOTA:")]),
                     _vm._v(" "),
                     _c("textarea", {
                       directives: [
@@ -117794,9 +117924,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "row mt-2" }, [
                   _c("div", { staticClass: "col-md-12" }, [
-                    _c("label", { attrs: { for: "" } }, [
-                      _vm._v("OBSERVACIÓN:")
-                    ]),
+                    _c("label", { attrs: { for: "" } }, [_vm._v("NOTA:")]),
                     _vm._v(" "),
                     _c("textarea", {
                       directives: [

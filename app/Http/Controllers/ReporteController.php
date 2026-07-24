@@ -28,6 +28,7 @@ class ReporteController extends Controller
                         'tp.clasificacion',
                         'p.nombre',
                         'te.evento',
+                        't.id as idtarifa',
                         't.tarifa',
                         'tpor.porcentaje',
                         'e.fecha_evento',
@@ -60,6 +61,7 @@ class ReporteController extends Controller
                             ->where('se.estado', 1)
                             ->where('s.estado', 1)
                             ->where('se.evento_id', $request->idE)
+                            ->where('se.situacion_id', '!=', 3)
                             ->orderBy('se.situacion_id', 'asc')
                             ->get();
 
@@ -82,8 +84,7 @@ class ReporteController extends Controller
                                                 'fecha_det' => $fecha_emision,
                                                 'fecha_evento_inicio' => $fecha_evento_inicio,
                                                 'fecha_evento_final' => $fecha_evento_final
-
-                                                    ])
+                                                ])
         //8.3cm 5cm
         ->setPaper('letter', 'portrait');                                               
         

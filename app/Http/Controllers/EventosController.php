@@ -187,20 +187,20 @@ class EventosController extends Controller
             // VALIDACIONES
             $request->validate([
                 'id_evento'     => 'required',
-                'precio'        => 'required',
-                'adelanto'      => 'required',
-                'forma_pago'    => 'required'
+                'situacion'     => 'required',
+                'forma_pago'    => 'required',
+                'pago'      => 'required',
                 // 'responsable'    => 'required',
             ]);
-            $pago_saldo = $request->precio - $request->adelanto;
+            // $pago_saldo = $request->precio - $request->adelanto;
             // INICIAR TRANSACCIÓN
             DB::beginTransaction();
             $situacion_evento = SituacionEventos::create([
                 'evento_id'    => $request->id_evento,
-                'situacion_id' => 2,
+                'situacion_id' => $request->situacion,
                 'forma_pago'   => $request->forma_pago,
-                'monto'        => $pago_saldo,
-                'observacion'  => 'PAGO TOTAL',
+                'monto'        => $request->pago,
+                'observacion'  => $request->observacion,
                 'estado'       => 1,
                 'sysuser'      => Auth::user()->id
             ]);
@@ -258,8 +258,8 @@ class EventosController extends Controller
                     ->join('tipo_eventos as te', 'e.tipo_evento_id', 'te.id')
                     ->join('tarifas as t', 'e.tarifa_id', 't.id')
                     ->join('tarifa_porcentajes as tpor', 't.id', 'tpor.tarifa_id')
-                    ->join('situacion_eventos as se', 'e.id', 'se.evento_id')
-                    ->join('situaciones as s', 'se.situacion_id', 's.id')
+                    // ->join('situacion_eventos as se', 'e.id', 'se.evento_id')
+                    // ->join('situaciones as s', 'se.situacion_id', 's.id')
                     ->join('predio_costos as pc', 'e.predio_id', 'pc.predio_id')
                     ->join('tipo_predios as tp', 'e.tipo_predio_id', 'tp.id')
                     ->select('e.id',
@@ -281,9 +281,9 @@ class EventosController extends Controller
                             'e.hora_inicio',
                             'e.hora_fin',
                             'e.observacion',
-                            's.id as situacion_id',
-                            's.situacion',
-                            'se.monto',
+                            // 's.id as situacion_id',
+                            // 's.situacion',
+                            // 'se.monto',
                             'pc.precio')
                     ->where('e.estado', 1)
                     // ->where('p.estado', 1)
@@ -291,12 +291,12 @@ class EventosController extends Controller
                     // ->where('t.estado', 1)
                     ->where('tpor.estado', 1)
                     ->where('tpor.vigencia', 1)
-                    ->where('se.estado', 1)
+                    // ->where('se.estado', 1)
                     // ->where('s.estado', 1)
                     ->where('pc.estado', 1)
                     ->where('pc.vigencia', 1)
                     ->where('e.id', $request->evento_id)
-                    ->orderBy('se.created_at', 'desc')
+                    // ->orderBy('se.created_at', 'desc')
                     ->first();
 
         $situacion_evento = DB::table('situacion_eventos as se')
@@ -309,6 +309,25 @@ class EventosController extends Controller
                             ->orderBy('se.situacion_id', 'asc')
                             ->get();
 
-        return ['eventos' => $evento, 'situacion_evento' => $situacion_evento];
+        $situacion_adelanto = DB::table('situacion_eventos as se')
+                            ->join('situaciones as s', 'se.situacion_id', 's.id')
+                            ->select('s.situacion',
+                                    'se.monto')
+                            ->where('se.estado', 1)
+                            ->where('s.estado', 1)
+                            ->where('se.evento_id', $request->evento_id)
+                            ->where('se.situacion_id', 1)
+                            ->orderBy('se.situacion_id', 'asc')
+                            ->first();
+
+        // Si no existe adelanto, devolver un objeto con valores por defecto
+        if (!$situacion_adelanto) {
+            $situacion_adelanto = (object) [
+                'situacion' => null,
+                'monto' => 0.00
+            ];
+        }
+
+        return ['eventos' => $evento, 'situacion_evento' => $situacion_evento, 'situacion_adelanto' => $situacion_adelanto];
     }
 }

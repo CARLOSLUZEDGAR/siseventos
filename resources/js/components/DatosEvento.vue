@@ -87,7 +87,7 @@
                         <!-- EVENTOS REGISTRADOS -->
                         <div v-if="eventosDiaSeleccionado.length > 0">
                             <h5 class="mb-3">
-                                SALONES OCUPADOS
+                                PREDIOS OCUPADOS
                             </h5>
 
                             <div class="card mb-3" v-for="(evento, index) in eventosDiaSeleccionado" :key="index">
@@ -99,7 +99,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <strong>RESPONSABLE:</strong>
+                                            <strong>ARRENDATARIO:</strong>
                                             {{ evento.contratante }}
                                         </div>
                                         <div class="col-md-6">
@@ -396,7 +396,7 @@
                                         </div>
                                     </div>
                                     <div class="row mt-2">
-                                        <div class="col-md-4" v-if="situacion && situacion.id == 1">
+                                        <div class="col-md-4" v-if="situacion && (situacion.id == 1 || situacion.id == 3)">
                                             <label class="form-control-label">
                                                 MONTO (Bs.):
                                             </label>
@@ -405,10 +405,10 @@
                                                 <span v-if="!$v.monto.required">
                                                     Este campo es requerido
                                                 </span>
-                                                <span v-if="$v.monto.required && !$v.monto.decimalDos">
+                                                <span v-else-if="$v.monto.required && !$v.monto.decimalDos">
                                                     Debe ingresar un monto válido con máximo 2 decimales
                                                 </span>
-                                                <span v-else-if="!$v.monto.montoMaximo">
+                                                <span v-else-if="situacion && situacion.id == 1 && !$v.monto.montoMaximo">
                                                     El monto no puede ser mayor a {{ (predio.precio * (100 - tarifa.porcentaje))/100 }} Bs.
                                                 </span>
                                             </div>
@@ -416,7 +416,7 @@
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-sm-12">
-                                            <label>OBSERVACIÓN:</label>
+                                            <label>NOTA:</label>
                                             <textarea class="form-control" v-model="observacion" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
                                         </div>
                                     </div>
@@ -513,7 +513,7 @@
                                     <div class="row mt-2">
                                         <div class="col-md-3">
                                             <label class="form-control-label">
-                                                FECHA INICO:
+                                                FECHA INICIO:
                                             </label>
                                             <input type="date" class="form-control" v-model="fecha_eventoE" :class="{'is-invalid' : $v.fecha_eventoE.$error, 'is-valid': !$v.fecha_eventoE.$invalid}">
                                             <div class="invalid-feedback">
@@ -610,20 +610,41 @@
                                                     <tr>
                                                         <th style="text-align: center; vertical-align: middle;">SITUACIÓN (TARIFA: {{ tarifaE }})</th>
                                                         <th style="text-align: center; vertical-align: middle;">MONTO (Bs.)</th>
-                                                        <th style="text-align: center; vertical-align: middle;" v-if="situacion_idE == 1">PAGO</th>
+                                                        <!-- <th style="text-align: center; vertical-align: middle;" v-if="situacion_idE == 1">PAGO</th> -->
                                                     </tr>
                                                 </thead>
-                                                <tbody v-if="situacion_idE == 1">
-                                                    <tr>
-                                                        <td style="text-align: left; vertical-align: middle;">{{ situacionE }}</td>
-                                                        <td style="text-align: right; vertical-align: middle;">{{ Number(montoE).toFixed(2) }}</td>
+                                                <tbody>
+                                                    <tr v-for="se in arraySituacionEvento">
+                                                        <td style="text-align: left; vertical-align: middle;">{{ se.situacion }}</td>
+                                                        <td style="text-align: right; vertical-align: middle;">{{ Number(se.monto).toFixed(2) }}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td style="text-align: left; vertical-align: middle;">SALDO</td>
-                                                        <td style="text-align: right; vertical-align: middle;">
-                                                            {{ (((Number(precio) * (100 - Number(porcentaje)))/100) - Number(montoE)).toFixed(2) }}
-                                                        </td>
+                                                    <tr v-if="cantSituacion != 0">
                                                         <td>
+                                                            <div class="col-md-12">                                   
+                                                                <label>SITUACIÓN:</label>
+                                                                <select
+                                                                    class="form-control"
+                                                                    v-model="situacionE"
+                                                                    :class="{
+                                                                        'is-invalid': $v.situacionE.$error,
+                                                                        'is-valid': !$v.situacionE.$invalid
+                                                                    }"
+                                                                >
+                                                                    <option value="">SELECCIONE...</option>
+                                                                    <option
+                                                                        v-for="item in arraySituacionE"
+                                                                        :key="item.id"
+                                                                        :value="item"
+                                                                    >
+                                                                        {{ item.situacion }}
+                                                                    </option>
+                                                                </select>
+                                                                <div class="invalid-feedback">
+                                                                    <span v-if="!$v.situacionE.required">
+                                                                        Este campo es requerido
+                                                                    </span>
+                                                                </div>
+                                                            </div><br>
                                                             <div class="col-md-12">
                                                                 <label>FORMA DE PAGO:</label>
                                                                 <select
@@ -648,31 +669,40 @@
                                                                         Este campo es requerido
                                                                     </span>
                                                                 </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="col-md-12" v-if="situacionE && (situacionE.id == 1 || situacionE.id == 3)">
+                                                                <label class="form-control-label">
+                                                                    MONTO (Bs.):
+                                                                </label>
+                                                                <input type="number" step="0.01" min="0" :max="predio && tarifa ? Number(((predio.precio * (100 - tarifa.porcentaje)) / 100).toFixed(2)) : null" class="form-control" v-model.number="montoE" :class="{'is-invalid' : $v.montoE.$error, 'is-valid': !$v.montoE.$invalid}">
+                                                                <div class="invalid-feedback">
+                                                                    <span v-if="!$v.montoE.required">
+                                                                        Este campo es requerido
+                                                                    </span>
+                                                                    <span v-else-if="$v.montoE.required && !$v.montoE.decimalDos">
+                                                                        Debe ingresar un monto válido con máximo 2 decimales
+                                                                    </span>
+                                                                    <span v-else-if="situacionE && situacionE.id == 1 && !$v.montoE.montoMaximoE">
+                                                                        El monto no puede ser mayor a {{ (precio * (100 - porcentaje))/100 }} Bs.
+                                                                    </span>
+                                                                </div>
                                                             </div><br>
-                                                            <button type="button" class="btn btn-danger mr-2" @click="PagarSaldo(id_eventoE)" :disabled="procesando">{{ procesando ? 'Procesando...' : 'PAGAR SALDO' }}</button>  
+                                                            <button type="button" class="btn btn-danger mr-2" @click="PagarSaldo(id_eventoE)" :disabled="procesando">{{ procesando ? 'Procesando...' : 'PAGAR' }}</button>  
                                                         </td>
                                                     </tr>
-                                                    <tr>
+                                                    <!-- <tr>
                                                         <td style="text-align: left; vertical-align: middle;">TOTAL</td>
                                                         <td style="text-align: right; vertical-align: middle;">{{ ((Number(precio) * (100 - Number(porcentaje)))/100).toFixed(2) }}</td>
-                                                    </tr>
-                                                </tbody>
-                                                <tbody v-else>
-                                                    <tr v-for="se in arraySituacionEvento">
-                                                        <td style="text-align: left; vertical-align: middle;">{{ se.situacion }}</td>
-                                                        <td style="text-align: right; vertical-align: middle;">{{ Number(se.monto).toFixed(2) }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="text-align: left; vertical-align: middle;">TOTAL</td>
-                                                        <td style="text-align: right; vertical-align: middle;">{{ ((Number(precio) * (100 - Number(porcentaje)))/100).toFixed(2) }}</td>
-                                                    </tr>
-                                                </tbody>
+                                                    </tr> -->
+                                                </tbody>                                                  
                                             </table>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-sm-12">
-                                            <label>OBSERVACIÓN:</label>
+                                            <label>NOTA:</label>
                                             <textarea class="form-control" v-model="observacionE" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
                                         </div>
                                     </div>
@@ -740,7 +770,7 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-12">
-                            <label for="">OBSERVACIÓN:</label>
+                            <label for="">NOTA:</label>
                             <textarea class="form-control" v-model="observacionRegPredio" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
                         </div>
                     </div>
@@ -776,7 +806,7 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-12">
-                            <label for="">OBSERVACIÓN:</label>
+                            <label for="">NOTA:</label>
                             <textarea class="form-control" v-model="observacionRegTipoEvento" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
                         </div>
                     </div>
@@ -826,7 +856,7 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-12">
-                            <label for="">OBSERVACIÓN:</label>
+                            <label for="">NOTA:</label>
                             <textarea class="form-control" v-model="observacionRegTarifa" style="text-transform:uppercase;" cols="30" rows="2"></textarea>
                         </div>
                     </div>
@@ -863,6 +893,17 @@ const montoMaximo = function(value) {
     }
 
     return Number(value) <= Number(((this.predio.precio * (100 - this.tarifa.porcentaje))/100));
+};
+
+const montoMaximoE = function(value) {
+
+    if (!value) return true;
+
+    if (!this.situacionE || this.situacionE.id != 1) {
+        return true;
+    }
+
+    return Number(value) <= Number(((this.precio * (100 - this.porcentaje))/100));
 };
 
 export default {
@@ -951,11 +992,15 @@ export default {
             tarifaE: '',
             precio: '',
             porcentaje: '',
+            cantSituacion: '',
             situacion_idE: '',
             situacionE: '',
             montoE: '',
+            montoAdelanto: '',
             observacionE: '',
+            arraySituacionE: [],
             arraySituacionEvento: [],
+            arraySituacionAdelanto: [],
             prediosDisponiblesEditar: [],
 
             predioRegPredio: '',
@@ -997,7 +1042,7 @@ export default {
             return this.tarifa && this.tarifa.id != 1;
         })},
         monto: { required: requiredIf(function () {
-            return this.situacion && this.situacion.id == 1;
+            return this.situacion && (this.situacion.id == 1 || this.situacion.id == 3);
         }),
         decimalDos, montoMaximo },
 
@@ -1014,7 +1059,10 @@ export default {
         tipo_eventoE: { required },
         tarifaE: { required },
         situacionE: { required },
-        montoE: { required },
+        montoE: { required: requiredIf(function () {
+            return this.situacionE && (this.situacionE.id == 1 || this.situacionE.id == 3);
+        }),
+        decimalDos, montoMaximoE },
         forma_pagoE: { required },
 
         predioRegPredio: { required },
@@ -1061,7 +1109,9 @@ export default {
         ],
 
         validationGroupPagoSaldo: [
-            'forma_pagoE'
+            'situacionE',
+            'forma_pagoE',
+            'montoE'
         ],
 
         validationsGroupRegPredio: [
@@ -1174,6 +1224,25 @@ export default {
             return partes[2] + '/' +
                 partes[1] + '/' +
                 partes[0];
+        },
+
+        cantidadHoras() {
+            if (
+                !this.fecha_evento ||
+                !this.fecha_evento_fin ||
+                !this.hora_inicio ||
+                !this.hora_fin
+            ) {
+                return 0;
+            }
+            const inicio = new Date(this.fecha_evento + 'T' + this.hora_inicio);
+            const fin = new Date(this.fecha_evento_fin + 'T' + this.hora_fin);
+
+            const diferencia = fin - inicio;
+
+            return diferencia > 0
+                ? diferencia / (1000 * 60 * 60)
+                : 0;
         }
     },
 
@@ -1537,6 +1606,7 @@ export default {
                 // =========================================
                 this.arrayMostrarEvento = response.data.eventos;
                 this.arraySituacionEvento = response.data.situacion_evento;
+                this.arraySituacionAdelanto = response.data.situacion_adelanto;
                 this.$v.validationsGroupMod.$reset();
                 this.id_eventoE = this.arrayMostrarEvento.id;
                 this.fecha_eventoE = this.arrayMostrarEvento.fecha_evento;
@@ -1553,12 +1623,13 @@ export default {
                 this.hora_finE = this.arrayMostrarEvento.hora_fin.slice(0, 5);
                 this.tarifa_idE = this.arrayMostrarEvento.tarifa_id;
                 this.tarifaE = this.arrayMostrarEvento.tarifa;
-                this.situacion_idE = this.arrayMostrarEvento.situacion_id;
-                this.situacionE = this.arrayMostrarEvento.situacion;
-                this.montoE =   this.arrayMostrarEvento.monto;
+                // this.situacion_idE = this.arrayMostrarEvento.situacion_id;
+                // this.situacionE = this.arrayMostrarEvento.situacion;
+                // this.montoE =   this.arrayMostrarEvento.monto;
                 this.observacionE = this.arrayMostrarEvento.observacion;
                 this.precio = this.arrayMostrarEvento.precio;
                 this.porcentaje = this.arrayMostrarEvento.porcentaje;
+                this.montoAdelanto = this.arraySituacionAdelanto.monto;
                 // =========================================
                 // FECHA DEL EVENTO
                 // =========================================
@@ -1595,6 +1666,7 @@ export default {
                 $('#ModalEditar').modal('show');
                 $(".modal-header").css("background-color", "#007bff");
                 $(".modal-header").css("color", "white");
+                this.ListarSituacionE(this.id_eventoE, this.tarifa_idE);
             })
             .catch((error) => {
                 console.log(error);
@@ -1730,6 +1802,23 @@ export default {
             })
         },
 
+        ListarSituacionE(id_evento, id_tarifa) {
+            let me = this;
+            axios
+            .post("/listarSituacionEvento", {
+                idevento: id_evento,
+                idtarifa: id_tarifa
+            })
+            .then(function (response) {
+            me.arraySituacionE = response.data.situaciones;
+            me.cantSituacion = response.data.cantidadsituacion;
+            })
+            .catch(function (error) {
+            // handle error
+            console.log(error);
+            })
+        },
+
         ListarEvento() {
             let me = this;
             axios.post('/listarEvento', {
@@ -1823,7 +1912,7 @@ export default {
                                 ? this.forma_pago
                                 : 'SIN FORMA DE PAGO',
                             // forma_pago: this.forma_pago,
-                            monto: this.situacion.id == 1
+                            monto: this.situacion && (this.situacion.id == 1 || this.situacion.id == 3)
                                 ? this.monto
                                 : (this.predio.precio * (100 - this.tarifa.porcentaje))/100,
                             observacion: this.observacion
@@ -1971,7 +2060,7 @@ export default {
             }
             if(!this.$v.validationGroupPagoSaldo.$invalid){
                 swal.fire({
-                    title: '¿Desea pagar el saldo de este evento?', // TITULO 
+                    title: '¿Desea pagar de este evento?', // TITULO 
                     icon: 'question', //ICONO (success, warnning, error, info, question)
                     showCancelButton: true, //HABILITACION DEL BOTON CANCELAR
                     confirmButtonColor: 'info', // COLOR DEL BOTON PARA CONFIRMAR
@@ -1986,13 +2075,15 @@ export default {
                         this.procesando = true;
                         axios.post('/pagarSaldoEvento', {
                             id_evento: idEvento,
-                            precio: (this.precio * this.porcentaje)/100,
-                            adelanto: this.montoE,
-                            forma_pago: this.forma_pagoE
-                            // fecha_evento: this.fecha_eventoE,
-                            // predio_id: this.predio_idE,
-                            // observacion: this.observacionE.toUpperCase()
-                            // responsable: this.responsableE
+                            // precio: (this.precio * this.porcentaje)/100,
+                            situacion: this.situacionE.id,
+                            forma_pago: this.forma_pagoE,
+                            pago: this.situacionE && (this.situacionE.id == 1 || this.situacionE.id == 3)
+                                ? this.montoE
+                                : ((this.precio * (100 - this.porcentaje))/100) - (parseFloat(this.montoAdelanto) || 0),
+                            observacion: this.observacionE
+                                ? this.observacionE.toUpperCase()
+                                : ''
                         })
                         .then((response) => {
                             if(response.data.success){
