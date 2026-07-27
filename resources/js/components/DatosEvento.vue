@@ -400,18 +400,35 @@
                                             <label class="form-control-label">
                                                 MONTO (Bs.):
                                             </label>
-                                            <input type="number" step="0.01" min="0" :max="predio && tarifa ? Number(((predio.precio * (100 - tarifa.porcentaje)) / 100).toFixed(2)) : null" class="form-control" v-model.number="monto" :class="{'is-invalid' : $v.monto.$error, 'is-valid': !$v.monto.$invalid}">
-                                            <div class="invalid-feedback">
-                                                <span v-if="!$v.monto.required">
-                                                    Este campo es requerido
-                                                </span>
-                                                <span v-else-if="$v.monto.required && !$v.monto.decimalDos">
-                                                    Debe ingresar un monto válido con máximo 2 decimales
-                                                </span>
-                                                <span v-else-if="situacion && situacion.id == 1 && !$v.monto.montoMaximo">
-                                                    El monto no puede ser mayor a {{ (predio.precio * (100 - tarifa.porcentaje))/100 }} Bs.
-                                                </span>
-                                            </div>
+                                            <template v-if="tipo_predio && tipo_predio.id == 3">
+                                                <input type="number" step="0.01" min="0" :max="predio && tarifa ? Number((((predio.precio * (100 - tarifa.porcentaje)) / 100) * cantidadHoras).toFixed(2)) : null" class="form-control" v-model.number="monto" :class="{'is-invalid' : $v.monto.$error, 'is-valid': !$v.monto.$invalid}">
+                                                <div class="invalid-feedback">
+                                                    <span v-if="!$v.monto.required">
+                                                        Este campo es requerido
+                                                    </span>
+                                                    <span v-else-if="$v.monto.required && !$v.monto.decimalDos">
+                                                        Debe ingresar un monto válido con máximo 2 decimales
+                                                    </span>
+                                                    <span v-else-if="situacion && situacion.id == 1 && !$v.monto.montoMaximo">
+                                                        El monto no puede ser mayor a {{ Number((((predio.precio * (100 - tarifa.porcentaje)) / 100) * cantidadHoras).toFixed(2)) }} Bs.
+                                                    </span>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <input type="number" step="0.01" min="0" :max="predio && tarifa ? Number(((predio.precio * (100 - tarifa.porcentaje)) / 100).toFixed(2)) : null" class="form-control" v-model.number="monto" :class="{'is-invalid' : $v.monto.$error, 'is-valid': !$v.monto.$invalid}">
+                                                <div class="invalid-feedback">
+                                                    <span v-if="!$v.monto.required">
+                                                        Este campo es requerido
+                                                    </span>
+                                                    <span v-else-if="$v.monto.required && !$v.monto.decimalDos">
+                                                        Debe ingresar un monto válido con máximo 2 decimales
+                                                    </span>
+                                                    <span v-else-if="situacion && situacion.id == 1 && !$v.monto.montoMaximo">
+                                                        El monto no puede ser mayor a {{ (predio.precio * (100 - tarifa.porcentaje))/100 }} Bs.
+                                                    </span>
+                                                </div>
+                                            </template>
+                                            
                                         </div>
                                     </div>
                                     <div class="row mt-2">
@@ -884,15 +901,61 @@ const decimalDos = value => {
     return /^\d+(\.\d{1,2})?$/.test(value);
 };
 
+// const montoMaximo = function(value) {
+
+//     if (!value) return true;
+
+//     if (!this.situacion || this.situacion.id != 1) {
+//         return true;
+//     }
+
+//     return Number(value) <= Number(((this.predio.precio * (100 - this.tarifa.porcentaje))/100));
+// };
+
+// const montoMaximoC = function(value) {
+
+//     if (!value) return true;
+
+//     if (!this.situacion || this.situacion.id != 1 || this.tipo_predio.id != 3) {
+//         return true;
+//     }
+
+//     return Number(value) <= Number((((this.predio.precio * (100 - this.tarifa.porcentaje))/100)) * this.cantidadHoras);
+// };
+
 const montoMaximo = function(value) {
 
     if (!value) return true;
 
+    // Solo se controla el máximo para situación 1
     if (!this.situacion || this.situacion.id != 1) {
         return true;
     }
 
-    return Number(value) <= Number(((this.predio.precio * (100 - this.tarifa.porcentaje))/100));
+    // Verificar que existan los datos necesarios
+    if (!this.predio || !this.tarifa) {
+        return true;
+    }
+
+    let montoMaximo;
+
+    // PREDIO TIPO 3: precio por hora × cantidad de horas
+    if (this.tipo_predio && this.tipo_predio.id == 3) {
+
+        montoMaximo =
+            ((Number(this.predio.precio) *
+            (100 - Number(this.tarifa.porcentaje))) / 100)
+            * Number(this.cantidadHoras);
+
+    } else {
+
+        // OTROS PREDIOS: precio normal
+        montoMaximo =
+            (Number(this.predio.precio) *
+            (100 - Number(this.tarifa.porcentaje))) / 100;
+    }
+
+    return Number(value) <= Number(montoMaximo.toFixed(2));
 };
 
 const montoMaximoE = function(value) {

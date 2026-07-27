@@ -4585,21 +4585,66 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var decimalDos = function decimalDos(value) {
   if (!value) return true;
   return /^\d+(\.\d{1,2})?$/.test(value);
-};
+}; // const montoMaximo = function(value) {
+//     if (!value) return true;
+//     if (!this.situacion || this.situacion.id != 1) {
+//         return true;
+//     }
+//     return Number(value) <= Number(((this.predio.precio * (100 - this.tarifa.porcentaje))/100));
+// };
+// const montoMaximoC = function(value) {
+//     if (!value) return true;
+//     if (!this.situacion || this.situacion.id != 1 || this.tipo_predio.id != 3) {
+//         return true;
+//     }
+//     return Number(value) <= Number((((this.predio.precio * (100 - this.tarifa.porcentaje))/100)) * this.cantidadHoras);
+// };
+
 
 var montoMaximo = function montoMaximo(value) {
-  if (!value) return true;
+  if (!value) return true; // Solo se controla el máximo para situación 1
 
   if (!this.situacion || this.situacion.id != 1) {
     return true;
+  } // Verificar que existan los datos necesarios
+
+
+  if (!this.predio || !this.tarifa) {
+    return true;
   }
 
-  return Number(value) <= Number(this.predio.precio * (100 - this.tarifa.porcentaje) / 100);
+  var montoMaximo; // PREDIO TIPO 3: precio por hora × cantidad de horas
+
+  if (this.tipo_predio && this.tipo_predio.id == 3) {
+    montoMaximo = Number(this.predio.precio) * (100 - Number(this.tarifa.porcentaje)) / 100 * Number(this.cantidadHoras);
+  } else {
+    // OTROS PREDIOS: precio normal
+    montoMaximo = Number(this.predio.precio) * (100 - Number(this.tarifa.porcentaje)) / 100;
+  }
+
+  return Number(value) <= Number(montoMaximo.toFixed(2));
 };
 
 var montoMaximoE = function montoMaximoE(value) {
@@ -116110,88 +116155,200 @@ var render = function() {
                     _c("div", { staticClass: "row mt-2" }, [
                       _vm.situacion &&
                       (_vm.situacion.id == 1 || _vm.situacion.id == 3)
-                        ? _c("div", { staticClass: "col-md-4" }, [
-                            _c("label", { staticClass: "form-control-label" }, [
-                              _vm._v(
-                                "\n                                            MONTO (Bs.):\n                                        "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model.number",
-                                  value: _vm.monto,
-                                  expression: "monto",
-                                  modifiers: { number: true }
-                                }
-                              ],
-                              staticClass: "form-control",
-                              class: {
-                                "is-invalid": _vm.$v.monto.$error,
-                                "is-valid": !_vm.$v.monto.$invalid
-                              },
-                              attrs: {
-                                type: "number",
-                                step: "0.01",
-                                min: "0",
-                                max:
-                                  _vm.predio && _vm.tarifa
-                                    ? Number(
-                                        (
-                                          (_vm.predio.precio *
-                                            (100 - _vm.tarifa.porcentaje)) /
-                                          100
-                                        ).toFixed(2)
-                                      )
-                                    : null
-                              },
-                              domProps: { value: _vm.monto },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.monto = _vm._n($event.target.value)
-                                },
-                                blur: function($event) {
-                                  return _vm.$forceUpdate()
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "invalid-feedback" }, [
-                              !_vm.$v.monto.required
-                                ? _c("span", [
-                                    _vm._v(
-                                      "\n                                                Este campo es requerido\n                                            "
+                        ? _c(
+                            "div",
+                            { staticClass: "col-md-4" },
+                            [
+                              _c(
+                                "label",
+                                { staticClass: "form-control-label" },
+                                [
+                                  _vm._v(
+                                    "\n                                            MONTO (Bs.):\n                                        "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _vm.tipo_predio && _vm.tipo_predio.id == 3
+                                ? [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model.number",
+                                          value: _vm.monto,
+                                          expression: "monto",
+                                          modifiers: { number: true }
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.$v.monto.$error,
+                                        "is-valid": !_vm.$v.monto.$invalid
+                                      },
+                                      attrs: {
+                                        type: "number",
+                                        step: "0.01",
+                                        min: "0",
+                                        max:
+                                          _vm.predio && _vm.tarifa
+                                            ? Number(
+                                                (
+                                                  ((_vm.predio.precio *
+                                                    (100 -
+                                                      _vm.tarifa.porcentaje)) /
+                                                    100) *
+                                                  _vm.cantidadHoras
+                                                ).toFixed(2)
+                                              )
+                                            : null
+                                      },
+                                      domProps: { value: _vm.monto },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.monto = _vm._n(
+                                            $event.target.value
+                                          )
+                                        },
+                                        blur: function($event) {
+                                          return _vm.$forceUpdate()
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "invalid-feedback" },
+                                      [
+                                        !_vm.$v.monto.required
+                                          ? _c("span", [
+                                              _vm._v(
+                                                "\n                                                    Este campo es requerido\n                                                "
+                                              )
+                                            ])
+                                          : _vm.$v.monto.required &&
+                                            !_vm.$v.monto.decimalDos
+                                          ? _c("span", [
+                                              _vm._v(
+                                                "\n                                                    Debe ingresar un monto válido con máximo 2 decimales\n                                                "
+                                              )
+                                            ])
+                                          : _vm.situacion &&
+                                            _vm.situacion.id == 1 &&
+                                            !_vm.$v.monto.montoMaximo
+                                          ? _c("span", [
+                                              _vm._v(
+                                                "\n                                                    El monto no puede ser mayor a " +
+                                                  _vm._s(
+                                                    Number(
+                                                      (
+                                                        ((_vm.predio.precio *
+                                                          (100 -
+                                                            _vm.tarifa
+                                                              .porcentaje)) /
+                                                          100) *
+                                                        _vm.cantidadHoras
+                                                      ).toFixed(2)
+                                                    )
+                                                  ) +
+                                                  " Bs.\n                                                "
+                                              )
+                                            ])
+                                          : _vm._e()
+                                      ]
                                     )
-                                  ])
-                                : _vm.$v.monto.required &&
-                                  !_vm.$v.monto.decimalDos
-                                ? _c("span", [
-                                    _vm._v(
-                                      "\n                                                Debe ingresar un monto válido con máximo 2 decimales\n                                            "
+                                  ]
+                                : [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model.number",
+                                          value: _vm.monto,
+                                          expression: "monto",
+                                          modifiers: { number: true }
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.$v.monto.$error,
+                                        "is-valid": !_vm.$v.monto.$invalid
+                                      },
+                                      attrs: {
+                                        type: "number",
+                                        step: "0.01",
+                                        min: "0",
+                                        max:
+                                          _vm.predio && _vm.tarifa
+                                            ? Number(
+                                                (
+                                                  (_vm.predio.precio *
+                                                    (100 -
+                                                      _vm.tarifa.porcentaje)) /
+                                                  100
+                                                ).toFixed(2)
+                                              )
+                                            : null
+                                      },
+                                      domProps: { value: _vm.monto },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.monto = _vm._n(
+                                            $event.target.value
+                                          )
+                                        },
+                                        blur: function($event) {
+                                          return _vm.$forceUpdate()
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "invalid-feedback" },
+                                      [
+                                        !_vm.$v.monto.required
+                                          ? _c("span", [
+                                              _vm._v(
+                                                "\n                                                    Este campo es requerido\n                                                "
+                                              )
+                                            ])
+                                          : _vm.$v.monto.required &&
+                                            !_vm.$v.monto.decimalDos
+                                          ? _c("span", [
+                                              _vm._v(
+                                                "\n                                                    Debe ingresar un monto válido con máximo 2 decimales\n                                                "
+                                              )
+                                            ])
+                                          : _vm.situacion &&
+                                            _vm.situacion.id == 1 &&
+                                            !_vm.$v.monto.montoMaximo
+                                          ? _c("span", [
+                                              _vm._v(
+                                                "\n                                                    El monto no puede ser mayor a " +
+                                                  _vm._s(
+                                                    (_vm.predio.precio *
+                                                      (100 -
+                                                        _vm.tarifa
+                                                          .porcentaje)) /
+                                                      100
+                                                  ) +
+                                                  " Bs.\n                                                "
+                                              )
+                                            ])
+                                          : _vm._e()
+                                      ]
                                     )
-                                  ])
-                                : _vm.situacion &&
-                                  _vm.situacion.id == 1 &&
-                                  !_vm.$v.monto.montoMaximo
-                                ? _c("span", [
-                                    _vm._v(
-                                      "\n                                                El monto no puede ser mayor a " +
-                                        _vm._s(
-                                          (_vm.predio.precio *
-                                            (100 - _vm.tarifa.porcentaje)) /
-                                            100
-                                        ) +
-                                        " Bs.\n                                            "
-                                    )
-                                  ])
-                                : _vm._e()
-                            ])
-                          ])
+                                  ]
+                            ],
+                            2
+                          )
                         : _vm._e()
                     ]),
                     _vm._v(" "),

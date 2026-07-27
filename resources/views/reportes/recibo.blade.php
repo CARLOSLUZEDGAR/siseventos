@@ -221,7 +221,7 @@
                                     <p style="margin: 1px"><span style="font-weight: bold;">TOTAL PAGADO</span></p>
                                 </td>
                                 <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
-                                    <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format((($evento->precio * $evento->porcentaje) / 100), 2, ',', '.') }}</span></p>                            
+                                    <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format((($evento->precio * (100 - $evento->porcentaje)) / 100), 2, ',', '.') }}</span></p>                            
                                 </td>
                             </tr>
                         @endif 
