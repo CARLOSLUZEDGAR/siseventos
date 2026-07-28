@@ -427,8 +427,7 @@
                                                         El monto no puede ser mayor a {{ (predio.precio * (100 - tarifa.porcentaje))/100 }} Bs.
                                                     </span>
                                                 </div>
-                                            </template>
-                                            
+                                            </template>                                           
                                         </div>
                                     </div>
                                     <div class="row mt-2">
@@ -692,19 +691,35 @@
                                                             <div class="col-md-12" v-if="situacionE && (situacionE.id == 1 || situacionE.id == 3)">
                                                                 <label class="form-control-label">
                                                                     MONTO (Bs.):
-                                                                </label>
-                                                                <input type="number" step="0.01" min="0" :max="predio && tarifa ? Number(((predio.precio * (100 - tarifa.porcentaje)) / 100).toFixed(2)) : null" class="form-control" v-model.number="montoE" :class="{'is-invalid' : $v.montoE.$error, 'is-valid': !$v.montoE.$invalid}">
-                                                                <div class="invalid-feedback">
-                                                                    <span v-if="!$v.montoE.required">
-                                                                        Este campo es requerido
-                                                                    </span>
-                                                                    <span v-else-if="$v.montoE.required && !$v.montoE.decimalDos">
-                                                                        Debe ingresar un monto válido con máximo 2 decimales
-                                                                    </span>
-                                                                    <span v-else-if="situacionE && situacionE.id == 1 && !$v.montoE.montoMaximoE">
-                                                                        El monto no puede ser mayor a {{ (precio * (100 - porcentaje))/100 }} Bs.
-                                                                    </span>
-                                                                </div>
+                                                                </label>                                                             
+                                                                <template v-if="tipo_predio_idE == 3">
+                                                                    <input type="number" step="0.01" min="0" :max="predio && tarifa ? Number((((precio * (100 - porcentaje)) / 100) * cantidadHorasE).toFixed(2)) : null" class="form-control" v-model.number="montoE" :class="{'is-invalid' : $v.montoE.$error, 'is-valid': !$v.montoE.$invalid}">
+                                                                    <div class="invalid-feedback">
+                                                                        <span v-if="!$v.montoE.required">
+                                                                            Este campo es requerido
+                                                                        </span>
+                                                                        <span v-else-if="$v.montoE.required && !$v.montoE.decimalDos">
+                                                                            Debe ingresar un monto válido con máximo 2 decimales
+                                                                        </span>
+                                                                        <span v-else-if="situacionE && situacionE.id == 1 && !$v.montoE.montoMaximoE">
+                                                                            El monto no puede ser mayor a {{ Number((((precio * (100 - porcentaje)) / 100) * cantidadHorasE).toFixed(2)) }} Bs.
+                                                                        </span>
+                                                                    </div>
+                                                                </template>
+                                                                <template v-else>
+                                                                    <input type="number" step="0.01" min="0" :max="predio && tarifa ? Number(((precio * (100 - porcentaje)) / 100).toFixed(2)) : null" class="form-control" v-model.number="montoE" :class="{'is-invalid' : $v.montoE.$error, 'is-valid': !$v.montoE.$invalid}">
+                                                                    <div class="invalid-feedback">
+                                                                        <span v-if="!$v.montoE.required">
+                                                                            Este campo es requerido
+                                                                        </span>
+                                                                        <span v-else-if="$v.montoE.required && !$v.montoE.decimalDos">
+                                                                            Debe ingresar un monto válido con máximo 2 decimales
+                                                                        </span>
+                                                                        <span v-else-if="situacionE && situacionE.id == 1 && !$v.montoE.montoMaximoE">
+                                                                            El monto no puede ser mayor a {{ (precio * (100 - porcentaje))/100 }} Bs.
+                                                                        </span>
+                                                                    </div>
+                                                                </template>
                                                             </div><br>
                                                             <button type="button" class="btn btn-danger mr-2" @click="PagarSaldo(id_eventoE)" :disabled="procesando">{{ procesando ? 'Procesando...' : 'PAGAR' }}</button>  
                                                         </td>
@@ -958,15 +973,50 @@ const montoMaximo = function(value) {
     return Number(value) <= Number(montoMaximo.toFixed(2));
 };
 
+// const montoMaximoE = function(value) {
+
+//     if (!value) return true;
+
+//     if (!this.situacionE || this.situacionE.id != 1) {
+//         return true;
+//     }
+
+//     return Number(value) <= Number(((this.precio * (100 - this.porcentaje))/100));
+// };
+
 const montoMaximoE = function(value) {
 
     if (!value) return true;
 
+    // Solo se controla el máximo para situación 1
     if (!this.situacionE || this.situacionE.id != 1) {
         return true;
     }
 
-    return Number(value) <= Number(((this.precio * (100 - this.porcentaje))/100));
+    // Verificar que existan los datos necesarios
+    if (!this.predioE || !this.tarifaE) {
+        return true;
+    }
+
+    let montoMaximoE;
+
+    // PREDIO TIPO 3: precio por hora × cantidad de horas
+    if (this.tipo_predio_idE == 3) {
+
+        montoMaximoE =
+            ((Number(this.precio) *
+            (100 - Number(this.porcentaje))) / 100)
+            * Number(this.cantidadHorasE);
+
+    } else {
+
+        // OTROS PREDIOS: precio normal
+        montoMaximoE =
+            (Number(this.precio) *
+            (100 - Number(this.porcentaje))) / 100;
+    }
+
+    return Number(value) <= Number(montoMaximoE.toFixed(2));
 };
 
 export default {
@@ -1046,6 +1096,7 @@ export default {
             ciE: '',
             celularE: '',
             predio_idE: '',
+            tipo_predio_idE: '',
             tipo_predioE: '',
             predioE: '',
             tipo_evento_idE: '',
@@ -1306,6 +1357,17 @@ export default {
             return diferencia > 0
                 ? diferencia / (1000 * 60 * 60)
                 : 0;
+        },
+
+        cantidadHorasE() {
+            if (!this.hora_inicioE || !this.hora_finE) {
+                return 0;
+            }
+
+            const inicio = parseInt(this.hora_inicioE.split(':')[0], 10);
+            const fin = parseInt(this.hora_finE.split(':')[0], 10);
+
+            return fin - inicio;
         }
     },
 
@@ -1678,6 +1740,7 @@ export default {
                 this.ciE = this.arrayMostrarEvento.ci;
                 this.celularE = this.arrayMostrarEvento.celular;
                 this.predio_idE = this.arrayMostrarEvento.predio_id;
+                this.tipo_predio_idE = this.arrayMostrarEvento.tipo_predio_id;
                 this.tipo_predioE = this.arrayMostrarEvento.clasificacion;
                 this.predioE = this.arrayMostrarEvento.nombre;
                 this.tipo_evento_idE = this.arrayMostrarEvento.tipo_evento_id;
@@ -1763,6 +1826,7 @@ export default {
                     this.responsableE = '',
                     this.ciE = '',
                     this.celularE = '',
+                    this.tipo_predio_idE = '',
                     this.tipo_predioE = '',
                     this.predioE = '',
                     this.tipo_eventoE = '',

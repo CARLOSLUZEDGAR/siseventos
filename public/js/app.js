@@ -4602,6 +4602,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var decimalDos = function decimalDos(value) {
@@ -4645,16 +4660,37 @@ var montoMaximo = function montoMaximo(value) {
   }
 
   return Number(value) <= Number(montoMaximo.toFixed(2));
-};
+}; // const montoMaximoE = function(value) {
+//     if (!value) return true;
+//     if (!this.situacionE || this.situacionE.id != 1) {
+//         return true;
+//     }
+//     return Number(value) <= Number(((this.precio * (100 - this.porcentaje))/100));
+// };
+
 
 var montoMaximoE = function montoMaximoE(value) {
-  if (!value) return true;
+  if (!value) return true; // Solo se controla el máximo para situación 1
 
   if (!this.situacionE || this.situacionE.id != 1) {
     return true;
+  } // Verificar que existan los datos necesarios
+
+
+  if (!this.predioE || !this.tarifaE) {
+    return true;
   }
 
-  return Number(value) <= Number(this.precio * (100 - this.porcentaje) / 100);
+  var montoMaximoE; // PREDIO TIPO 3: precio por hora × cantidad de horas
+
+  if (this.tipo_predio_idE == 3) {
+    montoMaximoE = Number(this.precio) * (100 - Number(this.porcentaje)) / 100 * Number(this.cantidadHorasE);
+  } else {
+    // OTROS PREDIOS: precio normal
+    montoMaximoE = Number(this.precio) * (100 - Number(this.porcentaje)) / 100;
+  }
+
+  return Number(value) <= Number(montoMaximoE.toFixed(2));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4703,6 +4739,7 @@ var montoMaximoE = function montoMaximoE(value) {
       ciE: '',
       celularE: '',
       predio_idE: '',
+      tipo_predio_idE: '',
       tipo_predioE: '',
       predioE: '',
       tipo_evento_idE: '',
@@ -4960,6 +4997,15 @@ var montoMaximoE = function montoMaximoE(value) {
       var fin = new Date(this.fecha_evento_fin + 'T' + this.hora_fin);
       var diferencia = fin - inicio;
       return diferencia > 0 ? diferencia / (1000 * 60 * 60) : 0;
+    },
+    cantidadHorasE: function cantidadHorasE() {
+      if (!this.hora_inicioE || !this.hora_finE) {
+        return 0;
+      }
+
+      var inicio = parseInt(this.hora_inicioE.split(':')[0], 10);
+      var fin = parseInt(this.hora_finE.split(':')[0], 10);
+      return fin - inicio;
     }
   },
   methods: {
@@ -5315,6 +5361,7 @@ var montoMaximoE = function montoMaximoE(value) {
         _this4.ciE = _this4.arrayMostrarEvento.ci;
         _this4.celularE = _this4.arrayMostrarEvento.celular;
         _this4.predio_idE = _this4.arrayMostrarEvento.predio_id;
+        _this4.tipo_predio_idE = _this4.arrayMostrarEvento.tipo_predio_id;
         _this4.tipo_predioE = _this4.arrayMostrarEvento.clasificacion;
         _this4.predioE = _this4.arrayMostrarEvento.nombre;
         _this4.tipo_evento_idE = _this4.arrayMostrarEvento.tipo_evento_id;
@@ -5378,7 +5425,7 @@ var montoMaximoE = function montoMaximoE(value) {
           break;
 
         case 2:
-          this.fecha_eventoE = '', this.fecha_evento_finE = '', this.hora_inicioE = '', this.hora_finE = '', this.responsableE = '', this.ciE = '', this.celularE = '', this.tipo_predioE = '', this.predioE = '', this.tipo_eventoE = '', this.tarifaE = '', this.situacionE = '', this.observacionE = '', this.montoE = '', this.precio = '', this.porcentaje = '', this.forma_pagoE = '';
+          this.fecha_eventoE = '', this.fecha_evento_finE = '', this.hora_inicioE = '', this.hora_finE = '', this.responsableE = '', this.ciE = '', this.celularE = '', this.tipo_predio_idE = '', this.tipo_predioE = '', this.predioE = '', this.tipo_eventoE = '', this.tarifaE = '', this.situacionE = '', this.observacionE = '', this.montoE = '', this.precio = '', this.porcentaje = '', this.forma_pagoE = '';
           break;
 
         case 3:
@@ -117270,98 +117317,227 @@ var render = function() {
                                                 ]
                                               ),
                                               _vm._v(" "),
-                                              _c("input", {
-                                                directives: [
-                                                  {
-                                                    name: "model",
-                                                    rawName: "v-model.number",
-                                                    value: _vm.montoE,
-                                                    expression: "montoE",
-                                                    modifiers: { number: true }
-                                                  }
-                                                ],
-                                                staticClass: "form-control",
-                                                class: {
-                                                  "is-invalid":
-                                                    _vm.$v.montoE.$error,
-                                                  "is-valid": !_vm.$v.montoE
-                                                    .$invalid
-                                                },
-                                                attrs: {
-                                                  type: "number",
-                                                  step: "0.01",
-                                                  min: "0",
-                                                  max:
-                                                    _vm.predio && _vm.tarifa
-                                                      ? Number(
-                                                          (
-                                                            (_vm.predio.precio *
-                                                              (100 -
-                                                                _vm.tarifa
-                                                                  .porcentaje)) /
-                                                            100
-                                                          ).toFixed(2)
-                                                        )
-                                                      : null
-                                                },
-                                                domProps: { value: _vm.montoE },
-                                                on: {
-                                                  input: function($event) {
-                                                    if (
-                                                      $event.target.composing
-                                                    ) {
-                                                      return
-                                                    }
-                                                    _vm.montoE = _vm._n(
-                                                      $event.target.value
+                                              _vm.tipo_predio_idE == 3
+                                                ? [
+                                                    _c("input", {
+                                                      directives: [
+                                                        {
+                                                          name: "model",
+                                                          rawName:
+                                                            "v-model.number",
+                                                          value: _vm.montoE,
+                                                          expression: "montoE",
+                                                          modifiers: {
+                                                            number: true
+                                                          }
+                                                        }
+                                                      ],
+                                                      staticClass:
+                                                        "form-control",
+                                                      class: {
+                                                        "is-invalid":
+                                                          _vm.$v.montoE.$error,
+                                                        "is-valid": !_vm.$v
+                                                          .montoE.$invalid
+                                                      },
+                                                      attrs: {
+                                                        type: "number",
+                                                        step: "0.01",
+                                                        min: "0",
+                                                        max:
+                                                          _vm.predio &&
+                                                          _vm.tarifa
+                                                            ? Number(
+                                                                (
+                                                                  ((_vm.precio *
+                                                                    (100 -
+                                                                      _vm.porcentaje)) /
+                                                                    100) *
+                                                                  _vm.cantidadHorasE
+                                                                ).toFixed(2)
+                                                              )
+                                                            : null
+                                                      },
+                                                      domProps: {
+                                                        value: _vm.montoE
+                                                      },
+                                                      on: {
+                                                        input: function(
+                                                          $event
+                                                        ) {
+                                                          if (
+                                                            $event.target
+                                                              .composing
+                                                          ) {
+                                                            return
+                                                          }
+                                                          _vm.montoE = _vm._n(
+                                                            $event.target.value
+                                                          )
+                                                        },
+                                                        blur: function($event) {
+                                                          return _vm.$forceUpdate()
+                                                        }
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "invalid-feedback"
+                                                      },
+                                                      [
+                                                        !_vm.$v.montoE.required
+                                                          ? _c("span", [
+                                                              _vm._v(
+                                                                "\n                                                                        Este campo es requerido\n                                                                    "
+                                                              )
+                                                            ])
+                                                          : _vm.$v.montoE
+                                                              .required &&
+                                                            !_vm.$v.montoE
+                                                              .decimalDos
+                                                          ? _c("span", [
+                                                              _vm._v(
+                                                                "\n                                                                        Debe ingresar un monto válido con máximo 2 decimales\n                                                                    "
+                                                              )
+                                                            ])
+                                                          : _vm.situacionE &&
+                                                            _vm.situacionE.id ==
+                                                              1 &&
+                                                            !_vm.$v.montoE
+                                                              .montoMaximoE
+                                                          ? _c("span", [
+                                                              _vm._v(
+                                                                "\n                                                                        El monto no puede ser mayor a " +
+                                                                  _vm._s(
+                                                                    Number(
+                                                                      (
+                                                                        ((_vm.precio *
+                                                                          (100 -
+                                                                            _vm.porcentaje)) /
+                                                                          100) *
+                                                                        _vm.cantidadHorasE
+                                                                      ).toFixed(
+                                                                        2
+                                                                      )
+                                                                    )
+                                                                  ) +
+                                                                  " Bs.\n                                                                    "
+                                                              )
+                                                            ])
+                                                          : _vm._e()
+                                                      ]
                                                     )
-                                                  },
-                                                  blur: function($event) {
-                                                    return _vm.$forceUpdate()
-                                                  }
-                                                }
-                                              }),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "invalid-feedback"
-                                                },
-                                                [
-                                                  !_vm.$v.montoE.required
-                                                    ? _c("span", [
-                                                        _vm._v(
-                                                          "\n                                                                    Este campo es requerido\n                                                                "
-                                                        )
-                                                      ])
-                                                    : _vm.$v.montoE.required &&
-                                                      !_vm.$v.montoE.decimalDos
-                                                    ? _c("span", [
-                                                        _vm._v(
-                                                          "\n                                                                    Debe ingresar un monto válido con máximo 2 decimales\n                                                                "
-                                                        )
-                                                      ])
-                                                    : _vm.situacionE &&
-                                                      _vm.situacionE.id == 1 &&
-                                                      !_vm.$v.montoE
-                                                        .montoMaximoE
-                                                    ? _c("span", [
-                                                        _vm._v(
-                                                          "\n                                                                    El monto no puede ser mayor a " +
-                                                            _vm._s(
-                                                              (_vm.precio *
-                                                                (100 -
-                                                                  _vm.porcentaje)) /
-                                                                100
-                                                            ) +
-                                                            " Bs.\n                                                                "
-                                                        )
-                                                      ])
-                                                    : _vm._e()
-                                                ]
-                                              )
-                                            ]
+                                                  ]
+                                                : [
+                                                    _c("input", {
+                                                      directives: [
+                                                        {
+                                                          name: "model",
+                                                          rawName:
+                                                            "v-model.number",
+                                                          value: _vm.montoE,
+                                                          expression: "montoE",
+                                                          modifiers: {
+                                                            number: true
+                                                          }
+                                                        }
+                                                      ],
+                                                      staticClass:
+                                                        "form-control",
+                                                      class: {
+                                                        "is-invalid":
+                                                          _vm.$v.montoE.$error,
+                                                        "is-valid": !_vm.$v
+                                                          .montoE.$invalid
+                                                      },
+                                                      attrs: {
+                                                        type: "number",
+                                                        step: "0.01",
+                                                        min: "0",
+                                                        max:
+                                                          _vm.predio &&
+                                                          _vm.tarifa
+                                                            ? Number(
+                                                                (
+                                                                  (_vm.precio *
+                                                                    (100 -
+                                                                      _vm.porcentaje)) /
+                                                                  100
+                                                                ).toFixed(2)
+                                                              )
+                                                            : null
+                                                      },
+                                                      domProps: {
+                                                        value: _vm.montoE
+                                                      },
+                                                      on: {
+                                                        input: function(
+                                                          $event
+                                                        ) {
+                                                          if (
+                                                            $event.target
+                                                              .composing
+                                                          ) {
+                                                            return
+                                                          }
+                                                          _vm.montoE = _vm._n(
+                                                            $event.target.value
+                                                          )
+                                                        },
+                                                        blur: function($event) {
+                                                          return _vm.$forceUpdate()
+                                                        }
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "invalid-feedback"
+                                                      },
+                                                      [
+                                                        !_vm.$v.montoE.required
+                                                          ? _c("span", [
+                                                              _vm._v(
+                                                                "\n                                                                        Este campo es requerido\n                                                                    "
+                                                              )
+                                                            ])
+                                                          : _vm.$v.montoE
+                                                              .required &&
+                                                            !_vm.$v.montoE
+                                                              .decimalDos
+                                                          ? _c("span", [
+                                                              _vm._v(
+                                                                "\n                                                                        Debe ingresar un monto válido con máximo 2 decimales\n                                                                    "
+                                                              )
+                                                            ])
+                                                          : _vm.situacionE &&
+                                                            _vm.situacionE.id ==
+                                                              1 &&
+                                                            !_vm.$v.montoE
+                                                              .montoMaximoE
+                                                          ? _c("span", [
+                                                              _vm._v(
+                                                                "\n                                                                        El monto no puede ser mayor a " +
+                                                                  _vm._s(
+                                                                    (_vm.precio *
+                                                                      (100 -
+                                                                        _vm.porcentaje)) /
+                                                                      100
+                                                                  ) +
+                                                                  " Bs.\n                                                                    "
+                                                              )
+                                                            ])
+                                                          : _vm._e()
+                                                      ]
+                                                    )
+                                                  ]
+                                            ],
+                                            2
                                           )
                                         : _vm._e(),
                                       _c("br"),
