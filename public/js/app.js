@@ -5753,7 +5753,7 @@ var montoMaximoE = function montoMaximoE(value) {
               // precio: (this.precio * this.porcentaje)/100,
               situacion: _this7.situacionE.id,
               forma_pago: _this7.forma_pagoE,
-              pago: _this7.situacionE && (_this7.situacionE.id == 1 || _this7.situacionE.id == 3) ? _this7.montoE : _this7.precio * (100 - _this7.porcentaje) / 100 - (parseFloat(_this7.montoAdelanto) || 0),
+              pago: _this7.situacionE && (_this7.situacionE.id == 1 || _this7.situacionE.id == 3) ? _this7.montoE : _this7.tipo_predio_idE == 3 ? _this7.precio * (100 - _this7.porcentaje) / 100 * _this7.cantidadHorasE - (parseFloat(_this7.montoAdelanto) || 0) : _this7.precio * (100 - _this7.porcentaje) / 100 - (parseFloat(_this7.montoAdelanto) || 0),
               observacion: _this7.observacionE ? _this7.observacionE.toUpperCase() : ''
             }).then(function (response) {
               if (response.data.success) {

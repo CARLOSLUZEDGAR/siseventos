@@ -201,9 +201,15 @@
                                 <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: left;">
                                     <p style="margin: 1px"><span style="font-weight: bold;">SALDO</span></p>
                                 </td>
-                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
-                                    <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format(((($evento->precio * $evento->porcentaje)/100) - $situacion_evento->monto), 2, ',', '.')}}</span></p>                            
-                                </td>
+                                @if ($evento->tipo_predio_id != 3)
+                                    <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
+                                        <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format(((($evento->precio * (100 - $evento->porcentaje))/100) - $situacion_evento->monto), 2, ',', '.')}}</span></p>                            
+                                    </td>
+                                @else
+                                    <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
+                                        <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format(((((($evento->precio * (100 - $evento->porcentaje))/100) * $cant_horas) - $situacion_evento->monto)), 2, ',', '.')}}</span></p>                            
+                                    </td>  
+                                @endif    
                             </tr>
                         @else
                             @foreach($listar_situacion_evento as $row)
@@ -220,9 +226,15 @@
                                 <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: left;">
                                     <p style="margin: 1px"><span style="font-weight: bold;">TOTAL PAGADO</span></p>
                                 </td>
-                                <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
-                                    <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format((($evento->precio * (100 - $evento->porcentaje)) / 100), 2, ',', '.') }}</span></p>                            
-                                </td>
+                                 @if ($evento->tipo_predio_id != 3)
+                                    <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
+                                        <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format((($evento->precio * (100 - $evento->porcentaje)) / 100), 2, ',', '.') }}</span></p>                            
+                                    </td>
+                                @else
+                                    <td style="/*border: 1px solid #000;*/ padding: 1px; text-align: right;">
+                                        <p style="margin: 1px"><span style="font-weight: bold;">{{ number_format(((($evento->precio * (100 - $evento->porcentaje)) / 100) * $cant_horas), 2, ',', '.') }}</span></p>                            
+                                    </td>
+                                @endif
                             </tr>
                         @endif 
                         </tbody>

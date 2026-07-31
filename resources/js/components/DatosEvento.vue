@@ -2207,6 +2207,8 @@ export default {
                             forma_pago: this.forma_pagoE,
                             pago: this.situacionE && (this.situacionE.id == 1 || this.situacionE.id == 3)
                                 ? this.montoE
+                                : this.tipo_predio_idE == 3
+                                ? (((this.precio * (100 - this.porcentaje))/100) * this.cantidadHorasE)  - (parseFloat(this.montoAdelanto) || 0)
                                 : ((this.precio * (100 - this.porcentaje))/100) - (parseFloat(this.montoAdelanto) || 0),
                             observacion: this.observacionE
                                 ? this.observacionE.toUpperCase()

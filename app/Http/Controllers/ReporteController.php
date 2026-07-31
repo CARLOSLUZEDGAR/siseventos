@@ -30,6 +30,7 @@ class ReporteController extends Controller
                         'te.evento',
                         't.id as idtarifa',
                         't.tarifa',
+                        'e.tipo_predio_id',
                         'tpor.porcentaje',
                         'e.fecha_evento',
                         'e.fecha_evento_fin',
@@ -67,11 +68,20 @@ class ReporteController extends Controller
 
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha_emision_corto= date('d')."/".date('n')."/".date('Y');
+
+        //INICIO PARA OBTENER EN UN FORMATO DIFENTE LA FECHA
         Carbon::setLocale('es');
         $fecha = Carbon::now();
         $fecha_emision = $fecha->format('d') . ' días del mes de ' . $fecha->translatedFormat('F') . ' de ' . $fecha->format('Y');
         $fecha_evento_inicio = mb_strtoupper(Carbon::parse($evento->fecha_evento)->locale('es')->translatedFormat('l, d \d\e F \d\e Y'),'UTF-8');
         $fecha_evento_final = mb_strtoupper(Carbon::parse($evento->fecha_evento_fin)->locale('es')->translatedFormat('l, d \d\e F \d\e Y'),'UTF-8');
+        //FIN PARA OBTENER EN UN FORMATO DIFENTE LA FECHA
+
+        //INICIO PARA OBTENER LA CANTIDAD DE HORAS
+        $inicio = Carbon::createFromFormat('Y-m-d H:i:s', $evento->fecha_evento . ' ' . $evento->hora_inicio);
+        $fin = Carbon::createFromFormat('Y-m-d H:i:s', $evento->fecha_evento_fin . ' ' . $evento->hora_fin);
+        $cantidadHoras = $inicio->diffInHours($fin);
+        //FIN PARA OBTENER LA CANTIDAD DE HORAS
 
 
         $qr = QrCode::encoding('UTF-8')->size(100)->generate("No. REGISTRO: $evento->id\nCONTRATANTE: $evento->contratante\nSALON: $evento->nombre\nEVENTO: $evento->evento\nFECHA: $evento->fecha_evento");
@@ -83,7 +93,8 @@ class ReporteController extends Controller
                                                 'qr' => $codigo,
                                                 'fecha_det' => $fecha_emision,
                                                 'fecha_evento_inicio' => $fecha_evento_inicio,
-                                                'fecha_evento_final' => $fecha_evento_final
+                                                'fecha_evento_final' => $fecha_evento_final,
+                                                'cant_horas' => $cantidadHoras
                                                 ])
         //8.3cm 5cm
         ->setPaper('letter', 'portrait');                                               
